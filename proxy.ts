@@ -8,7 +8,8 @@ const ALWAYS_ACCESSIBLE = ['/verify-email'];
 
 function isPublic(pathname: string): boolean {
   if (ALWAYS_ACCESSIBLE.some((p) => pathname.startsWith(p))) return true;
-  if (PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith('/nutritionists/'))) return true;
+  if (PUBLIC_PATHS.some((p) => pathname === p)) return true;
+  if (pathname.startsWith('/nutritionists/')) return true;
   return false;
 }
 
