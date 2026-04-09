@@ -12,8 +12,6 @@ function VerifyEmailContent() {
 
   const [status, setStatus] = useState<'idle' | 'verifying' | 'success' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
-  const [resendLoading, setResendLoading] = useState(false);
-  const [resendSent, setResendSent] = useState(false);
 
   // Auto-verify when token is present in the URL.
   useEffect(() => {
@@ -38,19 +36,12 @@ function VerifyEmailContent() {
       });
   }, [token, router]);
 
-  async function handleResend() {
-    // The resend flow re-registers with the same email isn't possible here since
-    // we don't have the email. Redirect to register so the user can try again.
-    // TODO Slice 3+: add a dedicated resend endpoint once email is stored in session.
-    router.push('/register');
-  }
-
   if (token) {
     return (
       <div className="auth-card" style={{ textAlign: 'center' }}>
         <a href="/" className="auth-logo" style={{ textAlign: 'left' }}>nutri<span>connect</span></a>
 
-        {status === 'verifying' && (
+        {(status === 'idle' || status === 'verifying') && (
           <>
             <h1 className="auth-heading">Verificando…</h1>
             <p className="auth-sub">Por favor espera un momento.</p>
@@ -90,20 +81,9 @@ function VerifyEmailContent() {
         Te enviamos un enlace de verificación. Haz clic en él para activar tu cuenta.
       </p>
 
-      {resendSent && (
-        <div className="auth-alert auth-alert-success">
-          Enlace reenviado. Revisa tu bandeja de entrada.
-        </div>
-      )}
-
-      <button
-        className="btn-auth"
-        disabled={resendLoading || resendSent}
-        onClick={handleResend}
-        style={{ width: '100%' }}
-      >
-        {resendLoading ? 'Reenviando…' : resendSent ? 'Enviado ✓' : 'Reenviar enlace'}
-      </button>
+      <a href="/register" className="btn-auth" style={{ display: 'block', textAlign: 'center', textDecoration: 'none', width: '100%' }}>
+        Volver al registro
+      </a>
 
       <hr className="auth-divider" />
       <p className="auth-footer">

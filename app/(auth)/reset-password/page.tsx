@@ -29,7 +29,7 @@ function ResetPasswordForm() {
     );
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     if (password !== confirm) {
@@ -53,7 +53,7 @@ function ResetPasswordForm() {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="auth-card">
