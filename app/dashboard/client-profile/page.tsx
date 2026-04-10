@@ -56,13 +56,16 @@ function TagInput({
 
 // ─── Weight Chart ─────────────────────────────────────────────────────────────
 
-interface WeightEntry { id: string; weight_kg: number; recorded_at: string }
+type ChartEntry = { id: string; weight_kg: number; recorded_at: string };
 
-function WeightChart({ entries }: { entries: WeightEntry[] }) {
+function WeightChart({ entries }: { entries: ChartEntry[] }) {
   if (entries.length < 2) return null;
 
   const sorted = [...entries].sort((a, b) => a.recorded_at.localeCompare(b.recorded_at));
-  const W = 600, H = 160, PX = 40, PY = 16;
+  const W = 600;
+  const H = 160;
+  const PX = 40;
+  const PY = 16;
   const innerW = W - PX * 2;
   const innerH = H - PY * 2;
 
@@ -74,48 +77,36 @@ function WeightChart({ entries }: { entries: WeightEntry[] }) {
   const toX = (i: number) => PX + (i / (sorted.length - 1)) * innerW;
   const toY = (w: number) => PY + innerH - ((w - minW) / range) * innerH;
 
-  const points = sorted.map((e, i) => `${toX(i)},${toY(e.weight_kg)}`).join(' ');
+  const linePoints = sorted.map((e, i) => `${toX(i)},${toY(e.weight_kg)}`).join(' ');
+  const areaPoints = `${PX},${PY + innerH} ${linePoints} ${PX + innerW},${PY + innerH}`;
 
-  // Y-axis labels: min and max
-  const labelMin = minW.toFixed(1);
-  const labelMax = maxW.toFixed(1);
-
-  // X-axis: first and last date (short format)
   const fmtDate = (s: string) => {
-    const [, m, d] = s.split('-');
-    return `${d}/${m}`;
+    const parts = s.split('-');
+    return `${parts[2]}/${parts[1]}`;
   };
+
+  const labelMax = maxW.toFixed(1);
+  const labelMin = minW.toFixed(1);
+  const dateFirst = fmtDate(sorted[0].recorded_at);
+  const dateLast = fmtDate(sorted[sorted.length - 1].recorded_at);
+  const midY = PY + innerH / 2;
 
   return (
     <div style={{ marginBottom: 20 }}>
       <svg viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', height: 'auto', display: 'block' }}>
-        {/* Grid lines */}
-        <line x1={PX} y1={PY} x2={PX} y2={PY + innerH} stroke="rgba(139,115,85,0.15)" strokeWidth="1" />
-        <line x1={PX} y1={PY + innerH} x2={PX + innerW} y2={PY + innerH} stroke="rgba(139,115,85,0.15)" strokeWidth="1" />
-        <line x1={PX} y1={PY} x2={PX + innerW} y2={PY} stroke="rgba(139,115,85,0.08)" strokeWidth="1" strokeDasharray="4 4" />
-        <line x1={PX} y1={PY + innerH / 2} x2={PX + innerW} y2={PY + innerH / 2} stroke="rgba(139,115,85,0.08)" strokeWidth="1" strokeDasharray="4 4" />
-
-        {/* Area fill */}
-        <polygon
-          points={`${PX},${PY + innerH} ${points} ${PX + innerW},${PY + innerH}`}
-          fill="rgba(26,51,41,0.06)"
-        />
-
-        {/* Line */}
-        <polyline points={points} fill="none" stroke="#1A3329" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
-
-        {/* Data points */}
+        <line x1={PX} y1={PY} x2={PX} y2={PY + innerH} stroke="rgba(139,115,85,0.15)" strokeWidth={1} />
+        <line x1={PX} y1={PY + innerH} x2={PX + innerW} y2={PY + innerH} stroke="rgba(139,115,85,0.15)" strokeWidth={1} />
+        <line x1={PX} y1={PY} x2={PX + innerW} y2={PY} stroke="rgba(139,115,85,0.08)" strokeWidth={1} strokeDasharray="4 4" />
+        <line x1={PX} y1={midY} x2={PX + innerW} y2={midY} stroke="rgba(139,115,85,0.08)" strokeWidth={1} strokeDasharray="4 4" />
+        <polygon points={areaPoints} fill="rgba(26,51,41,0.06)" />
+        <polyline points={linePoints} fill="none" stroke="#1A3329" strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
         {sorted.map((e, i) => (
-          <circle key={e.id} cx={toX(i)} cy={toY(e.weight_kg)} r="3.5" fill="#C4622D" stroke="white" strokeWidth="1.5" />
+          <circle key={e.id} cx={toX(i)} cy={toY(e.weight_kg)} r={3.5} fill="#C4622D" stroke="white" strokeWidth={1.5} />
         ))}
-
-        {/* Y labels */}
-        <text x={PX - 4} y={PY + 4} textAnchor="end" fontSize="10" fill="#8B7355">{labelMax}</text>
-        <text x={PX - 4} y={PY + innerH + 4} textAnchor="end" fontSize="10" fill="#8B7355">{labelMin}</text>
-
-        {/* X labels */}
-        <text x={PX} y={H - 2} textAnchor="middle" fontSize="10" fill="#8B7355">{fmtDate(sorted[0].recorded_at)}</text>
-        <text x={PX + innerW} y={H - 2} textAnchor="middle" fontSize="10" fill="#8B7355">{fmtDate(sorted[sorted.length - 1].recorded_at)}</text>
+        <text x={PX - 4} y={PY + 4} textAnchor="end" fontSize={10} fill="#8B7355">{labelMax}</text>
+        <text x={PX - 4} y={PY + innerH + 4} textAnchor="end" fontSize={10} fill="#8B7355">{labelMin}</text>
+        <text x={PX} y={H - 2} textAnchor="middle" fontSize={10} fill="#8B7355">{dateFirst}</text>
+        <text x={PX + innerW} y={H - 2} textAnchor="middle" fontSize={10} fill="#8B7355">{dateLast}</text>
       </svg>
     </div>
   );
