@@ -7,8 +7,8 @@ import { useMyClientProfile } from '@/lib/client-profile';
 
 // Mounted only for clients — safe to call the hook unconditionally here.
 function ClientNudge() {
-  const { profile, isLoading } = useMyClientProfile();
-  if (isLoading || (profile && profile.display_name)) return null;
+  const { profile, isLoading, error } = useMyClientProfile();
+  if (isLoading || error || (profile && profile.display_name?.trim())) return null;
   return (
     <div style={{
       background: 'var(--nc-cream)',
