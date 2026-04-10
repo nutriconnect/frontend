@@ -54,6 +54,73 @@ function TagInput({
   );
 }
 
+// ─── Weight Chart ─────────────────────────────────────────────────────────────
+
+interface WeightEntry { id: string; weight_kg: number; recorded_at: string }
+
+function WeightChart({ entries }: { entries: WeightEntry[] }) {
+  if (entries.length < 2) return null;
+
+  const sorted = [...entries].sort((a, b) => a.recorded_at.localeCompare(b.recorded_at));
+  const W = 600, H = 160, PX = 40, PY = 16;
+  const innerW = W - PX * 2;
+  const innerH = H - PY * 2;
+
+  const weights = sorted.map((e) => e.weight_kg);
+  const minW = Math.min(...weights);
+  const maxW = Math.max(...weights);
+  const range = maxW - minW || 1;
+
+  const toX = (i: number) => PX + (i / (sorted.length - 1)) * innerW;
+  const toY = (w: number) => PY + innerH - ((w - minW) / range) * innerH;
+
+  const points = sorted.map((e, i) => `${toX(i)},${toY(e.weight_kg)}`).join(' ');
+
+  // Y-axis labels: min and max
+  const labelMin = minW.toFixed(1);
+  const labelMax = maxW.toFixed(1);
+
+  // X-axis: first and last date (short format)
+  const fmtDate = (s: string) => {
+    const [, m, d] = s.split('-');
+    return `${d}/${m}`;
+  };
+
+  return (
+    <div style={{ marginBottom: 20 }}>
+      <svg viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', height: 'auto', display: 'block' }}>
+        {/* Grid lines */}
+        <line x1={PX} y1={PY} x2={PX} y2={PY + innerH} stroke="rgba(139,115,85,0.15)" strokeWidth="1" />
+        <line x1={PX} y1={PY + innerH} x2={PX + innerW} y2={PY + innerH} stroke="rgba(139,115,85,0.15)" strokeWidth="1" />
+        <line x1={PX} y1={PY} x2={PX + innerW} y2={PY} stroke="rgba(139,115,85,0.08)" strokeWidth="1" strokeDasharray="4 4" />
+        <line x1={PX} y1={PY + innerH / 2} x2={PX + innerW} y2={PY + innerH / 2} stroke="rgba(139,115,85,0.08)" strokeWidth="1" strokeDasharray="4 4" />
+
+        {/* Area fill */}
+        <polygon
+          points={`${PX},${PY + innerH} ${points} ${PX + innerW},${PY + innerH}`}
+          fill="rgba(26,51,41,0.06)"
+        />
+
+        {/* Line */}
+        <polyline points={points} fill="none" stroke="#1A3329" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+
+        {/* Data points */}
+        {sorted.map((e, i) => (
+          <circle key={e.id} cx={toX(i)} cy={toY(e.weight_kg)} r="3.5" fill="#C4622D" stroke="white" strokeWidth="1.5" />
+        ))}
+
+        {/* Y labels */}
+        <text x={PX - 4} y={PY + 4} textAnchor="end" fontSize="10" fill="#8B7355">{labelMax}</text>
+        <text x={PX - 4} y={PY + innerH + 4} textAnchor="end" fontSize="10" fill="#8B7355">{labelMin}</text>
+
+        {/* X labels */}
+        <text x={PX} y={H - 2} textAnchor="middle" fontSize="10" fill="#8B7355">{fmtDate(sorted[0].recorded_at)}</text>
+        <text x={PX + innerW} y={H - 2} textAnchor="middle" fontSize="10" fill="#8B7355">{fmtDate(sorted[sorted.length - 1].recorded_at)}</text>
+      </svg>
+    </div>
+  );
+}
+
 // ─── Weight Log Widget ────────────────────────────────────────────────────────
 
 function WeightLogWidget() {
@@ -95,6 +162,7 @@ function WeightLogWidget() {
         <div className="dash-section-sub">Añade tu peso diario para hacer seguimiento</div>
       </div>
       <div className="dash-section-body">
+        <WeightChart entries={entries} />
         <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 16 }}>
           <input
             className="dash-input"
