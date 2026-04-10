@@ -78,12 +78,14 @@ function WeightLogWidget() {
   };
 
   const handleDelete = async (id: string) => {
-    await mutate(
-      entries.filter((e) => e.id !== id),
-      false,
-    );
-    await api.del(`/client/me/weight/${id}`);
-    await mutate();
+    const rollback = entries;
+    await mutate(entries.filter((e) => e.id !== id), false);
+    try {
+      await api.del(`/client/me/weight/${id}`);
+      await mutate();
+    } catch {
+      await mutate(rollback, false);
+    }
   };
 
   return (
@@ -171,12 +173,14 @@ function ActivityLogWidget() {
   };
 
   const handleDelete = async (id: string) => {
-    await mutate(
-      entries.filter((e) => e.id !== id),
-      false,
-    );
-    await api.del(`/client/me/activity/${id}`);
-    await mutate();
+    const rollback = entries;
+    await mutate(entries.filter((e) => e.id !== id), false);
+    try {
+      await api.del(`/client/me/activity/${id}`);
+      await mutate();
+    } catch {
+      await mutate(rollback, false);
+    }
   };
 
   return (
