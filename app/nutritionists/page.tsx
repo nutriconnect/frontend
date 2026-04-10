@@ -1,10 +1,14 @@
 // frontend/app/nutritionists/page.tsx
 'use client';
 
-import { useState } from 'react';
+import { Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { usePublicProfiles } from '@/lib/profile';
+import { SearchFilters } from './SearchFilters';
 import type { ProfileSummary } from '@/lib/types';
+
+// ─── helpers (unchanged from before) ─────────────────────────────────────────
 
 const BANNER_CLASSES = [
   'nc-banner-1', 'nc-banner-2', 'nc-banner-3',
@@ -59,10 +63,97 @@ function NutriCard({ profile, index }: { profile: ProfileSummary; index: number 
   );
 }
 
-export default function NutritionistsPage() {
-  const [page, setPage] = useState(1);
-  const { profiles, total, isLoading } = usePublicProfiles(page, 12);
+// ─── list (reads URL params) ──────────────────────────────────────────────────
 
+function NutritionistsList() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const page = Number(searchParams.get('page') ?? '1');
+  const filters = {
+    q: searchParams.get('q') ?? undefined,
+    city: searchParams.get('city') ?? undefined,
+    specialty: searchParams.get('specialty') ?? undefined,
+    language: searchParams.get('language') ?? undefined,
+    sort: searchParams.get('sort') ?? undefined,
+    minPrice: searchParams.get('min_price') ? Number(searchParams.get('min_price')) : undefined,
+    maxPrice: searchParams.get('max_price') ? Number(searchParams.get('max_price')) : undefined,
+  };
+
+  const { profiles, total, isLoading } = usePublicProfiles(page, 12, filters);
+  const totalPages = Math.ceil(total / 12);
+
+  function goToPage(newPage: number) {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', String(newPage));
+    router.push(`/nutritionists?${params.toString()}`);
+  }
+
+  return (
+    <>
+      <div className="nc-stats-bar">
+        <div className="nc-stat-item">
+          <span className="nc-stat-number">{total}</span>
+          <span className="nc-stat-label">Certified nutritionists</span>
+        </div>
+      </div>
+
+      {isLoading ? (
+        <div style={{ padding: '48px', textAlign: 'center', color: 'var(--nc-stone)', fontWeight: 300 }}>
+          Loading nutritionists…
+        </div>
+      ) : profiles.length === 0 ? (
+        <div style={{ padding: '48px', textAlign: 'center', color: 'var(--nc-stone)', fontWeight: 300 }}>
+          No nutritionists found. Try adjusting your filters.
+        </div>
+      ) : (
+        <div className="nc-grid-container">
+          <div className="nc-grid">
+            {profiles.map((p, i) => (
+              <NutriCard key={p.id} profile={p} index={i} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {totalPages > 1 && (
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 12, padding: '0 48px 64px' }}>
+          <button
+            onClick={() => goToPage(page - 1)}
+            disabled={page <= 1}
+            style={{
+              height: 40, padding: '0 24px', background: 'transparent',
+              border: '1.5px solid var(--nc-border)', borderRadius: 6,
+              fontFamily: 'var(--font-body)', fontSize: 14, color: 'var(--nc-stone)',
+              cursor: page <= 1 ? 'not-allowed' : 'pointer', opacity: page <= 1 ? 0.4 : 1,
+            }}
+          >
+            ← Previous
+          </button>
+          <span style={{ lineHeight: '40px', fontSize: 13, color: 'var(--nc-stone)' }}>
+            Page {page} of {totalPages}
+          </span>
+          <button
+            onClick={() => goToPage(page + 1)}
+            disabled={page >= totalPages}
+            style={{
+              height: 40, padding: '0 24px', background: 'transparent',
+              border: '1.5px solid var(--nc-border)', borderRadius: 6,
+              fontFamily: 'var(--font-body)', fontSize: 14, color: 'var(--nc-stone)',
+              cursor: page >= totalPages ? 'not-allowed' : 'pointer', opacity: page >= totalPages ? 0.4 : 1,
+            }}
+          >
+            Next →
+          </button>
+        </div>
+      )}
+    </>
+  );
+}
+
+// ─── page shell ───────────────────────────────────────────────────────────────
+
+export default function NutritionistsPage() {
   return (
     <div style={{ background: 'var(--nc-cream)', minHeight: '100vh' }}>
       <nav className="nc-nav">
@@ -77,53 +168,20 @@ export default function NutritionistsPage() {
         <p className="nc-hero-label">Find your match</p>
         <h1>Meet the nutritionist<br />who <em>gets you</em></h1>
         <p>Browse certified professionals. Find someone whose approach fits your life.</p>
-        <div className="nc-filters">
-          <input className="nc-filter-input wide" type="text" placeholder="Search by name or keyword…" />
-          <input className="nc-filter-input medium" type="text" placeholder="City" />
-          <button className="nc-filter-btn">Search</button>
-        </div>
+        <Suspense>
+          <SearchFilters />
+        </Suspense>
       </div>
 
-      <div className="nc-stats-bar">
-        <div className="nc-stat-item">
-          <span className="nc-stat-number">{total}</span>
-          <span className="nc-stat-label">Certified nutritionists</span>
-        </div>
-      </div>
-
-      {isLoading ? (
-        <div style={{ padding: '48px', textAlign: 'center', color: 'var(--nc-stone)', fontWeight: 300 }}>
-          Loading nutritionists…
-        </div>
-      ) : profiles.length === 0 ? (
-        <div style={{ padding: '48px', textAlign: 'center', color: 'var(--nc-stone)', fontWeight: 300 }}>
-          No nutritionists found yet.
-        </div>
-      ) : (
-        <div className="nc-grid-container">
-          <div className="nc-grid">
-            {profiles.map((p, i) => (
-              <NutriCard key={p.id} profile={p} index={i} />
-            ))}
+      <Suspense
+        fallback={
+          <div style={{ padding: '48px', textAlign: 'center', color: 'var(--nc-stone)', fontWeight: 300 }}>
+            Loading nutritionists…
           </div>
-        </div>
-      )}
-
-      {profiles.length > 0 && profiles.length < total && (
-        <div style={{ textAlign: 'center', padding: '0 48px 64px' }}>
-          <button
-            onClick={() => setPage((p) => p + 1)}
-            style={{
-              height: 44, padding: '0 36px', background: 'transparent',
-              border: '1.5px solid var(--nc-border)', borderRadius: 6,
-              fontFamily: 'var(--font-body)', fontSize: 14, color: 'var(--nc-stone)',
-              cursor: 'pointer',
-            }}
-          >
-            Load more
-          </button>
-        </div>
-      )}
+        }
+      >
+        <NutritionistsList />
+      </Suspense>
     </div>
   );
 }
