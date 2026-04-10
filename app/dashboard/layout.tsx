@@ -67,13 +67,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </Link>
           ))}
           <span className="dash-nav-section">Account</span>
-          <Link
-            href={user.role === 'nutritionist' ? `/nutritionists` : '/'}
-            className="dash-nav-item"
-            target="_blank"
-          >
-            <span>↗</span> View public profile
-          </Link>
+          {user.role === 'nutritionist' && (
+            <Link
+              href="/nutritionists"
+              className="dash-nav-item"
+              target="_blank"
+            >
+              <span>↗</span> View public directory
+            </Link>
+          )}
         </nav>
         <div className="dash-footer">
           <button onClick={handleSignOut} className="dash-nav-item" style={{ width: '100%', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}>
