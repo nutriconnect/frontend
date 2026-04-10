@@ -16,7 +16,7 @@ const BANNER_CLASSES = [
 ];
 
 function initials(name: string): string {
-  return name.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase();
+  return name.split(/\s+/).filter(Boolean).map((w) => w[0]).slice(0, 2).join('').toUpperCase();
 }
 
 function formatPrice(cents: number | null): string {
@@ -69,7 +69,8 @@ function NutritionistsList() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const page = Number(searchParams.get('page') ?? '1');
+  const raw = Number(searchParams.get('page'));
+  const page = Number.isFinite(raw) && raw >= 1 ? Math.floor(raw) : 1;
   const filters = {
     q: searchParams.get('q') ?? undefined,
     city: searchParams.get('city') ?? undefined,
@@ -80,8 +81,9 @@ function NutritionistsList() {
     maxPrice: searchParams.get('max_price') ? Number(searchParams.get('max_price')) : undefined,
   };
 
-  const { profiles, total, isLoading } = usePublicProfiles(page, 12, filters);
-  const totalPages = Math.ceil(total / 12);
+  const LIMIT = 12;
+  const { profiles, total, isLoading } = usePublicProfiles(page, LIMIT, filters);
+  const totalPages = Math.ceil(total / LIMIT);
 
   function goToPage(newPage: number) {
     const params = new URLSearchParams(searchParams.toString());
