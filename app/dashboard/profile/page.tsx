@@ -68,6 +68,9 @@ export default function DashboardProfilePage() {
   const [status, setStatus] = useState<'draft' | 'published'>('draft');
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState('');
+  const [tier, setTier] = useState<'free' | 'pro' | 'premium'>('free');
+  const [introConsultationRequired, setIntroConsultationRequired] = useState(false);
+  const [connectingStripe, setConnectingStripe] = useState(false);
 
   // Pre-fill form when profile loads.
   useEffect(() => {
@@ -80,6 +83,8 @@ export default function DashboardProfilePage() {
       setLanguages(profile.languages);
       setCertifications(profile.certifications);
       setStatus(profile.status);
+      setTier((profile.tier as 'free' | 'pro' | 'premium') ?? 'free');
+      setIntroConsultationRequired(profile.intro_consultation_required ?? false);
       setPackages(
         profile.packages.map((p: ServicePackage) => ({
           id: p.id,
@@ -102,6 +107,8 @@ export default function DashboardProfilePage() {
         bio, city,
         years_exp: yearsExp ? parseInt(yearsExp, 10) : null,
         specialties, languages, certifications,
+        tier,
+        intro_consultation_required: introConsultationRequired,
       };
 
       if (!profile) {
@@ -152,6 +159,18 @@ export default function DashboardProfilePage() {
       await mutate();
     } catch {
       /* ignore */
+    }
+  };
+
+  const handleStripeConnect = async () => {
+    setConnectingStripe(true);
+    try {
+      const { startStripeConnect } = await import('@/lib/hiring');
+      const url = await startStripeConnect();
+      window.location.href = url;
+    } catch {
+      setConnectingStripe(false);
+      alert('Failed to start Stripe onboarding. Please try again.');
     }
   };
 
@@ -312,6 +331,42 @@ export default function DashboardProfilePage() {
           </div>
         </div>
 
+        {/* Plan & Settings */}
+        <div className="dash-section">
+          <div className="dash-section-head">
+            <div className="dash-section-title">Plan & Settings</div>
+            <div className="dash-section-sub">Subscription tier and client preferences</div>
+          </div>
+          <div className="dash-section-body">
+            <div className="dash-row single" style={{ marginBottom: 18 }}>
+              <div className="dash-field">
+                <label className="dash-label">Plan tier</label>
+                <select
+                  value={tier}
+                  onChange={(e) => setTier(e.target.value as 'free' | 'pro' | 'premium')}
+                  style={{ width: '100%', padding: '10px 12px', border: '1px solid rgba(139,115,85,0.2)', borderRadius: 6, background: 'white', fontSize: 14, color: 'var(--nc-ink)' }}
+                >
+                  <option value="free">Free — 18% commission, up to 5 clients</option>
+                  <option value="pro">Pro (€29/mo) — 10% commission, unlimited clients</option>
+                  <option value="premium">Premium (€59/mo) — 5% commission, unlimited + featured</option>
+                </select>
+              </div>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <input
+                type="checkbox"
+                id="intro-consultation"
+                checked={introConsultationRequired}
+                onChange={(e) => setIntroConsultationRequired(e.target.checked)}
+                style={{ width: 16, height: 16, accentColor: 'var(--nc-terra)' }}
+              />
+              <label htmlFor="intro-consultation" style={{ fontSize: 14, color: 'var(--nc-ink)', cursor: 'pointer' }}>
+                Require an intro consultation before client access begins
+              </label>
+            </div>
+          </div>
+        </div>
+
         {/* Visibility */}
         {profile && (
           <div className="dash-section">
@@ -331,6 +386,32 @@ export default function DashboardProfilePage() {
               />
             </div>
           </div>
+        )}
+      </div>
+
+      {/* Stripe Connect */}
+      <div style={{ margin: '24px 40px 0', background: 'white', border: '1px solid rgba(139,115,85,0.15)', borderRadius: 8, padding: '20px 24px' }}>
+        <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--nc-ink)', marginBottom: 6 }}>
+          Stripe payouts
+        </div>
+        {profile?.stripe_connect_account_id ? (
+          <div style={{ fontSize: 13, color: '#4a7c59', fontWeight: 500 }}>
+            ✓ Stripe account connected — you will receive payouts automatically.
+          </div>
+        ) : (
+          <>
+            <p style={{ fontSize: 13, color: 'var(--nc-stone)', marginBottom: 12, fontWeight: 300 }}>
+              Connect your Stripe account to receive client payments.
+            </p>
+            <button
+              onClick={handleStripeConnect}
+              className="nc-btn-contact"
+              style={{ fontSize: 13 }}
+              disabled={connectingStripe}
+            >
+              {connectingStripe ? 'Redirecting to Stripe…' : 'Connect with Stripe'}
+            </button>
+          </>
         )}
       </div>
 
