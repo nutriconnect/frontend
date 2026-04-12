@@ -1,8 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { usePublicProfile } from '@/lib/profile';
+import { initiateCheckout } from '@/lib/hiring';
+import { api } from '@/lib/api';
+import useSWR from 'swr';
 
 function initials(name: string): string {
   return name.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase();
@@ -12,10 +16,36 @@ function formatPrice(cents: number): string {
   return `€${Math.floor(cents / 100)}`;
 }
 
+function billingLabel(type: string): string {
+  return type === 'monthly' ? '/month' : ' one-time';
+}
+
 export default function PublicProfilePage() {
   const params = useParams();
+  const router = useRouter();
   const slug = typeof params.slug === 'string' ? params.slug : '';
   const { profile, isLoading } = usePublicProfile(slug);
+  const [hiring, setHiring] = useState<string | null>(null);
+
+  const { data: me } = useSWR('/auth/me', () =>
+    api.get<{ id: string; role: string }>('/auth/me').catch(() => null),
+  );
+  const isClient = me?.role === 'client';
+
+  async function handleHire(packageID: string) {
+    if (!isClient) {
+      router.push(`/login?from=/nutritionists/${slug}`);
+      return;
+    }
+    setHiring(packageID);
+    try {
+      const checkoutURL = await initiateCheckout(slug, packageID);
+      window.location.href = checkoutURL;
+    } catch {
+      setHiring(null);
+      alert('Could not start checkout. Please try again.');
+    }
+  }
 
   if (isLoading) {
     return (
@@ -136,19 +166,40 @@ export default function PublicProfilePage() {
                 <div className="nc-pkg-row">
                   <div>
                     <div className="nc-pkg-name">{pkg.name}</div>
-                    <div className="nc-pkg-sessions">{pkg.sessions} session{pkg.sessions !== 1 ? 's' : ''}</div>
+                    <div className="nc-pkg-sessions">
+                      {pkg.sessions} session{pkg.sessions !== 1 ? 's' : ''}
+                      {' · '}
+                      <span style={{ color: 'var(--nc-stone)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                        {pkg.billing_type === 'monthly' ? 'Monthly' : 'One-time'}
+                      </span>
+                    </div>
                   </div>
-                  <div className="nc-pkg-price">{formatPrice(pkg.price_cents)}</div>
+                  <div style={{ textAlign: 'right' }}>
+                    <div className="nc-pkg-price">{formatPrice(pkg.price_cents)}</div>
+                    <div style={{ fontSize: 11, color: 'var(--nc-stone)', fontWeight: 300 }}>
+                      {billingLabel(pkg.billing_type)}
+                    </div>
+                  </div>
                 </div>
                 {pkg.description && <div className="nc-pkg-desc">{pkg.description}</div>}
+                <div style={{ marginTop: 12 }}>
+                  <button
+                    className="nc-btn-contact"
+                    style={{ width: '100%', cursor: hiring === pkg.id ? 'wait' : 'pointer' }}
+                    disabled={hiring === pkg.id}
+                    onClick={() => handleHire(pkg.id)}
+                  >
+                    {hiring === pkg.id ? 'Redirecting to checkout…' : 'Hire'}
+                  </button>
+                </div>
               </div>
             ))
           )}
-          <div className="nc-pkg-footer">
-            {/* Placeholder CTA — booking/messaging is a future slice */}
-            <button className="nc-btn-contact">Get in touch</button>
-            <p className="nc-contact-note">Coming soon: direct booking</p>
-          </div>
+          {profile.intro_consultation_required && (
+            <div style={{ padding: '12px 22px', fontSize: 12, color: 'var(--nc-stone)', borderTop: '1px solid rgba(139,115,85,0.1)' }}>
+              Includes a free intro consultation before your plan begins.
+            </div>
+          )}
         </div>
       </div>
     </div>
