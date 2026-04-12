@@ -183,14 +183,20 @@ export default function PublicProfilePage() {
                 </div>
                 {pkg.description && <div className="nc-pkg-desc">{pkg.description}</div>}
                 <div style={{ marginTop: 12 }}>
-                  <button
-                    className="nc-btn-contact"
-                    style={{ width: '100%', cursor: hiring === pkg.id ? 'wait' : 'pointer' }}
-                    disabled={hiring === pkg.id}
-                    onClick={() => handleHire(pkg.id)}
-                  >
-                    {hiring === pkg.id ? 'Redirecting to checkout…' : 'Hire'}
-                  </button>
+                  {profile.payments_enabled ? (
+                    <button
+                      className="nc-btn-contact"
+                      style={{ width: '100%', cursor: hiring === pkg.id ? 'wait' : 'pointer' }}
+                      disabled={hiring === pkg.id}
+                      onClick={() => handleHire(pkg.id)}
+                    >
+                      {hiring === pkg.id ? 'Redirecting to checkout…' : 'Hire'}
+                    </button>
+                  ) : (
+                    <div style={{ fontSize: 12, color: 'var(--nc-stone)', fontWeight: 300, padding: '8px 0' }}>
+                      Not currently accepting new clients
+                    </div>
+                  )}
                 </div>
               </div>
             ))
