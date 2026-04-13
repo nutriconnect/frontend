@@ -38,7 +38,7 @@ export async function cancelRelationship(relationshipID: string): Promise<void> 
 
 export function useNutritionistRelationships() {
   const { data, error, isLoading, mutate: revalidate } = useSWR<{ relationships: ClientRelationshipView[] }>(
-    '/hiring/relationships/nutritionist',
+    '/hiring/relationships',
     () => api.get<{ relationships: ClientRelationshipView[] }>('/hiring/relationships'),
   );
   return {
