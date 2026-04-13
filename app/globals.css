@@ -724,6 +724,148 @@
 }
 .btn-outline:hover { background: var(--olive); color: var(--lp-white); }
 
+/* ─── PRICING ────────────────────────────────────── */
+.pricing {
+  padding: 0 5vw 9rem;
+}
+.pricing-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+.pricing-card {
+  background: var(--lp-white);
+  border-radius: 20px;
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+.pricing-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 56px rgba(44,74,30,0.12);
+}
+.pricing-featured {
+  background: var(--olive);
+  transform: translateY(-1rem);
+}
+.pricing-featured:hover {
+  transform: translateY(calc(-1rem - 6px));
+  box-shadow: 0 24px 56px rgba(44,74,30,0.32);
+}
+/* reveal.in has higher specificity (2 classes) than pricing-featured (1 class),
+   so we need these overrides to restore the elevation after the animation plays. */
+.pricing-featured.reveal.in { transform: translateY(-1rem); }
+.pricing-featured.reveal.in:hover {
+  transform: translateY(calc(-1rem - 6px));
+  box-shadow: 0 24px 56px rgba(44,74,30,0.32);
+}
+.pricing-popular {
+  position: absolute;
+  top: -0.875rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--terracotta);
+  color: var(--lp-white);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.3rem 1rem;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+.pricing-tier {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--terracotta);
+  margin-bottom: 1rem;
+}
+.pricing-featured .pricing-tier { color: rgba(245,240,232,0.5); }
+.pricing-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  margin-bottom: 0.875rem;
+}
+.pricing-price {
+  font-family: var(--font-display);
+  font-size: clamp(2.75rem, 4vw, 3.5rem);
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+.pricing-featured .pricing-price { color: var(--lp-white); }
+.pricing-period {
+  font-size: 1rem;
+  font-weight: 300;
+  color: var(--ink-soft);
+  margin-left: 0.125rem;
+}
+.pricing-featured .pricing-period { color: rgba(245,240,232,0.5); }
+.pricing-desc {
+  font-size: 0.9375rem;
+  font-weight: 300;
+  color: var(--ink-soft);
+  line-height: 1.64;
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.75rem;
+  border-bottom: 1px solid rgba(139,115,85,0.15);
+}
+.pricing-featured .pricing-desc {
+  color: rgba(245,240,232,0.6);
+  border-bottom-color: rgba(245,240,232,0.1);
+}
+.pricing-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  margin-bottom: 2rem;
+  flex: 1;
+}
+.pricing-features li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9375rem;
+  font-weight: 300;
+  color: var(--ink-soft);
+}
+.pricing-features li::before {
+  content: '✓';
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--olive);
+  width: 1.25rem;
+  height: 1.25rem;
+  background: rgba(44,74,30,0.1);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.pricing-featured .pricing-features li { color: rgba(245,240,232,0.75); }
+.pricing-featured .pricing-features li::before {
+  color: rgba(245,240,232,0.85);
+  background: rgba(245,240,232,0.14);
+}
+.pricing-btn {
+  display: block;
+  text-align: center;
+  margin-top: auto;
+}
+
 /* ─── CTA ─────────────────────────────────────────── */
 .cta {
   background: var(--olive);
@@ -857,6 +999,9 @@
   .hero-left    { padding: 6.5rem 5vw 3rem; }
   .steps        { grid-template-columns: 1fr; }
   .nut-grid     { grid-template-columns: 1fr; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .pricing-featured { transform: translateY(0); }
+  .pricing-featured:hover { transform: translateY(-6px); }
   .cta-inner    { grid-template-columns: 1fr; gap: 2.5rem; }
   .stats        { flex-direction: column; gap: 2.5rem; }
   .stat+.stat::before { display: none; }

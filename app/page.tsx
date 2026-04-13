@@ -290,6 +290,74 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ─────────── PRICING ─────────── */}
+      <section className="pricing">
+        <div className="pricing-inner">
+          <div className="sec-hdr">
+            <span className="sec-tag">Para nutricionistas</span>
+            <h2 className="sec-title">Planes y <em>precios</em></h2>
+          </div>
+
+          <div className="pricing-grid">
+
+            {/* Free */}
+            <div className="pricing-card reveal">
+              <div className="pricing-tier">Free</div>
+              <div className="pricing-price-row">
+                <span className="pricing-price">{'€0'}</span>
+                <span className="pricing-period">/mes</span>
+              </div>
+              <p className="pricing-desc">Empieza a construir tu práctica online sin ningún coste.</p>
+              <ul className="pricing-features">
+                <li>Hasta 5 clientes activos</li>
+                <li>Perfil público</li>
+                <li>Paquetes de servicios</li>
+                <li>Soporte por email</li>
+              </ul>
+              <a href="/register" className="btn-outline pricing-btn">Empezar gratis</a>
+            </div>
+
+            {/* Pro */}
+            <div className="pricing-card pricing-featured reveal">
+              <div className="pricing-popular">Más popular</div>
+              <div className="pricing-tier">Pro</div>
+              <div className="pricing-price-row">
+                <span className="pricing-price">{'€29'}</span>
+                <span className="pricing-period">/mes</span>
+              </div>
+              <p className="pricing-desc">Para nutricionistas en crecimiento con una agenda activa.</p>
+              <ul className="pricing-features">
+                <li>Hasta 25 clientes activos</li>
+                <li>Perfil destacado en búsqueda</li>
+                <li>Todo lo del plan Free</li>
+                <li>Análisis de rendimiento</li>
+                <li>Soporte prioritario</li>
+              </ul>
+              <a href="/register" className="btn-terra pricing-btn">Empezar con Pro</a>
+            </div>
+
+            {/* Premium */}
+            <div className="pricing-card reveal">
+              <div className="pricing-tier">Premium</div>
+              <div className="pricing-price-row">
+                <span className="pricing-price">{'€59'}</span>
+                <span className="pricing-period">/mes</span>
+              </div>
+              <p className="pricing-desc">Sin límites para los profesionales más exigentes.</p>
+              <ul className="pricing-features">
+                <li>Clientes ilimitados</li>
+                <li>Posición top en búsqueda</li>
+                <li>Todo lo del plan Pro</li>
+                <li>Dashboard avanzado</li>
+                <li>Soporte dedicado</li>
+              </ul>
+              <a href="/register" className="btn-outline pricing-btn">Empezar con Premium</a>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
       {/* ─────────── CTA ─────────── */}
       <section className="cta">
         <div className="cta-ring cta-ring-1" />
