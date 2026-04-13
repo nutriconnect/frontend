@@ -25,25 +25,27 @@ export default function PublicProfilePage() {
   const router = useRouter();
   const slug = typeof params.slug === 'string' ? params.slug : '';
   const { profile, isLoading } = usePublicProfile(slug);
-  const [hiring, setHiring] = useState<string | null>(null);
+  const [connecting, setConnecting] = useState<string | null>(null);
+  const [connected, setConnected] = useState(false);
 
   const { data: me } = useSWR('/auth/me', () =>
     api.get<{ id: string; role: string }>('/auth/me').catch(() => null),
   );
   const isClient = me?.role === 'client';
 
-  async function handleHire(packageID: string) {
+  async function handleConnect(packageID: string) {
     if (!isClient) {
       router.push(`/login?from=/nutritionists/${slug}`);
       return;
     }
-    setHiring(packageID);
+    setConnecting(packageID);
     try {
       await connectWithNutritionist(slug, packageID);
-      router.push('/dashboard/my-nutritionist');
+      setConnected(true);
     } catch {
-      setHiring(null);
       alert('Could not send connection request. Please try again.');
+    } finally {
+      setConnecting(null);
     }
   }
 
@@ -183,14 +185,20 @@ export default function PublicProfilePage() {
                 </div>
                 {pkg.description && <div className="nc-pkg-desc">{pkg.description}</div>}
                 <div style={{ marginTop: 12 }}>
-                  <button
-                    className="nc-btn-contact"
-                    style={{ width: '100%', cursor: hiring === pkg.id ? 'wait' : 'pointer' }}
-                    disabled={hiring === pkg.id}
-                    onClick={() => handleHire(pkg.id)}
-                  >
-                    {hiring === pkg.id ? 'Sending request…' : 'Connect'}
-                  </button>
+                  {connected ? (
+                    <div style={{ fontSize: 13, color: '#4a7c59', fontWeight: 500, padding: '8px 0' }}>
+                      ✓ Request sent — check your dashboard
+                    </div>
+                  ) : (
+                    <button
+                      className="nc-btn-contact"
+                      style={{ width: '100%', cursor: connecting === pkg.id ? 'wait' : 'pointer' }}
+                      disabled={connecting === pkg.id}
+                      onClick={() => handleConnect(pkg.id)}
+                    >
+                      {connecting === pkg.id ? 'Sending request…' : 'Work with me'}
+                    </button>
+                  )}
                 </div>
               </div>
             ))
