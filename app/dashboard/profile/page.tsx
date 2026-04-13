@@ -68,7 +68,6 @@ export default function DashboardProfilePage() {
   const [status, setStatus] = useState<'draft' | 'published'>('draft');
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState('');
-  const [tier, setTier] = useState<'free' | 'pro' | 'premium'>('free');
   const [introConsultationRequired, setIntroConsultationRequired] = useState(false);
 
   // Pre-fill form when profile loads.
@@ -82,7 +81,6 @@ export default function DashboardProfilePage() {
       setLanguages(profile.languages);
       setCertifications(profile.certifications);
       setStatus(profile.status);
-      setTier((profile.tier as 'free' | 'pro' | 'premium') ?? 'free');
       setIntroConsultationRequired(profile.intro_consultation_required ?? false);
       setPackages(
         profile.packages.map((p: ServicePackage) => ({
@@ -106,7 +104,6 @@ export default function DashboardProfilePage() {
         bio, city,
         years_exp: yearsExp ? parseInt(yearsExp, 10) : null,
         specialties, languages, certifications,
-        tier,
         intro_consultation_required: introConsultationRequired,
       };
 
@@ -325,20 +322,6 @@ export default function DashboardProfilePage() {
             <div className="dash-section-sub">Subscription tier and client preferences</div>
           </div>
           <div className="dash-section-body">
-            <div className="dash-row single" style={{ marginBottom: 18 }}>
-              <div className="dash-field">
-                <label className="dash-label">Plan tier</label>
-                <select
-                  value={tier}
-                  onChange={(e) => setTier(e.target.value as 'free' | 'pro' | 'premium')}
-                  style={{ width: '100%', padding: '10px 12px', border: '1px solid rgba(139,115,85,0.2)', borderRadius: 6, background: 'white', fontSize: 14, color: 'var(--nc-ink)' }}
-                >
-                  <option value="free">Free — 18% commission, up to 5 clients</option>
-                  <option value="pro">Pro (€29/mo) — 10% commission, unlimited clients</option>
-                  <option value="premium">Premium (€59/mo) — 5% commission, unlimited + featured</option>
-                </select>
-              </div>
-            </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <input
                 type="checkbox"
