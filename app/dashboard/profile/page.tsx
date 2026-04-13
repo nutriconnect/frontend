@@ -70,7 +70,6 @@ export default function DashboardProfilePage() {
   const [saveMsg, setSaveMsg] = useState('');
   const [tier, setTier] = useState<'free' | 'pro' | 'premium'>('free');
   const [introConsultationRequired, setIntroConsultationRequired] = useState(false);
-  const [connectingStripe, setConnectingStripe] = useState(false);
 
   // Pre-fill form when profile loads.
   useEffect(() => {
@@ -159,18 +158,6 @@ export default function DashboardProfilePage() {
       await mutate();
     } catch {
       /* ignore */
-    }
-  };
-
-  const handleStripeConnect = async () => {
-    setConnectingStripe(true);
-    try {
-      const { startStripeConnect } = await import('@/lib/hiring');
-      const url = await startStripeConnect();
-      window.location.href = url;
-    } catch {
-      setConnectingStripe(false);
-      alert('Failed to start Stripe onboarding. Please try again.');
     }
   };
 
@@ -389,30 +376,15 @@ export default function DashboardProfilePage() {
         )}
       </div>
 
-      {/* Stripe Connect */}
+      {/* Plan info */}
       <div style={{ margin: '24px 40px 0', background: 'white', border: '1px solid rgba(139,115,85,0.15)', borderRadius: 8, padding: '20px 24px' }}>
         <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--nc-ink)', marginBottom: 6 }}>
-          Stripe payouts
+          Subscription plan
         </div>
-        {profile?.stripe_connect_account_id ? (
-          <div style={{ fontSize: 13, color: '#4a7c59', fontWeight: 500 }}>
-            ✓ Stripe account connected — you will receive payouts automatically.
-          </div>
-        ) : (
-          <>
-            <p style={{ fontSize: 13, color: 'var(--nc-stone)', marginBottom: 12, fontWeight: 300 }}>
-              Connect your Stripe account to receive client payments.
-            </p>
-            <button
-              onClick={handleStripeConnect}
-              className="nc-btn-contact"
-              style={{ fontSize: 13 }}
-              disabled={connectingStripe}
-            >
-              {connectingStripe ? 'Redirecting to Stripe…' : 'Connect with Stripe'}
-            </button>
-          </>
-        )}
+        <div style={{ fontSize: 13, color: 'var(--nc-stone)', fontWeight: 300 }}>
+          Current tier: <strong style={{ color: 'var(--nc-terra)', textTransform: 'capitalize' }}>{profile?.tier ?? 'free'}</strong>. Manage your plan from the{' '}
+          <a href="/dashboard/billing" style={{ color: 'var(--nc-terra)' }}>Billing page</a>.
+        </div>
       </div>
 
       <div className="dash-save-bar">

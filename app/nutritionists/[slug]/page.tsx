@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { usePublicProfile } from '@/lib/profile';
-import { initiateCheckout } from '@/lib/hiring';
+import { connectWithNutritionist } from '@/lib/hiring';
 import { api } from '@/lib/api';
 import useSWR from 'swr';
 
@@ -39,11 +39,11 @@ export default function PublicProfilePage() {
     }
     setHiring(packageID);
     try {
-      const checkoutURL = await initiateCheckout(slug, packageID);
-      window.location.href = checkoutURL;
+      await connectWithNutritionist(slug, packageID);
+      router.push('/dashboard/my-nutritionist');
     } catch {
       setHiring(null);
-      alert('Could not start checkout. Please try again.');
+      alert('Could not send connection request. Please try again.');
     }
   }
 
@@ -183,20 +183,14 @@ export default function PublicProfilePage() {
                 </div>
                 {pkg.description && <div className="nc-pkg-desc">{pkg.description}</div>}
                 <div style={{ marginTop: 12 }}>
-                  {profile.payments_enabled ? (
-                    <button
-                      className="nc-btn-contact"
-                      style={{ width: '100%', cursor: hiring === pkg.id ? 'wait' : 'pointer' }}
-                      disabled={hiring === pkg.id}
-                      onClick={() => handleHire(pkg.id)}
-                    >
-                      {hiring === pkg.id ? 'Redirecting to checkout…' : 'Hire'}
-                    </button>
-                  ) : (
-                    <div style={{ fontSize: 12, color: 'var(--nc-stone)', fontWeight: 300, padding: '8px 0' }}>
-                      Not currently accepting new clients
-                    </div>
-                  )}
+                  <button
+                    className="nc-btn-contact"
+                    style={{ width: '100%', cursor: hiring === pkg.id ? 'wait' : 'pointer' }}
+                    disabled={hiring === pkg.id}
+                    onClick={() => handleHire(pkg.id)}
+                  >
+                    {hiring === pkg.id ? 'Sending request…' : 'Connect'}
+                  </button>
                 </div>
               </div>
             ))

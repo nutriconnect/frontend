@@ -13,8 +13,7 @@ export interface NutritionistProfile {
   certifications: string[];
   status: 'draft' | 'published';
   tier: 'free' | 'pro' | 'premium';
-  stripe_connect_account_id: string | null;
-  payments_enabled: boolean;
+  stripe_subscription_id: string;
   intro_consultation_required: boolean;
   created_at: string;
   updated_at: string;
@@ -57,9 +56,9 @@ export interface ClientProfile {
   display_name: string;
   bio: string;
   city: string;
-  birth_date: string | null;       // "YYYY-MM-DD" or null
+  birth_date: string | null;
   height_cm: number | null;
-  activity_level: string;          // "" | "sedentary" | "lightly_active" | "moderately_active" | "very_active"
+  activity_level: string;
   goals: string[];
   dietary_restrictions: string[];
   allergies: string[];
@@ -71,7 +70,7 @@ export interface WeightEntry {
   id: string;
   user_id: string;
   weight_kg: number;
-  recorded_at: string;  // "YYYY-MM-DD"
+  recorded_at: string;
   created_at: string;
 }
 
@@ -80,7 +79,7 @@ export interface ActivityEntry {
   user_id: string;
   activity_type: string;
   duration_minutes: number;
-  recorded_at: string;  // "YYYY-MM-DD"
+  recorded_at: string;
   created_at: string;
 }
 
@@ -89,32 +88,7 @@ export interface Relationship {
   client_id: string;
   nutritionist_id: string;
   package_id: string;
-  status: 'pending_payment' | 'pending_intro' | 'active' | 'cancelled';
-  billing_type: 'one_time' | 'monthly';
-  stripe_session_id: string;
-  stripe_payment_intent_id: string;
-  stripe_subscription_id: string;
-  amount_cents: number;
-  commission_cents: number;
-  starts_at: string | null;
-  ends_at: string | null;
+  status: 'pending_intro' | 'active' | 'cancelled';
   created_at: string;
   updated_at: string;
-}
-
-export interface RefundRequest {
-  id: string;
-  relationship_id: string;
-  client_id: string;
-  reason: string;
-  status: 'pending' | 'auto_approved' | 'approved' | 'rejected';
-  created_at: string;
-  resolved_at: string | null;
-}
-
-export interface EarningsSummary {
-  total_earned_cents: number;
-  total_commission_cents: number;
-  active_client_count: number;
-  relationships: Relationship[];
 }

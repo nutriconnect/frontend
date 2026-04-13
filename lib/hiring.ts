@@ -1,13 +1,14 @@
+// frontend/lib/hiring.ts
 'use client';
 
 import useSWR, { mutate } from 'swr';
 import { api } from './api';
-import type { Relationship, EarningsSummary } from './types';
+import type { Relationship } from './types';
 
 // ─── Client hooks ─────────────────────────────────────────────────────────────
 
 export function useMyRelationships() {
-  const { data, error, isLoading, mutate } = useSWR<{ relationships: Relationship[] }>(
+  const { data, error, isLoading, mutate: revalidate } = useSWR<{ relationships: Relationship[] }>(
     '/hiring/relationships',
     () => api.get<{ relationships: Relationship[] }>('/hiring/relationships'),
   );
@@ -15,18 +16,17 @@ export function useMyRelationships() {
     relationships: data?.relationships ?? [],
     isLoading,
     error,
-    mutate,
+    mutate: revalidate,
   };
 }
 
-// initiateCheckout uses the nutritionist's slug (not user ID).
-// Backend endpoint: POST /api/v1/nutritionists/{slug}/hire
-export async function initiateCheckout(slug: string, packageID: string): Promise<string> {
-  const res = await api.post<{ checkout_url: string; relationship_id: string }>(
-    `/nutritionists/${slug}/hire`,
-    { package_id: packageID },
-  );
-  return res.checkout_url;
+// connectWithNutritionist sends a connection request from a client to a nutritionist.
+// Returns the new relationship ID and status.
+export async function connectWithNutritionist(
+  slug: string,
+  packageID: string,
+): Promise<{ relationship_id: string; status: string }> {
+  return api.post(`/nutritionists/${slug}/connect`, { package_id: packageID });
 }
 
 export async function cancelRelationship(relationshipID: string): Promise<void> {
@@ -34,22 +34,10 @@ export async function cancelRelationship(relationshipID: string): Promise<void> 
   mutate('/hiring/relationships');
 }
 
-export async function requestRefund(relationshipID: string, reason: string): Promise<{ refund_id: string; auto_approved: boolean }> {
-  return api.post('/hiring/refunds', { relationship_id: relationshipID, reason });
-}
-
 // ─── Nutritionist hooks ───────────────────────────────────────────────────────
 
-export function useEarnings() {
-  const { data, error, isLoading, mutate } = useSWR<EarningsSummary>(
-    '/hiring/earnings',
-    () => api.get<EarningsSummary>('/hiring/earnings'),
-  );
-  return { earnings: data ?? null, isLoading, error, mutate };
-}
-
 export function useNutritionistRelationships() {
-  const { data, error, isLoading, mutate } = useSWR<{ relationships: Relationship[] }>(
+  const { data, error, isLoading, mutate: revalidate } = useSWR<{ relationships: Relationship[] }>(
     '/hiring/relationships/nutritionist',
     () => api.get<{ relationships: Relationship[] }>('/hiring/relationships'),
   );
@@ -57,15 +45,20 @@ export function useNutritionistRelationships() {
     relationships: data?.relationships ?? [],
     isLoading,
     error,
-    mutate,
+    mutate: revalidate,
   };
 }
 
-export async function startStripeConnect(): Promise<string> {
-  const res = await api.post<{ onboarding_url: string }>('/hiring/connect', {});
-  return res.onboarding_url;
+// subscribeToTier creates a Stripe Checkout session for the given tier.
+// Returns the Stripe-hosted checkout URL.
+export async function subscribeToTier(tier: 'pro' | 'premium'): Promise<string> {
+  const res = await api.post<{ checkout_url: string }>('/hiring/subscribe', { tier });
+  return res.checkout_url;
 }
 
-export async function refundDecision(refundID: string, approve: boolean): Promise<void> {
-  await api.put(`/hiring/refunds/${refundID}/decision`, { approve });
+// openBillingPortal opens the Stripe Customer Portal for plan management.
+// Returns the portal URL.
+export async function openBillingPortal(): Promise<string> {
+  const res = await api.post<{ portal_url: string }>('/hiring/billing-portal', {});
+  return res.portal_url;
 }
