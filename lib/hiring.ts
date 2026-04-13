@@ -3,14 +3,14 @@
 
 import useSWR, { mutate } from 'swr';
 import { api } from './api';
-import type { Relationship } from './types';
+import type { ClientRelationshipView, NutritionistRelationshipView, WaitlistEntryView } from './types';
 
 // ─── Client hooks ─────────────────────────────────────────────────────────────
 
 export function useMyRelationships() {
-  const { data, error, isLoading, mutate: revalidate } = useSWR<{ relationships: Relationship[] }>(
+  const { data, error, isLoading, mutate: revalidate } = useSWR<{ relationships: NutritionistRelationshipView[] }>(
     '/hiring/relationships',
-    () => api.get<{ relationships: Relationship[] }>('/hiring/relationships'),
+    () => api.get<{ relationships: NutritionistRelationshipView[] }>('/hiring/relationships'),
   );
   return {
     relationships: data?.relationships ?? [],
@@ -37,9 +37,9 @@ export async function cancelRelationship(relationshipID: string): Promise<void> 
 // ─── Nutritionist hooks ───────────────────────────────────────────────────────
 
 export function useNutritionistRelationships() {
-  const { data, error, isLoading, mutate: revalidate } = useSWR<{ relationships: Relationship[] }>(
+  const { data, error, isLoading, mutate: revalidate } = useSWR<{ relationships: ClientRelationshipView[] }>(
     '/hiring/relationships/nutritionist',
-    () => api.get<{ relationships: Relationship[] }>('/hiring/relationships'),
+    () => api.get<{ relationships: ClientRelationshipView[] }>('/hiring/relationships'),
   );
   return {
     relationships: data?.relationships ?? [],
@@ -47,6 +47,14 @@ export function useNutritionistRelationships() {
     error,
     mutate: revalidate,
   };
+}
+
+export function useNutritionistWaitlist() {
+  const { data, error, isLoading } = useSWR<{ waitlist: WaitlistEntryView[] }>(
+    '/hiring/waitlist',
+    () => api.get<{ waitlist: WaitlistEntryView[] }>('/hiring/waitlist'),
+  );
+  return { waitlist: data?.waitlist ?? [], isLoading, error };
 }
 
 // subscribeToTier creates a Stripe Checkout session for the given tier.

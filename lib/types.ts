@@ -96,3 +96,39 @@ export interface Relationship {
   created_at: string;
   updated_at: string;
 }
+
+export interface ClientRelationshipView {
+  id: string;
+  client_id: string;
+  nutritionist_id: string;
+  package_id: string;
+  status: 'pending_intro' | 'active' | 'cancelled';
+  client_display_name: string;
+  client_email: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface NutritionistRelationshipView {
+  id: string;
+  client_id: string;
+  nutritionist_id: string;
+  package_id: string;
+  status: 'pending_intro' | 'active' | 'cancelled';
+  nutritionist_display_name: string;
+  nutritionist_slug: string;
+  nutritionist_bio: string;
+  nutritionist_city: string;
+  nutritionist_specialties: string[];
+  nutritionist_years_exp: number | null;
+  nutritionist_tier: 'free' | 'pro' | 'premium';
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WaitlistEntryView {
+  id: string;
+  client_id: string;
+  client_display_name: string;
+  created_at: string;
+}
