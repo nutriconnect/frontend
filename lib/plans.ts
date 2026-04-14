@@ -1,5 +1,5 @@
-// frontend/lib/plans.ts
 'use client';
+// frontend/lib/plans.ts
 
 import useSWR from 'swr';
 import { api, ApiRequestError } from '@/lib/api';
@@ -7,6 +7,7 @@ import type {
   NutritionPlan,
   ExercisePlan,
   ClientProfileSummary,
+  MealType,
 } from '@/lib/types';
 
 // ─── Payload types (used only in this file + callers) ────────────────────────
@@ -23,7 +24,7 @@ export interface MealOptionPayload {
 
 export interface MealPayload {
   name: string;
-  meal_type: string;
+  meal_type: MealType;
   display_order: number;
   options: MealOptionPayload[];
 }
@@ -84,10 +85,10 @@ export function useNutritionPlans(clientId?: string) {
   return { plans: data?.plans ?? [], isLoading, error, mutate };
 }
 
-export function useNutritionPlan(id: string) {
+export function useNutritionPlan(id: string | null | undefined) {
   const { data, error, isLoading, mutate } = useSWR<NutritionPlan>(
     id ? `/plans/nutrition/${id}` : null,
-    () => api.get<NutritionPlan>(`/plans/nutrition/${id}`),
+    () => api.get<NutritionPlan>(`/plans/nutrition/${id!}`),
   );
   return { plan: data ?? null, isLoading, error, mutate };
 }
@@ -105,10 +106,10 @@ export function useExercisePlans(clientId?: string) {
   return { plans: data?.plans ?? [], isLoading, error, mutate };
 }
 
-export function useExercisePlan(id: string) {
+export function useExercisePlan(id: string | null | undefined) {
   const { data, error, isLoading, mutate } = useSWR<ExercisePlan>(
     id ? `/plans/exercise/${id}` : null,
-    () => api.get<ExercisePlan>(`/plans/exercise/${id}`),
+    () => api.get<ExercisePlan>(`/plans/exercise/${id!}`),
   );
   return { plan: data ?? null, isLoading, error, mutate };
 }
@@ -119,6 +120,7 @@ export function useMyActivePlans() {
   const {
     data: nutritionData,
     isLoading: nutritionLoading,
+    error: nutritionError,
   } = useSWR<NutritionPlan | null>(
     '/plans/nutrition/active',
     () =>
@@ -134,6 +136,7 @@ export function useMyActivePlans() {
   const {
     data: exerciseData,
     isLoading: exerciseLoading,
+    error: exerciseError,
   } = useSWR<ExercisePlan | null>(
     '/plans/exercise/active',
     () =>
@@ -150,6 +153,7 @@ export function useMyActivePlans() {
     nutrition: nutritionData ?? null,
     exercise: exerciseData ?? null,
     isLoading: nutritionLoading || exerciseLoading,
+    error: nutritionError ?? exerciseError,
   };
 }
 
