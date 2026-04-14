@@ -227,7 +227,7 @@ export default function MyPlansPage() {
     <>
       <div className="dash-topbar">
         <div className="dash-topbar-title">Mis planes</div>
-        <div className="dash-topbar-right print-hide">
+        <div className="dash-topbar-right">
           <button
             onClick={handlePrint}
             className="print-hide"
