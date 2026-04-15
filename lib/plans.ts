@@ -141,13 +141,13 @@ export function useMyActivePlans() {
     data: nutritionData,
     isLoading: nutritionLoading,
     error: nutritionError,
-  } = useSWR<NutritionPlan | null>(
+  } = useSWR<{ plan: NutritionPlan | null }>(
     '/plans/nutrition/active',
     () =>
       api
-        .get<NutritionPlan>('/plans/nutrition/active')
+        .get<{ plan: NutritionPlan | null }>('/plans/nutrition/active')
         .catch((err) => {
-          if (err instanceof ApiRequestError && err.status === 404) return null;
+          if (err instanceof ApiRequestError && err.status === 404) return { plan: null };
           throw err;
         }),
     { revalidateOnFocus: false },
@@ -157,21 +157,21 @@ export function useMyActivePlans() {
     data: exerciseData,
     isLoading: exerciseLoading,
     error: exerciseError,
-  } = useSWR<ExercisePlan | null>(
+  } = useSWR<{ plan: ExercisePlan | null }>(
     '/plans/exercise/active',
     () =>
       api
-        .get<ExercisePlan>('/plans/exercise/active')
+        .get<{ plan: ExercisePlan | null }>('/plans/exercise/active')
         .catch((err) => {
-          if (err instanceof ApiRequestError && err.status === 404) return null;
+          if (err instanceof ApiRequestError && err.status === 404) return { plan: null };
           throw err;
         }),
     { revalidateOnFocus: false },
   );
 
   return {
-    nutrition: nutritionData ?? null,
-    exercise: exerciseData ?? null,
+    nutrition: nutritionData?.plan ?? null,
+    exercise: exerciseData?.plan ?? null,
     isLoading: nutritionLoading || exerciseLoading,
     error: nutritionError ?? exerciseError,
   };

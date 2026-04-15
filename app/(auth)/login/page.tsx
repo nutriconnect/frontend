@@ -74,6 +74,7 @@ function LoginForm() {
             onChange={(e) => setEmail(e.target.value)}
             required
             autoComplete="email"
+            suppressHydrationWarning
           />
         </div>
 
@@ -93,6 +94,7 @@ function LoginForm() {
             onChange={(e) => setPassword(e.target.value)}
             required
             autoComplete="current-password"
+            suppressHydrationWarning
           />
         </div>
 

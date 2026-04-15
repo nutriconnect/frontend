@@ -187,13 +187,13 @@ export default function ClientDetailPage() {
               </div>
             )}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16 }}>
-              {profile.goals.length > 0 && (
+              {(profile.goals?.length ?? 0) > 0 && (
                 <div>
                   <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--nc-stone)', marginBottom: 4 }}>
                     Objetivos
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
-                    {profile.goals.map((g) => (
+                    {profile.goals!.map((g) => (
                       <span key={g} style={{
                         fontSize: 11, padding: '2px 8px', borderRadius: 20,
                         background: 'rgba(26,51,41,0.07)', color: 'var(--nc-forest)', fontWeight: 500,
@@ -204,13 +204,13 @@ export default function ClientDetailPage() {
                   </div>
                 </div>
               )}
-              {profile.dietary_restrictions.length > 0 && (
+              {(profile.dietary_restrictions?.length ?? 0) > 0 && (
                 <div>
                   <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--nc-stone)', marginBottom: 4 }}>
                     Restricciones
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
-                    {profile.dietary_restrictions.map((r) => (
+                    {profile.dietary_restrictions!.map((r) => (
                       <span key={r} style={{
                         fontSize: 11, padding: '2px 8px', borderRadius: 20,
                         background: 'rgba(196,98,45,0.08)', color: 'var(--nc-terra)', fontWeight: 500,
@@ -221,13 +221,13 @@ export default function ClientDetailPage() {
                   </div>
                 </div>
               )}
-              {profile.allergies.length > 0 && (
+              {(profile.allergies?.length ?? 0) > 0 && (
                 <div>
                   <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--nc-stone)', marginBottom: 4 }}>
                     Alergias
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
-                    {profile.allergies.map((a) => (
+                    {profile.allergies!.map((a) => (
                       <span key={a} style={{
                         fontSize: 11, padding: '2px 8px', borderRadius: 20,
                         background: 'rgba(139,115,85,0.1)', color: 'var(--nc-stone)', fontWeight: 500,
