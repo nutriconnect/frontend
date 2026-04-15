@@ -563,6 +563,36 @@ export default function RecipeForm({
         </div>
       </div>
 
+      {/* Photos section - only show for edit mode when recipe exists */}
+      {initialData && (
+        <div className="dash-section">
+          <div className="dash-section-head">
+            <div className="dash-section-title">Fotos</div>
+            <div className="dash-section-sub">
+              Puedes subir hasta 10 fotos. La primera será la foto principal.
+            </div>
+          </div>
+          <div className="dash-section-body">
+            <div
+              style={{
+                padding: '24px',
+                border: '2px dashed var(--nc-border)',
+                borderRadius: 8,
+                textAlign: 'center',
+                background: 'var(--nc-bg-pale)',
+              }}
+            >
+              <div style={{ fontSize: 14, color: 'var(--nc-stone)', marginBottom: 8 }}>
+                La función de subida de fotos estará disponible próximamente
+              </div>
+              <div style={{ fontSize: 12, color: 'var(--nc-stone-light)' }}>
+                Podrás subir fotos de tus recetas directamente a CloudFlare R2
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Submit */}
       <div
         style={{

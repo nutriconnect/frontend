@@ -96,7 +96,7 @@ export default function MyRecipesPage() {
             </div>
             {!debouncedSearch && category === 'all' && (
               <Link href="/dashboard/my-recipes/new" className="dash-btn-publish">
-                Crear receta
+                Nueva receta
               </Link>
             )}
           </div>
