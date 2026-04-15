@@ -118,11 +118,11 @@ export default function ForNutritionists() {
 
             <div className="content-step-card">
               <div className="content-step-number">Paso 3</div>
-              <h3 className="content-step-title">Clientes se conectan contigo</h3>
+              <h3 className="content-step-title">Clientes solicitan conectar contigo</h3>
               <p className="content-step-desc">
-                Recibes notificaciones cuando un cliente quiere conectar. Revisas su perfil (objetivos,
-                restricciones dietéticas, alergias) y decides si aceptar o no. Sin compromiso hasta
-                que aceptes.
+                Recibes notificaciones cuando un cliente quiere trabajar contigo. Puedes revisar su perfil
+                (objetivos, restricciones dietéticas, alergias) y decidir si aceptar la solicitud.
+                Tú tienes el control: sin compromiso hasta que aceptes.
               </p>
             </div>
 
@@ -179,10 +179,10 @@ export default function ForNutritionists() {
 
           <div className="content-cta">
             <a href="/register" className="content-cta-btn">
-              Empieza tu prueba gratuita
+              Crea tu perfil gratis
             </a>
             <p style={{ textAlign: 'center', marginTop: '1rem', color: 'var(--nc-stone)' }}>
-              Plan Free para siempre. Sin tarjeta de crédito.
+              Empieza con el plan Free. Sin tarjeta de crédito.
             </p>
           </div>
 

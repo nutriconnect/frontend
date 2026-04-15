@@ -42,13 +42,13 @@ export default function HowItWorks() {
               <div className="content-step-number">Paso 2</div>
               <h3 className="content-step-title">Conecta con tu nutricionista</h3>
               <p className="content-step-desc">
-                Una vez que encuentres el nutricionista ideal, conectar es <strong>completamente gratis</strong>.
-                No pagás nada por usar la plataforma como cliente — los nutricionistas son quienes
-                mantienen sus suscripciones con nosotros.
+                Una vez que encuentres el nutricionista ideal, simplemente haz clic en "Conectar".
+                Usar la plataforma es <strong>completamente gratis</strong> para ti como cliente — solo
+                pagas directamente al nutricionista por sus servicios profesionales.
               </p>
               <p className="content-step-desc">
-                Simplemente haz clic en "Conectar" y el nutricionista recibirá tu solicitud.
-                Una vez que acepte, podrán empezar a trabajar juntos.
+                El nutricionista recibirá tu solicitud y podrá revisar tu perfil. Una vez que acepte,
+                podrán acordar los detalles del servicio y empezar a trabajar juntos.
               </p>
             </div>
 
