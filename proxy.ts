@@ -37,9 +37,14 @@ export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const loggedIn = hasValidAccessToken(request);
 
-  // Already logged in → redirect away from auth pages.
+  // Already logged in → redirect away from auth pages and landing page to dashboard.
   if (loggedIn && isAuthPage(pathname)) {
     return NextResponse.redirect(new URL('/', request.url));
+  }
+
+  // Already logged in and on landing page → redirect to dashboard.
+  if (loggedIn && pathname === '/') {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
   // Not logged in → redirect to login for protected routes.
