@@ -19,6 +19,7 @@ import type {
   NutritionPlanSlotPayload,
 } from '@/lib/plans';
 import type { PlanStatus, MealType } from '@/lib/types';
+import RecipePickerModal from '@/components/RecipePickerModal';
 
 const MEAL_TYPES = [
   { value: 'breakfast',   label: 'Desayuno'     },
@@ -91,6 +92,12 @@ export default function EditNutritionPlanPage() {
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState('');
   const [saveMsg, setSaveMsg] = useState('');
+  const [recipeModalOpen, setRecipeModalOpen] = useState(false);
+  const [recipeModalTarget, setRecipeModalTarget] = useState<{
+    dayIndex: number;
+    mealIndex: number;
+    optionIndex: number;
+  } | null>(null);
 
   useEffect(() => {
     if (!plan) return;
@@ -260,6 +267,26 @@ export default function EditNutritionPlanPage() {
           : s,
       ),
     );
+  }
+
+  function openRecipeModal(dayIndex: number, mealIndex: number, optionIndex: number) {
+    setRecipeModalTarget({ dayIndex, mealIndex, optionIndex });
+    setRecipeModalOpen(true);
+  }
+
+  function handleRecipeSelect(optionData: {
+    name: string;
+    description: string;
+    calories: number | null;
+    protein_g: number | null;
+    carbs_g: number | null;
+    fat_g: number | null;
+  }) {
+    if (!recipeModalTarget) return;
+    const { dayIndex, mealIndex, optionIndex } = recipeModalTarget;
+    updateOption(dayIndex, mealIndex, optionIndex, optionData);
+    setRecipeModalOpen(false);
+    setRecipeModalTarget(null);
   }
 
   function buildPayload(): NutritionPlanPayload {
@@ -527,6 +554,15 @@ export default function EditNutritionPlanPage() {
                           border: '1px solid rgba(139,115,85,0.15)', borderRadius: 4,
                           padding: '8px 10px', marginBottom: 6, background: 'white',
                         }}>
+                          {isDraft && (
+                            <button
+                              onClick={() => openRecipeModal(dayIndex, mealIndex, optIndex)}
+                              className="dash-btn-add-pkg"
+                              style={{ marginBottom: 8, fontSize: 12, height: 28 }}
+                            >
+                              🍴 Seleccionar receta
+                            </button>
+                          )}
                           <div style={{ display: 'flex', gap: 8, marginBottom: 6, alignItems: 'flex-start' }}>
                             <div className="dash-field" style={{ flex: 2 }}>
                               <label className="dash-label">Nombre</label>
@@ -724,6 +760,17 @@ export default function EditNutritionPlanPage() {
             </button>
           </div>
         </div>
+      )}
+
+      {isDraft && (
+        <RecipePickerModal
+          isOpen={recipeModalOpen}
+          onClose={() => {
+            setRecipeModalOpen(false);
+            setRecipeModalTarget(null);
+          }}
+          onSelect={handleRecipeSelect}
+        />
       )}
     </>
   );
