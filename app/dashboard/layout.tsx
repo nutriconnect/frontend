@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/auth';
 import { api } from '@/lib/api';
 import { useMyProfile } from '@/lib/profile';
@@ -19,6 +19,23 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   // Called for all users; returns null for non-nutritionists (endpoint returns 404)
   // Slight waste for clients but avoids conditional hook calls (React rules)
   const { profile } = useMyProfile();
+
+  // Settings section state (persisted to localStorage)
+  const [settingsOpen, setSettingsOpen] = useState(true);
+
+  // Hydrate settings state from localStorage after mount
+  useEffect(() => {
+    const stored = localStorage.getItem('sidebar:settingsOpen');
+    if (stored !== null) {
+      setSettingsOpen(stored === 'true');
+    }
+  }, []);
+
+  const toggleSettings = () => {
+    const newState = !settingsOpen;
+    setSettingsOpen(newState);
+    localStorage.setItem('sidebar:settingsOpen', String(newState));
+  };
 
   // Redirect unauthenticated users to login.
   useEffect(() => {
@@ -44,11 +61,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { href: '/dashboard', label: 'Overview', icon: '◎', roles: ['client', 'nutritionist'] },
     { href: '/dashboard/clients', label: 'Mis clientes', icon: '◉', roles: ['nutritionist'] },
     { href: '/dashboard/my-recipes', label: 'Mis recetas', icon: '◈', roles: ['nutritionist'] },
-    { href: '/dashboard/profile', label: 'My profile', icon: '◈', roles: ['nutritionist'] },
-    { href: '/dashboard/client-profile', label: 'My profile', icon: '◈', roles: ['client'] },
     { href: '/dashboard/my-nutritionist', label: 'My nutritionist', icon: '◉', roles: ['client'] },
     { href: '/dashboard/my-plans', label: 'Mis planes', icon: '◈', roles: ['client'] },
     { href: '/dashboard/billing', label: 'Billing & Earnings', icon: '◈', roles: ['nutritionist'] },
+  ].filter((item) => item.roles.includes(user.role));
+
+  const settingsItems = [
+    { href: '/dashboard/profile', label: 'My profile', icon: '◈', roles: ['nutritionist'] },
+    { href: '/dashboard/client-profile', label: 'My profile', icon: '◈', roles: ['client'] },
   ].filter((item) => item.roles.includes(user.role));
 
   return (
