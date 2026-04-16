@@ -76,7 +76,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <div className="dash-root">
       <aside className="dash-sidebar">
         <div className="dash-logo">
-          <Link href="/">Nutri<span>Connect</span></Link>
+          <Link href="/">Nutri<span>Red</span></Link>
         </div>
         <div className="dash-user">
           <div className="dash-avatar">{initials(user.email)}</div>
