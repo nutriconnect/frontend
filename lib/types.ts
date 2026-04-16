@@ -259,7 +259,7 @@ export interface ClientProfileSummary {
 
 // ─── Recipes ──────────────────────────────────────────────────────────────────
 
-export type RecipeCategory = 'breakfast' | 'lunch' | 'dinner' | 'snack' | 'beverage' | 'dessert';
+export type RecipeCategory = 'breakfast' | 'lunch' | 'dinner' | 'snack' | 'other';
 
 export interface RecipeIngredient {
   id: string;

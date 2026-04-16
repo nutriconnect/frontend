@@ -11,8 +11,7 @@ const CATEGORY_LABELS: Record<RecipeCategory | 'all', string> = {
   lunch: 'Almuerzo',
   dinner: 'Cena',
   snack: 'Snack',
-  beverage: 'Bebida',
-  dessert: 'Postre',
+  other: 'Otros',
 };
 
 interface RecipePickerProps {

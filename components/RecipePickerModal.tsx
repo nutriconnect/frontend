@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
 import { useRecipes } from '@/lib/recipes';
 import type { Recipe, RecipeCategory } from '@/lib/types';
 
@@ -10,8 +12,7 @@ const CATEGORY_LABELS: Record<RecipeCategory | 'all', string> = {
   lunch: 'Almuerzo',
   dinner: 'Cena',
   snack: 'Snack',
-  beverage: 'Bebida',
-  dessert: 'Postre',
+  other: 'Otros',
 };
 
 interface RecipePickerModalProps {
@@ -198,7 +199,7 @@ export default function RecipePickerModal({ isOpen, onClose, onSelect }: RecipeP
               ) : (
                 <>
                   No tienes recetas aún.{' '}
-                  <a
+                  <Link
                     href="/dashboard/my-recipes/new"
                     style={{
                       color: 'var(--nc-forest)',
@@ -207,7 +208,7 @@ export default function RecipePickerModal({ isOpen, onClose, onSelect }: RecipeP
                     }}
                   >
                     Crear mi primera receta →
-                  </a>
+                  </Link>
                 </>
               )}
             </div>
@@ -259,15 +260,18 @@ export default function RecipePickerModal({ isOpen, onClose, onSelect }: RecipeP
                       }}
                     >
                       {primaryPhoto ? (
-                        <img
+                        <Image
                           src={primaryPhoto.photo_url}
                           alt={recipe.name}
+                          width={80}
+                          height={80}
                           style={{
                             width: 80,
                             height: 80,
                             objectFit: 'cover',
                             borderRadius: 8,
                           }}
+                          unoptimized
                         />
                       ) : (
                         <div

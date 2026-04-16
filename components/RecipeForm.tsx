@@ -11,8 +11,7 @@ const CATEGORIES: { value: RecipeCategory; label: string }[] = [
   { value: 'lunch', label: 'Almuerzo' },
   { value: 'dinner', label: 'Cena' },
   { value: 'snack', label: 'Snack' },
-  { value: 'beverage', label: 'Bebida' },
-  { value: 'dessert', label: 'Postre' },
+  { value: 'other', label: 'Otros' },
 ];
 
 interface IngredientRow {
