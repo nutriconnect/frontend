@@ -46,7 +46,7 @@ function LoginForm() {
 
   return (
     <div className="auth-card">
-      <a href="/" className="auth-logo">nutri<span>connect</span></a>
+      <a href="/" className="auth-logo">nutri<span>red</span></a>
 
       <h1 className="auth-heading">Bienvenido <em>de vuelta</em></h1>
       <p className="auth-sub">Inicia sesión para continuar.</p>

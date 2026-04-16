@@ -152,14 +152,14 @@ export default function HowItWorks() {
       </main>
 
       <footer className="lp-footer">
-        <div className="ft-logo">nutri<span>connect</span></div>
+        <div className="ft-logo">nutri<span>red</span></div>
         <ul className="ft-links">
           <li><a href="/about">Sobre nosotros</a></li>
           <li><a href="/for-nutritionists">Para nutricionistas</a></li>
           <li><a href="/privacy">Privacidad</a></li>
           <li><a href="/terms">Términos</a></li>
         </ul>
-        <span className="ft-copy">© 2026 Nutriconnect</span>
+        <span className="ft-copy">© 2026 Nutri Red</span>
       </footer>
     </div>
   );
