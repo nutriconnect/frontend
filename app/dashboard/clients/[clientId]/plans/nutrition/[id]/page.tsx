@@ -6,9 +6,11 @@ import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
 import {
   useNutritionPlan,
+  useExercisePlans,
   updateNutritionPlan,
   activateNutritionPlan,
   deleteNutritionPlan,
+  duplicatePlans,
 } from '@/lib/plans';
 import type {
   MealOptionPayload,
@@ -81,6 +83,7 @@ export default function EditNutritionPlanPage() {
   const { clientId, id } = params;
 
   const { plan, isLoading, mutate } = useNutritionPlan(id);
+  const { plans: exercisePlans } = useExercisePlans(plan?.client_id);
 
   const [title, setTitle] = useState('');
   const [notes, setNotes] = useState('');
@@ -90,6 +93,7 @@ export default function EditNutritionPlanPage() {
   const [saving, setSaving] = useState(false);
   const [activating, setActivating] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [duplicating, setDuplicating] = useState(false);
   const [error, setError] = useState('');
   const [saveMsg, setSaveMsg] = useState('');
   const [recipeModalOpen, setRecipeModalOpen] = useState(false);
@@ -384,6 +388,28 @@ export default function EditNutritionPlanPage() {
     }
   }
 
+  async function handleDuplicate() {
+    if (!plan) return;
+    const activeExercisePlan = exercisePlans.find((p) => p.status === 'active');
+    if (!confirm(`Duplicar este plan nutricional${activeExercisePlan ? ' y el plan de ejercicios activo' : ''} para otro cliente?`)) return;
+    setDuplicating(true);
+    setError('');
+    try {
+      const result = await duplicatePlans(
+        plan.client_id,
+        id,
+        activeExercisePlan?.id,
+      );
+      if (result.nutrition_plan) {
+        router.push(`/dashboard/clients/${plan.client_id}/plans/nutrition/${result.nutrition_plan.id}`);
+      }
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Error al duplicar el plan.');
+    } finally {
+      setDuplicating(false);
+    }
+  }
+
   if (isLoading) {
     return (
       <div className="dash-content" style={{ padding: 40, color: 'var(--nc-stone)', fontWeight: 300 }}>
@@ -420,6 +446,18 @@ export default function EditNutritionPlanPage() {
         </div>
         {isDraft && (
           <div style={{ display: 'flex', gap: 8 }}>
+            <button
+              onClick={handleDuplicate}
+              disabled={duplicating}
+              style={{
+                height: 34, padding: '0 16px',
+                background: 'rgba(139,115,85,0.1)', border: '1px solid rgba(139,115,85,0.3)',
+                borderRadius: 6, color: 'var(--nc-stone)', fontFamily: 'var(--font-body)',
+                fontSize: 13, fontWeight: 500, cursor: 'pointer',
+              }}
+            >
+              {duplicating ? 'Duplicando…' : 'Duplicar plan'}
+            </button>
             <button
               onClick={handleActivate}
               disabled={activating}
