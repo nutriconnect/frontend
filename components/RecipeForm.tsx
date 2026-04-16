@@ -24,12 +24,14 @@ interface IngredientRow {
 interface RecipeFormProps {
   initialData?: Recipe | null;
   onSubmit: (payload: RecipePayload) => Promise<void>;
+  onAutoSave?: (payload: RecipePayload) => Promise<{ id: string }>;
   submitLabel?: string;
 }
 
 export default function RecipeForm({
   initialData,
   onSubmit,
+  onAutoSave,
   submitLabel = 'Guardar receta',
 }: RecipeFormProps) {
   const [name, setName] = useState(initialData?.name ?? '');
@@ -66,6 +68,9 @@ export default function RecipeForm({
       ? String(initialData.fat_g_per_serving)
       : '',
   );
+
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [autoSavedId, setAutoSavedId] = useState<string | null>(null);
 
   const [ingredients, setIngredients] = useState<IngredientRow[]>(() => {
     if (initialData && initialData.ingredients.length > 0) {
@@ -155,12 +160,111 @@ export default function RecipeForm({
     }
   };
 
+  // ─── Validation ───────────────────────────────────────────────────────────────
+
+  const validateRequiredFields = useCallback((): { valid: boolean; errors: Record<string, string> } => {
+    const errors: Record<string, string> = {};
+
+    if (!name.trim()) {
+      errors.name = 'El nombre es obligatorio';
+    }
+    if (!category) {
+      errors.category = 'La categoría es obligatoria';
+    }
+    const servingsNum = parseFloat(baseServings);
+    if (!baseServings || isNaN(servingsNum) || servingsNum <= 0) {
+      errors.baseServings = 'Las porciones deben ser mayor a 0';
+    }
+
+    return { valid: Object.keys(errors).length === 0, errors };
+  }, [name, category, baseServings]);
+
+  // ─── Build Payload ────────────────────────────────────────────────────────────
+
+  const buildPayload = useCallback((): { payload: RecipePayload | null; error: string } => {
+    const ingredientPayloads: RecipeIngredientPayload[] = [];
+    for (let i = 0; i < ingredients.length; i++) {
+      const ing = ingredients[i];
+      if (!ing.ingredient_name.trim()) continue;
+      const amount = parseFloat(ing.amount);
+      if (isNaN(amount) || amount <= 0) {
+        return { payload: null, error: `Ingrediente ${i + 1}: la cantidad debe ser un número positivo.` };
+      }
+      if (!ing.unit.trim()) {
+        return { payload: null, error: `Ingrediente ${i + 1}: la unidad es obligatoria.` };
+      }
+      ingredientPayloads.push({
+        amount,
+        unit: ing.unit.trim(),
+        ingredient_name: ing.ingredient_name.trim(),
+        display_order: i,
+      });
+    }
+
+    const payload: RecipePayload = {
+      name: name.trim(),
+      description: description.trim(),
+      category,
+      base_servings: parseFloat(baseServings),
+      prep_time_minutes: prepTime ? parseInt(prepTime, 10) : null,
+      cook_time_minutes: cookTime ? parseInt(cookTime, 10) : null,
+      calories_per_serving: calories ? parseInt(calories, 10) : null,
+      protein_g_per_serving: protein ? parseFloat(protein) : null,
+      carbs_g_per_serving: carbs ? parseFloat(carbs) : null,
+      fat_g_per_serving: fat ? parseFloat(fat) : null,
+      ingredients: ingredientPayloads,
+      tags: selectedTags,
+    };
+
+    return { payload, error: '' };
+  }, [name, description, category, baseServings, prepTime, cookTime, calories, protein, carbs, fat, ingredients, selectedTags]);
+
   // ─── Photo Upload ─────────────────────────────────────────────────────────────
 
   const handleFileSelect = async (files: FileList | null) => {
-    if (!files || files.length === 0 || !initialData) return;
+    if (!files || files.length === 0) return;
 
-    const recipeId = initialData.id;
+    // If no recipe exists yet, auto-save first
+    let recipeId: string;
+    if (!initialData && !autoSavedId) {
+      const validation = validateRequiredFields();
+      if (!validation.valid) {
+        setFieldErrors(validation.errors);
+        setError('Por favor completa los campos obligatorios antes de subir fotos.');
+        return;
+      }
+
+      if (!onAutoSave) {
+        setError('No se puede subir fotos sin guardar primero la receta.');
+        return;
+      }
+
+      setUploading(true);
+      setUploadProgress('Guardando receta antes de subir fotos...');
+      setError('');
+
+      try {
+        const { payload, error: buildError } = buildPayload();
+        if (!payload) {
+          setError(buildError);
+          setUploading(false);
+          setUploadProgress('');
+          return;
+        }
+
+        const result = await onAutoSave(payload);
+        setAutoSavedId(result.id);
+        recipeId = result.id;
+      } catch (err: any) {
+        setError(err?.message ?? 'Error al guardar la receta.');
+        setUploading(false);
+        setUploadProgress('');
+        return;
+      }
+    } else {
+      recipeId = initialData?.id ?? autoSavedId!;
+    }
+
     const currentCount = photos.length;
     const remainingSlots = 10 - currentCount;
 
@@ -225,11 +329,12 @@ export default function RecipeForm({
   };
 
   const handleDeletePhoto = async (photoId: string) => {
-    if (!initialData) return;
+    if (!initialData && !autoSavedId) return;
     if (!confirm('¿Eliminar esta foto?')) return;
 
+    const recipeId = initialData?.id ?? autoSavedId!;
     try {
-      await deleteRecipePhoto(initialData.id, photoId);
+      await deleteRecipePhoto(recipeId, photoId);
       setPhotos(prev => prev.filter(p => p.id !== photoId));
     } catch (err: any) {
       setError(err?.message ?? 'Error al eliminar la foto.');
@@ -237,10 +342,11 @@ export default function RecipeForm({
   };
 
   const handleSetPrimary = async (photoId: string) => {
-    if (!initialData) return;
+    if (!initialData && !autoSavedId) return;
 
+    const recipeId = initialData?.id ?? autoSavedId!;
     try {
-      await setPrimaryPhoto(initialData.id, photoId);
+      await setPrimaryPhoto(recipeId, photoId);
       setPhotos(prev =>
         prev.map(p => ({
           ...p,
@@ -280,52 +386,22 @@ export default function RecipeForm({
       setError('El nombre de la receta es obligatorio.');
       return;
     }
-    const servings = parseInt(baseServings, 10);
-    if (isNaN(servings) || servings < 1) {
+    const servings = parseFloat(baseServings);
+    if (isNaN(servings) || servings <= 0) {
       setError('Las porciones deben ser un número mayor a 0.');
       return;
     }
 
-    const ingredientPayloads: RecipeIngredientPayload[] = [];
-    for (let i = 0; i < ingredients.length; i++) {
-      const ing = ingredients[i];
-      if (!ing.ingredient_name.trim()) continue;
-      const amount = parseFloat(ing.amount);
-      if (isNaN(amount) || amount <= 0) {
-        setError(`Ingrediente ${i + 1}: la cantidad debe ser un número positivo.`);
-        return;
-      }
-      if (!ing.unit.trim()) {
-        setError(`Ingrediente ${i + 1}: la unidad es obligatoria.`);
-        return;
-      }
-      ingredientPayloads.push({
-        amount,
-        unit: ing.unit.trim(),
-        ingredient_name: ing.ingredient_name.trim(),
-        display_order: i,
-      });
-    }
-
-    if (ingredientPayloads.length === 0) {
-      setError('Debes agregar al menos un ingrediente.');
+    const { payload, error: buildError } = buildPayload();
+    if (!payload) {
+      setError(buildError);
       return;
     }
 
-    const payload: RecipePayload = {
-      name: name.trim(),
-      description: description.trim(),
-      category,
-      base_servings: servings,
-      prep_time_minutes: prepTime ? parseInt(prepTime, 10) : null,
-      cook_time_minutes: cookTime ? parseInt(cookTime, 10) : null,
-      calories_per_serving: calories ? parseInt(calories, 10) : null,
-      protein_g_per_serving: protein ? parseFloat(protein) : null,
-      carbs_g_per_serving: carbs ? parseFloat(carbs) : null,
-      fat_g_per_serving: fat ? parseFloat(fat) : null,
-      ingredients: ingredientPayloads,
-      tags: selectedTags,
-    };
+    if (payload.ingredients.length === 0) {
+      setError('Debes agregar al menos un ingrediente.');
+      return;
+    }
 
     setSubmitting(true);
     try {
@@ -367,9 +443,23 @@ export default function RecipeForm({
                 type="text"
                 className="dash-input"
                 value={name}
-                onChange={e => setName(e.target.value)}
+                onChange={e => {
+                  setName(e.target.value);
+                  if (fieldErrors.name) {
+                    setFieldErrors(prev => {
+                      const next = { ...prev };
+                      delete next.name;
+                      return next;
+                    });
+                  }
+                }}
                 required
               />
+              {fieldErrors.name && (
+                <div style={{ fontSize: 12, color: 'var(--nc-terra)', marginTop: 4 }}>
+                  {fieldErrors.name}
+                </div>
+              )}
             </div>
           </div>
 
@@ -391,7 +481,16 @@ export default function RecipeForm({
               <select
                 className="dash-input"
                 value={category}
-                onChange={e => setCategory(e.target.value as RecipeCategory)}
+                onChange={e => {
+                  setCategory(e.target.value as RecipeCategory);
+                  if (fieldErrors.category) {
+                    setFieldErrors(prev => {
+                      const next = { ...prev };
+                      delete next.category;
+                      return next;
+                    });
+                  }
+                }}
               >
                 {CATEGORIES.map(cat => (
                   <option key={cat.value} value={cat.value}>
@@ -399,6 +498,11 @@ export default function RecipeForm({
                   </option>
                 ))}
               </select>
+              {fieldErrors.category && (
+                <div style={{ fontSize: 12, color: 'var(--nc-terra)', marginTop: 4 }}>
+                  {fieldErrors.category}
+                </div>
+              )}
             </div>
             <div className="dash-field">
               <label className="dash-label">Porciones base</label>
@@ -406,10 +510,24 @@ export default function RecipeForm({
                 type="number"
                 className="dash-input"
                 value={baseServings}
-                onChange={e => setBaseServings(e.target.value)}
+                onChange={e => {
+                  setBaseServings(e.target.value);
+                  if (fieldErrors.baseServings) {
+                    setFieldErrors(prev => {
+                      const next = { ...prev };
+                      delete next.baseServings;
+                      return next;
+                    });
+                  }
+                }}
                 min={1}
                 required
               />
+              {fieldErrors.baseServings && (
+                <div style={{ fontSize: 12, color: 'var(--nc-terra)', marginTop: 4 }}>
+                  {fieldErrors.baseServings}
+                </div>
+              )}
             </div>
           </div>
 
@@ -684,7 +802,7 @@ export default function RecipeForm({
       </div>
 
       {/* Photos section - only show for edit mode when recipe exists */}
-      {initialData && (
+      {(initialData || autoSavedId) && (
         <div className="dash-section">
           <div className="dash-section-head">
             <div className="dash-section-title">Fotos</div>

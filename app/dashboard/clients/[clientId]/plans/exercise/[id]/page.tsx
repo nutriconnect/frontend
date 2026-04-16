@@ -5,9 +5,11 @@ import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
 import {
   useExercisePlan,
+  useNutritionPlans,
   updateExercisePlan,
   activateExercisePlan,
   deleteExercisePlan,
+  duplicatePlans,
 } from '@/lib/plans';
 import type { ExercisePayload, WorkoutBlockPayload, ExerciseDayPayload, ExercisePlanPayload } from '@/lib/plans';
 import type { PlanStatus } from '@/lib/types';
@@ -46,6 +48,7 @@ export default function EditExercisePlanPage() {
   const { clientId, id } = params;
 
   const { plan, isLoading, mutate } = useExercisePlan(id);
+  const { plans: nutritionPlans } = useNutritionPlans(plan?.client_id);
 
   const [title, setTitle] = useState('');
   const [notes, setNotes] = useState('');
@@ -54,6 +57,7 @@ export default function EditExercisePlanPage() {
   const [saving, setSaving] = useState(false);
   const [activating, setActivating] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [duplicating, setDuplicating] = useState(false);
   const [error, setError] = useState('');
   const [saveMsg, setSaveMsg] = useState('');
 
@@ -236,6 +240,28 @@ export default function EditExercisePlanPage() {
     }
   }
 
+  async function handleDuplicate() {
+    if (!plan) return;
+    const activeNutritionPlan = nutritionPlans.find((p) => p.status === 'active');
+    if (!confirm(`Duplicar este plan de ejercicios${activeNutritionPlan ? ' y el plan nutricional activo' : ''} para otro cliente?`)) return;
+    setDuplicating(true);
+    setError('');
+    try {
+      const result = await duplicatePlans(
+        plan.client_id,
+        activeNutritionPlan?.id,
+        id,
+      );
+      if (result.exercise_plan) {
+        router.push(`/dashboard/clients/${plan.client_id}/plans/exercise/${result.exercise_plan.id}`);
+      }
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Error al duplicar el plan.');
+    } finally {
+      setDuplicating(false);
+    }
+  }
+
   if (isLoading) {
     return (
       <div className="dash-content" style={{ padding: 40, color: 'var(--nc-stone)', fontWeight: 300 }}>
@@ -272,6 +298,18 @@ export default function EditExercisePlanPage() {
         </div>
         {isDraft && (
           <div style={{ display: 'flex', gap: 8 }}>
+            <button
+              onClick={handleDuplicate}
+              disabled={duplicating}
+              style={{
+                height: 34, padding: '0 16px',
+                background: 'rgba(139,115,85,0.1)', border: '1px solid rgba(139,115,85,0.3)',
+                borderRadius: 6, color: 'var(--nc-stone)', fontFamily: 'var(--font-body)',
+                fontSize: 13, fontWeight: 500, cursor: 'pointer',
+              }}
+            >
+              {duplicating ? 'Duplicando…' : 'Duplicar plan'}
+            </button>
             <button
               onClick={handleActivate}
               disabled={activating}
