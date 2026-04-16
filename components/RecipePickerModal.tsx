@@ -48,14 +48,13 @@ export default function RecipePickerModal({ isOpen, onClose, onSelect }: RecipeP
   }, [search]);
 
   // Reset state when modal closes
-  useEffect(() => {
-    if (!isOpen) {
-      setSearch('');
-      setCategory('all');
-      setSelectedRecipe(null);
-      setServings(1);
-    }
-  }, [isOpen]);
+  const handleClose = () => {
+    setSearch('');
+    setCategory('all');
+    setSelectedRecipe(null);
+    setServings(1);
+    onClose();
+  };
 
   if (!isOpen) return null;
 
@@ -76,7 +75,7 @@ export default function RecipePickerModal({ isOpen, onClose, onSelect }: RecipeP
       carbs_g: calculateAdjusted(selectedRecipe.carbs_g_per_serving),
       fat_g: calculateAdjusted(selectedRecipe.fat_g_per_serving),
     });
-    onClose();
+    handleClose();
   };
 
   return (
@@ -91,7 +90,7 @@ export default function RecipePickerModal({ isOpen, onClose, onSelect }: RecipeP
         zIndex: 200,
         padding: 16,
       }}
-      onClick={onClose}
+      onClick={handleClose}
     >
       <div
         style={{
@@ -126,7 +125,7 @@ export default function RecipePickerModal({ isOpen, onClose, onSelect }: RecipeP
             Seleccionar receta
           </h3>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             style={{
               width: 32,
               height: 32,
@@ -415,7 +414,7 @@ export default function RecipePickerModal({ isOpen, onClose, onSelect }: RecipeP
             gap: 12,
           }}
         >
-          <button onClick={onClose} className="btn-secondary">
+          <button onClick={handleClose} className="btn-secondary">
             Cancelar
           </button>
           <button
