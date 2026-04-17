@@ -3,7 +3,8 @@
 
 import { use, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useExerciseTemplate, deleteExerciseTemplate, uploadTemplatePhoto, deleteTemplatePhoto, setPrimaryTemplatePhoto, updateExerciseTemplate } from '@/lib/exercise-templates';
+import Link from 'next/link';
+import { useExerciseTemplate, deleteExerciseTemplate } from '@/lib/exercise-templates';
 import type { ExerciseCategory } from '@/lib/types';
 
 const CATEGORY_LABELS: Record<ExerciseCategory, string> = {
@@ -13,255 +14,333 @@ const CATEGORY_LABELS: Record<ExerciseCategory, string> = {
   balance: 'Equilibrio',
 };
 
-const CATEGORY_OPTIONS: { value: ExerciseCategory; label: string }[] = [
-  { value: 'strength', label: 'Fuerza' },
-  { value: 'cardio', label: 'Cardio' },
-  { value: 'flexibility', label: 'Flexibilidad' },
-  { value: 'balance', label: 'Equilibrio' },
-];
+const CATEGORY_COLORS: Record<ExerciseCategory, string> = {
+  strength: '#dcfce7',
+  cardio: '#fed7aa',
+  flexibility: '#dbeafe',
+  balance: '#e9d5ff',
+};
 
 export default function ExerciseDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
   const router = useRouter();
-  const { template, isLoading, error, mutate } = useExerciseTemplate(resolvedParams.id);
-  const [editMode, setEditMode] = useState(false);
-  const [deleteConfirm, setDeleteConfirm] = useState(false);
-  const [actionLoading, setActionLoading] = useState(false);
-
-  // Edit form state
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [category, setCategory] = useState<ExerciseCategory>('strength');
-  const [muscleGroups, setMuscleGroups] = useState('');
-  const [equipment, setEquipment] = useState('');
-  const [instructions, setInstructions] = useState('');
-  const [demoVideoUrl, setDemoVideoUrl] = useState('');
-
-  const handleEdit = () => {
-    if (template) {
-      setName(template.name);
-      setDescription(template.description);
-      setCategory(template.category);
-      setMuscleGroups(template.muscle_groups);
-      setEquipment(template.equipment);
-      setInstructions(template.instructions);
-      setDemoVideoUrl(template.demo_video_url || '');
-      setEditMode(true);
-    }
-  };
-
-  const handleSave = async () => {
-    if (!template) return;
-    setActionLoading(true);
-    try {
-      await updateExerciseTemplate(template.id, {
-        name: name.trim(),
-        description: description.trim(),
-        category,
-        muscle_groups: muscleGroups.trim(),
-        equipment: equipment.trim(),
-        instructions: instructions.trim(),
-        demo_video_url: demoVideoUrl.trim() || null,
-      });
-      await mutate();
-      setEditMode(false);
-    } catch (err) {
-      console.error('Failed to update:', err);
-    } finally {
-      setActionLoading(false);
-    }
-  };
+  const { template, isLoading } = useExerciseTemplate(resolvedParams.id);
+  const [deleting, setDeleting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
 
   const handleDelete = async () => {
     if (!template) return;
-    setActionLoading(true);
+    setDeleting(true);
     try {
       await deleteExerciseTemplate(template.id);
       router.push('/dashboard/my-exercises');
-    } catch (err) {
-      console.error('Failed to delete:', err);
-      setActionLoading(false);
+    } catch (err: any) {
+      alert(err?.message ?? 'Error al eliminar el ejercicio');
+      setDeleting(false);
     }
   };
 
-  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!template || !e.target.files?.[0]) return;
-    setActionLoading(true);
-    try {
-      await uploadTemplatePhoto(template.id, e.target.files[0]);
-      await mutate();
-    } catch (err) {
-      console.error('Failed to upload photo:', err);
-    } finally {
-      setActionLoading(false);
-    }
-  };
+  if (isLoading) {
+    return (
+      <>
+        <div className="dash-topbar">
+          <div className="dash-topbar-title">Cargando...</div>
+        </div>
+        <div className="dash-content">
+          <div style={{ color: 'var(--nc-stone)', fontWeight: 300 }}>Cargando ejercicio...</div>
+        </div>
+      </>
+    );
+  }
 
-  const handlePhotoDelete = async (photoId: string) => {
-    if (!template) return;
-    setActionLoading(true);
-    try {
-      await deleteTemplatePhoto(template.id, photoId);
-      await mutate();
-    } catch (err) {
-      console.error('Failed to delete photo:', err);
-    } finally {
-      setActionLoading(false);
-    }
-  };
+  if (!template) {
+    return (
+      <>
+        <div className="dash-topbar">
+          <div className="dash-topbar-title">Ejercicio no encontrado</div>
+        </div>
+        <div className="dash-content">
+          <div
+            style={{
+              background: 'rgba(196,98,45,0.08)',
+              color: 'var(--nc-terra)',
+              padding: '12px 16px',
+              borderRadius: 8,
+              fontSize: 13,
+            }}
+          >
+            El ejercicio solicitado no existe.
+          </div>
+          <Link
+            href="/dashboard/my-exercises"
+            style={{
+              marginTop: 16,
+              display: 'inline-block',
+              color: 'var(--nc-forest)',
+              textDecoration: 'underline',
+            }}
+          >
+            Volver a Mis ejercicios
+          </Link>
+        </div>
+      </>
+    );
+  }
 
-  const handleSetPrimary = async (photoId: string) => {
-    if (!template) return;
-    setActionLoading(true);
-    try {
-      await setPrimaryTemplatePhoto(template.id, photoId);
-      await mutate();
-    } catch (err) {
-      console.error('Failed to set primary:', err);
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
-  if (isLoading) return <div className="nc-container text-center py-12">Cargando...</div>;
-  if (error || !template) return <div className="nc-container text-center py-12 text-red-600">Error al cargar ejercicio</div>;
+  const sortedPhotos = [...template.photos].sort((a, b) => a.display_order - b.display_order);
 
   return (
-    <div className="nc-container">
-      <div className="nc-topbar">
-        <h1 className="text-2xl font-bold">{editMode ? 'Editar ejercicio' : template.name}</h1>
-        <div className="flex gap-2">
-          {!editMode && (
-            <>
-              <button onClick={handleEdit} className="nc-btn-primary">Editar</button>
-              <button onClick={() => setDeleteConfirm(true)} className="nc-btn-secondary text-red-600">Eliminar</button>
-            </>
-          )}
-          {editMode && (
-            <>
-              <button onClick={handleSave} disabled={actionLoading} className="nc-btn-primary">
-                {actionLoading ? 'Guardando...' : 'Guardar'}
-              </button>
-              <button onClick={() => setEditMode(false)} className="nc-btn-secondary">Cancelar</button>
-            </>
-          )}
+    <>
+      <div className="dash-topbar">
+        <div className="dash-topbar-title">{template.name}</div>
+        <div className="dash-topbar-right">
+          <Link href={`/dashboard/my-exercises/${template.id}/edit`} className="dash-btn-preview">
+            Editar
+          </Link>
+          <button
+            onClick={() => setShowDeleteConfirm(true)}
+            className="dash-btn-preview"
+            style={{ color: 'var(--nc-terra)', borderColor: 'var(--nc-terra)' }}
+          >
+            Eliminar
+          </button>
         </div>
       </div>
 
-      {deleteConfirm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="nc-card max-w-md">
-            <h3 className="text-lg font-bold mb-4">¿Eliminar ejercicio?</h3>
-            <p className="text-gray-600 mb-6">
-              Esta acción no se puede deshacer. Los planes que usan este ejercicio no se verán afectados.
-            </p>
-            <div className="flex gap-4">
-              <button onClick={handleDelete} disabled={actionLoading} className="nc-btn-primary bg-red-600 flex-1">
-                {actionLoading ? 'Eliminando...' : 'Eliminar'}
+      <div className="dash-content" style={{ maxWidth: 900 }}>
+        {/* Photo carousel or placeholder */}
+        {sortedPhotos.length > 0 ? (
+          <div
+            style={{
+              marginBottom: 32,
+              borderRadius: 12,
+              overflow: 'hidden',
+              border: '1px solid var(--nc-border)',
+            }}
+          >
+            <div
+              style={{
+                height: 400,
+                background: `url(${sortedPhotos[currentPhotoIndex].photo_url}) center/cover`,
+                position: 'relative',
+              }}
+            >
+              {sortedPhotos.length > 1 && (
+                <>
+                  <button
+                    onClick={() => setCurrentPhotoIndex((currentPhotoIndex - 1 + sortedPhotos.length) % sortedPhotos.length)}
+                    style={{
+                      position: 'absolute',
+                      left: 16,
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      background: 'rgba(255,255,255,0.9)',
+                      border: 'none',
+                      borderRadius: '50%',
+                      width: 40,
+                      height: 40,
+                      cursor: 'pointer',
+                      fontSize: 20,
+                    }}
+                  >
+                    ‹
+                  </button>
+                  <button
+                    onClick={() => setCurrentPhotoIndex((currentPhotoIndex + 1) % sortedPhotos.length)}
+                    style={{
+                      position: 'absolute',
+                      right: 16,
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      background: 'rgba(255,255,255,0.9)',
+                      border: 'none',
+                      borderRadius: '50%',
+                      width: 40,
+                      height: 40,
+                      cursor: 'pointer',
+                      fontSize: 20,
+                    }}
+                  >
+                    ›
+                  </button>
+                </>
+              )}
+            </div>
+            {sortedPhotos.length > 1 && (
+              <div style={{ display: 'flex', justifyContent: 'center', padding: 12, gap: 8, background: 'white' }}>
+                {sortedPhotos.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrentPhotoIndex(idx)}
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: '50%',
+                      border: 'none',
+                      background: idx === currentPhotoIndex ? 'var(--nc-forest)' : 'var(--nc-stone-light)',
+                      cursor: 'pointer',
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        ) : (
+          <div
+            style={{
+              marginBottom: 32,
+              borderRadius: 12,
+              overflow: 'hidden',
+              border: '1px solid var(--nc-border)',
+              background: CATEGORY_COLORS[template.category],
+              height: 400,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 16,
+            }}
+          >
+            <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="60" cy="40" r="24" fill="rgba(139,115,85,0.15)" />
+              <rect x="52" y="64" width="16" height="32" rx="2" fill="rgba(139,115,85,0.15)" />
+              <rect x="40" y="72" width="12" height="4" rx="2" fill="rgba(139,115,85,0.15)" />
+              <rect x="68" y="72" width="12" height="4" rx="2" fill="rgba(139,115,85,0.15)" />
+              <circle cx="54" cy="36" r="3" fill="rgba(139,115,85,0.3)" />
+              <circle cx="66" cy="36" r="3" fill="rgba(139,115,85,0.3)" />
+              <path d="M 52 46 Q 60 52 68 46" stroke="rgba(139,115,85,0.3)" strokeWidth="2" fill="none" />
+            </svg>
+            <div style={{ color: 'rgba(139,115,85,0.5)', fontSize: 14, fontWeight: 300 }}>
+              Sin foto. Añade una desde Editar.
+            </div>
+          </div>
+        )}
+
+        {/* Category badge */}
+        <div style={{ marginBottom: 24 }}>
+          <span
+            style={{
+              display: 'inline-block',
+              padding: '6px 12px',
+              borderRadius: 6,
+              fontSize: 13,
+              fontWeight: 500,
+              background: CATEGORY_COLORS[template.category],
+              color: 'rgba(139,115,85,0.9)',
+            }}
+          >
+            {CATEGORY_LABELS[template.category]}
+          </span>
+        </div>
+
+        {/* Description */}
+        {template.description && (
+          <div style={{ marginBottom: 32 }}>
+            <p style={{ fontSize: 15, lineHeight: 1.7, color: 'var(--nc-ink)' }}>{template.description}</p>
+          </div>
+        )}
+
+        {/* Details grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 32 }}>
+          {template.muscle_groups && (
+            <div>
+              <div style={{ fontSize: 12, fontWeight: 500, color: 'var(--nc-stone)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                Grupos musculares
+              </div>
+              <div style={{ fontSize: 14, color: 'var(--nc-ink)' }}>{template.muscle_groups}</div>
+            </div>
+          )}
+          {template.equipment && (
+            <div>
+              <div style={{ fontSize: 12, fontWeight: 500, color: 'var(--nc-stone)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                Equipamiento
+              </div>
+              <div style={{ fontSize: 14, color: 'var(--nc-ink)' }}>{template.equipment}</div>
+            </div>
+          )}
+        </div>
+
+        {/* Instructions */}
+        {template.instructions && (
+          <div style={{ marginBottom: 32 }}>
+            <div style={{ fontSize: 12, fontWeight: 500, color: 'var(--nc-stone)', marginBottom: 12, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              Instrucciones
+            </div>
+            <div style={{ fontSize: 14, lineHeight: 1.8, color: 'var(--nc-ink)', whiteSpace: 'pre-line' }}>
+              {template.instructions}
+            </div>
+          </div>
+        )}
+
+        {/* Video */}
+        {template.demo_video_url && (
+          <div style={{ marginBottom: 32 }}>
+            <div style={{ fontSize: 12, fontWeight: 500, color: 'var(--nc-stone)', marginBottom: 12, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              Video de demostración
+            </div>
+            <a
+              href={template.demo_video_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                color: 'var(--nc-forest)',
+                textDecoration: 'underline',
+                fontSize: 14,
+              }}
+            >
+              Ver video →
+            </a>
+          </div>
+        )}
+      </div>
+
+      {/* Delete confirmation modal */}
+      {showDeleteConfirm && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+          }}
+          onClick={() => setShowDeleteConfirm(false)}
+        >
+          <div
+            style={{
+              background: 'white',
+              borderRadius: 12,
+              padding: 32,
+              maxWidth: 440,
+              width: '90%',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 12, color: 'var(--nc-ink)' }}>
+              ¿Eliminar ejercicio?
+            </div>
+            <div style={{ fontSize: 14, color: 'var(--nc-stone)', marginBottom: 24, lineHeight: 1.6 }}>
+              Esta acción no se puede deshacer. El ejercicio se eliminará permanentemente.
+            </div>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <button onClick={() => setShowDeleteConfirm(false)} className="dash-btn-plain" style={{ flex: 1 }}>
+                Cancelar
               </button>
-              <button onClick={() => setDeleteConfirm(false)} className="nc-btn-secondary flex-1">Cancelar</button>
+              <button
+                onClick={handleDelete}
+                disabled={deleting}
+                className="dash-btn-publish"
+                style={{ flex: 1, background: 'var(--nc-terra)', borderColor: 'var(--nc-terra)' }}
+              >
+                {deleting ? 'Eliminando...' : 'Eliminar'}
+              </button>
             </div>
           </div>
         </div>
       )}
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          {editMode ? (
-            <div className="nc-card space-y-6">
-              <div>
-                <label className="block text-sm font-medium mb-2">Nombre *</label>
-                <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="dash-input w-full" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">Descripción</label>
-                <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3} className="dash-input w-full" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">Categoría *</label>
-                <select value={category} onChange={(e) => setCategory(e.target.value as ExerciseCategory)} className="dash-input w-full">
-                  {CATEGORY_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">Grupos musculares</label>
-                <input type="text" value={muscleGroups} onChange={(e) => setMuscleGroups(e.target.value)} className="dash-input w-full" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">Equipamiento</label>
-                <input type="text" value={equipment} onChange={(e) => setEquipment(e.target.value)} className="dash-input w-full" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">Instrucciones</label>
-                <textarea value={instructions} onChange={(e) => setInstructions(e.target.value)} rows={6} className="dash-input w-full" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">URL de video</label>
-                <input type="url" value={demoVideoUrl} onChange={(e) => setDemoVideoUrl(e.target.value)} className="dash-input w-full" />
-              </div>
-            </div>
-          ) : (
-            <div className="nc-card space-y-6">
-              <div>
-                <span className="text-xs px-2 py-1 rounded bg-gray-100 text-gray-800">{CATEGORY_LABELS[template.category]}</span>
-              </div>
-              {template.description && <p className="text-gray-700">{template.description}</p>}
-              {template.muscle_groups && (
-                <div>
-                  <h3 className="font-semibold mb-2">Grupos musculares</h3>
-                  <p className="text-gray-700">{template.muscle_groups}</p>
-                </div>
-              )}
-              {template.equipment && (
-                <div>
-                  <h3 className="font-semibold mb-2">Equipamiento</h3>
-                  <p className="text-gray-700">{template.equipment}</p>
-                </div>
-              )}
-              {template.instructions && (
-                <div>
-                  <h3 className="font-semibold mb-2">Instrucciones</h3>
-                  <p className="text-gray-700 whitespace-pre-line">{template.instructions}</p>
-                </div>
-              )}
-              {template.demo_video_url && (
-                <div>
-                  <h3 className="font-semibold mb-2">Video de demostración</h3>
-                  <a href={template.demo_video_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
-                    Ver video
-                  </a>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-
-        <div className="nc-card">
-          <h3 className="font-semibold mb-4">Fotos</h3>
-          {template.photos.length < 10 && (
-            <label className="block mb-4">
-              <input type="file" accept="image/*" onChange={handlePhotoUpload} className="hidden" />
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:border-gray-400">
-                <span className="text-gray-600">Subir foto</span>
-              </div>
-            </label>
-          )}
-          <div className="space-y-4">
-            {template.photos.map(photo => (
-              <div key={photo.id} className="relative">
-                <img src={photo.photo_url} alt="" className="w-full rounded-lg" />
-                {photo.is_primary && <span className="absolute top-2 left-2 bg-blue-600 text-white text-xs px-2 py-1 rounded">Principal</span>}
-                <div className="flex gap-2 mt-2">
-                  {!photo.is_primary && (
-                    <button onClick={() => handleSetPrimary(photo.id)} className="nc-btn-secondary text-xs flex-1">Marcar principal</button>
-                  )}
-                  <button onClick={() => handlePhotoDelete(photo.id)} className="nc-btn-secondary text-xs text-red-600 flex-1">Eliminar</button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
+    </>
   );
 }
