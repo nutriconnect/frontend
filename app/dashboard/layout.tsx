@@ -82,7 +82,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="dash-user">
           <div className="dash-avatar">{initials(user.email)}</div>
           <div>
-            <div className="dash-user-name">{user.email.split('@')[0]}</div>
+            <div className="dash-user-name">
+              {user.role === 'nutritionist' && profile?.display_name
+                ? profile.display_name
+                : user.email.split('@')[0]}
+            </div>
             <div className="dash-user-role">{user.role}</div>
           </div>
         </div>
