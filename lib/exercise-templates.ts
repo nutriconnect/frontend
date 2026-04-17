@@ -82,19 +82,19 @@ export async function uploadTemplatePhoto(
   formData.append('photo', file);
 
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080/api/v1';
-  const token = localStorage.getItem('accessToken');
-
-  const res = await fetch(`${BASE_URL}/exercise-templates/${templateId}/photos`, {
+  const response = await fetch(`${BASE_URL}/exercise-templates/${templateId}/photos`, {
     method: 'POST',
-    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    credentials: 'include', // Include cookies for authentication
     body: formData,
+    // Don't set Content-Type - browser will set it with boundary for multipart/form-data
   });
 
-  if (!res.ok) {
-    throw new Error(`Upload failed: ${res.statusText}`);
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Upload failed: ${response.status} ${errorText}`);
   }
 
-  return res.json();
+  return response.json();
 }
 
 export async function deleteTemplatePhoto(templateId: string, photoId: string): Promise<void> {
