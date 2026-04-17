@@ -156,14 +156,30 @@ export default function MyExercisesPage() {
                       style={{
                         width: '100%',
                         height: 192,
-                        background: 'linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%)',
+                        background:
+                          template.category === 'strength' ? '#f0fdf4' :
+                          template.category === 'cardio' ? '#fff7ed' :
+                          template.category === 'flexibility' ? '#eff6ff' :
+                          '#faf5ff',
                         display: 'flex',
+                        flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        fontSize: 40,
+                        gap: 8,
                       }}
                     >
-                      ◈
+                      <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="40" cy="26" r="16" fill="rgba(139,115,85,0.12)" />
+                        <rect x="35" y="42" width="10" height="22" rx="1" fill="rgba(139,115,85,0.12)" />
+                        <rect x="27" y="48" width="8" height="3" rx="1" fill="rgba(139,115,85,0.12)" />
+                        <rect x="45" y="48" width="8" height="3" rx="1" fill="rgba(139,115,85,0.12)" />
+                        <circle cx="36" cy="24" r="2" fill="rgba(139,115,85,0.25)" />
+                        <circle cx="44" cy="24" r="2" fill="rgba(139,115,85,0.25)" />
+                        <path d="M 35 30 Q 40 34 45 30" stroke="rgba(139,115,85,0.25)" strokeWidth="1.5" fill="none" />
+                      </svg>
+                      <div style={{ fontSize: 11, color: 'rgba(139,115,85,0.4)', fontWeight: 300 }}>
+                        Sin foto
+                      </div>
                     </div>
                   )}
                   <div style={{ padding: 16 }}>

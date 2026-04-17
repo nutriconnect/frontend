@@ -15,10 +15,17 @@ const CATEGORY_LABELS: Record<ExerciseCategory, string> = {
 };
 
 const CATEGORY_COLORS: Record<ExerciseCategory, string> = {
-  strength: '#dcfce7',
-  cardio: '#fed7aa',
-  flexibility: '#dbeafe',
-  balance: '#e9d5ff',
+  strength: '#f0fdf4',
+  cardio: '#fff7ed',
+  flexibility: '#eff6ff',
+  balance: '#faf5ff',
+};
+
+const CATEGORY_BADGE_COLORS: Record<ExerciseCategory, { bg: string; text: string }> = {
+  strength: { bg: '#dcfce7', text: '#166534' },
+  cardio: { bg: '#ffedd5', text: '#9a3412' },
+  flexibility: { bg: '#dbeafe', text: '#1e40af' },
+  balance: { bg: '#f3e8ff', text: '#6b21a8' },
 };
 
 export default function ExerciseDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -226,8 +233,8 @@ export default function ExerciseDetailPage({ params }: { params: Promise<{ id: s
               borderRadius: 6,
               fontSize: 13,
               fontWeight: 500,
-              background: CATEGORY_COLORS[template.category],
-              color: 'rgba(139,115,85,0.9)',
+              background: CATEGORY_BADGE_COLORS[template.category].bg,
+              color: CATEGORY_BADGE_COLORS[template.category].text,
             }}
           >
             {CATEGORY_LABELS[template.category]}
