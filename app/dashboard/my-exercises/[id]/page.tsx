@@ -1,7 +1,7 @@
 'use client';
 // frontend/app/dashboard/my-exercises/[id]/page.tsx
 
-import { useState } from 'react';
+import { use, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useExerciseTemplate, deleteExerciseTemplate, uploadTemplatePhoto, deleteTemplatePhoto, setPrimaryTemplatePhoto, updateExerciseTemplate } from '@/lib/exercise-templates';
 import type { ExerciseCategory } from '@/lib/types';
@@ -20,9 +20,10 @@ const CATEGORY_OPTIONS: { value: ExerciseCategory; label: string }[] = [
   { value: 'balance', label: 'Equilibrio' },
 ];
 
-export default function ExerciseDetailPage({ params }: { params: { id: string } }) {
+export default function ExerciseDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = use(params);
   const router = useRouter();
-  const { template, isLoading, error, mutate } = useExerciseTemplate(params.id);
+  const { template, isLoading, error, mutate } = useExerciseTemplate(resolvedParams.id);
   const [editMode, setEditMode] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
