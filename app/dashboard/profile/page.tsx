@@ -70,6 +70,7 @@ export default function DashboardProfilePage() {
   const [saveMsg, setSaveMsg] = useState('');
   const [introConsultationRequired, setIntroConsultationRequired] = useState(false);
   const [acceptingNewClients, setAcceptingNewClients] = useState(true);
+  const [consultationType, setConsultationType] = useState<'in_person' | 'online' | 'both'>('in_person');
 
   // Pre-fill form when profile loads.
   useEffect(() => {
@@ -84,6 +85,7 @@ export default function DashboardProfilePage() {
       setStatus(profile.status);
       setIntroConsultationRequired(profile.intro_consultation_required ?? false);
       setAcceptingNewClients(profile.accepting_new_clients ?? true);
+      setConsultationType(profile.consultation_type || 'in_person');
       setPackages(
         profile.packages.map((p: ServicePackage) => ({
           id: p.id,
@@ -96,6 +98,16 @@ export default function DashboardProfilePage() {
     }
   }, [profile]);
 
+  const isProfileComplete = () => {
+    if (!displayName.trim() || !bio.trim() || specialties.length === 0) {
+      return false;
+    }
+    if ((consultationType === 'in_person' || consultationType === 'both') && !city.trim()) {
+      return false;
+    }
+    return true;
+  };
+
   const handleSave = async () => {
     if (!displayName.trim()) { setSaveMsg('Display name is required.'); return; }
     setSaving(true);
@@ -103,7 +115,9 @@ export default function DashboardProfilePage() {
     try {
       const body = {
         display_name: displayName.trim(),
-        bio, city,
+        bio,
+        city: (consultationType === 'in_person' || consultationType === 'both') ? city : '',
+        consultation_type: consultationType,
         years_exp: yearsExp ? parseInt(yearsExp, 10) : null,
         specialties, languages, certifications,
         intro_consultation_required: introConsultationRequired,
@@ -223,9 +237,36 @@ export default function DashboardProfilePage() {
                 )}
               </div>
               <div className="dash-field">
-                <label className="dash-label">City</label>
-                <input className="dash-input" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Where you're based" />
+                <label className="dash-label">Tipo de consultoría</label>
+                <div style={{ display: 'flex', gap: 16, marginTop: 8 }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
+                    <input type="radio" name="consultation_type" value="in_person"
+                           checked={consultationType === 'in_person'}
+                           onChange={(e) => setConsultationType(e.target.value as any)} />
+                    <span style={{ fontSize: 14 }}>Presencial</span>
+                  </label>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
+                    <input type="radio" name="consultation_type" value="online"
+                           checked={consultationType === 'online'}
+                           onChange={(e) => setConsultationType(e.target.value as any)} />
+                    <span style={{ fontSize: 14 }}>Online</span>
+                  </label>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
+                    <input type="radio" name="consultation_type" value="both"
+                           checked={consultationType === 'both'}
+                           onChange={(e) => setConsultationType(e.target.value as any)} />
+                    <span style={{ fontSize: 14 }}>Ambos</span>
+                  </label>
+                </div>
               </div>
+            </div>
+            <div className="dash-row">
+              {(consultationType === 'in_person' || consultationType === 'both') && (
+                <div className="dash-field">
+                  <label className="dash-label">Ciudad</label>
+                  <input className="dash-input" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Where you're based" />
+                </div>
+              )}
             </div>
             <div className="dash-row single">
               <div className="dash-field">
@@ -337,24 +378,25 @@ export default function DashboardProfilePage() {
                 Require an intro consultation before client access begins
               </label>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 16 }}>
-              <button
-                type="button"
-                id="accepting-new-clients"
-                role="switch"
-                aria-checked={acceptingNewClients}
-                className={`dash-toggle${acceptingNewClients ? ' on' : ''}`}
-                onClick={() => setAcceptingNewClients((v) => !v)}
-                disabled={saving}
-                aria-label="Aceptando nuevos clientes"
-              />
-              <label
-                htmlFor="accepting-new-clients"
-                style={{ fontSize: 14, color: 'var(--nc-ink)', cursor: 'pointer' }}
-                onClick={() => !saving && setAcceptingNewClients((v) => !v)}
-              >
-                Aceptando nuevos clientes
+            <div className="dash-field" style={{ marginTop: 16 }}>
+              <label className="dash-label" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <input type="checkbox" checked={acceptingNewClients}
+                       onChange={(e) => {
+                         if (e.target.checked && !isProfileComplete()) {
+                           setSaveMsg('Completa tu perfil (nombre, bio, especialidad, ciudad si es presencial) antes de aceptar clientes');
+                           return;
+                         }
+                         setAcceptingNewClients(e.target.checked);
+                       }}
+                       disabled={!isProfileComplete()}
+                       style={{ cursor: isProfileComplete() ? 'pointer' : 'not-allowed' }} />
+                <span>Aceptando nuevos clientes</span>
               </label>
+              {!isProfileComplete() && (
+                <div style={{ fontSize: 12, color: 'var(--nc-stone)', marginTop: 4 }}>
+                  Completa tu perfil antes de aceptar clientes
+                </div>
+              )}
             </div>
           </div>
         </div>
