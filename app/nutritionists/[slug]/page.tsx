@@ -33,6 +33,7 @@ export default function PublicProfilePage() {
     api.get<{ id: string; role: string }>('/auth/me').catch(() => null),
   );
   const isClient = me?.role === 'client';
+  const isOwnProfile = me?.id === profile?.user_id;
 
   async function handleConnect(packageID: string) {
     if (!isClient) {
@@ -54,7 +55,7 @@ export default function PublicProfilePage() {
     return (
       <div style={{ background: 'var(--nc-cream)', minHeight: '100vh' }}>
         <nav className="nc-nav">
-          <Link href="/nutritionists" className="nc-nav-logo">Nutri<span>Connect</span></Link>
+          <Link href="/nutritionists" className="nc-nav-logo">Nutri<span>Red</span></Link>
         </nav>
         <div style={{ padding: '80px 48px', color: 'var(--nc-stone)', fontWeight: 300 }}>Loading…</div>
       </div>
@@ -65,7 +66,7 @@ export default function PublicProfilePage() {
     return (
       <div style={{ background: 'var(--nc-cream)', minHeight: '100vh' }}>
         <nav className="nc-nav">
-          <Link href="/nutritionists" className="nc-nav-logo">Nutri<span>Connect</span></Link>
+          <Link href="/nutritionists" className="nc-nav-logo">Nutri<span>Red</span></Link>
           <Link href="/nutritionists" className="nc-nav-links" style={{ color: 'rgba(245,240,232,0.65)', textDecoration: 'none', fontSize: 13 }}>← Back to nutritionists</Link>
         </nav>
         <div style={{ padding: '80px 48px', color: 'var(--nc-stone)', fontWeight: 300 }}>
@@ -192,29 +193,37 @@ export default function PublicProfilePage() {
                 </div>
                 {pkg.description && <div className="nc-pkg-desc">{pkg.description}</div>}
                 <div style={{ marginTop: 12 }}>
-                  {isClosed && (
+                  {isOwnProfile ? (
                     <p style={{ fontSize: 13, color: 'var(--nc-stone)', fontWeight: 300, padding: '8px 0', margin: 0 }}>
-                      No acepta nuevos clientes
+                      This is your public profile
                     </p>
-                  )}
-                  {isAtCapacity && (
-                    <WaitlistButton slug={slug} />
-                  )}
-                  {isAvailable && (
-                    connected ? (
-                      <div style={{ fontSize: 13, color: '#4a7c59', fontWeight: 500, padding: '8px 0' }}>
-                        ✓ Request sent — check your dashboard
-                      </div>
-                    ) : (
-                      <button
-                        className="nc-btn-contact"
-                        style={{ width: '100%', cursor: connecting === pkg.id ? 'wait' : 'pointer' }}
-                        disabled={connecting === pkg.id}
-                        onClick={() => handleConnect(pkg.id)}
-                      >
-                        {connecting === pkg.id ? 'Sending request…' : 'Work with me'}
-                      </button>
-                    )
+                  ) : (
+                    <>
+                      {isClosed && (
+                        <p style={{ fontSize: 13, color: 'var(--nc-stone)', fontWeight: 300, padding: '8px 0', margin: 0 }}>
+                          No acepta nuevos clientes
+                        </p>
+                      )}
+                      {isAtCapacity && (
+                        <WaitlistButton slug={slug} />
+                      )}
+                      {isAvailable && (
+                        connected ? (
+                          <div style={{ fontSize: 13, color: '#4a7c59', fontWeight: 500, padding: '8px 0' }}>
+                            ✓ Request sent — check your dashboard
+                          </div>
+                        ) : (
+                          <button
+                            className="nc-btn-contact"
+                            style={{ width: '100%', cursor: connecting === pkg.id ? 'wait' : 'pointer' }}
+                            disabled={connecting === pkg.id}
+                            onClick={() => handleConnect(pkg.id)}
+                          >
+                            {connecting === pkg.id ? 'Sending request…' : 'Work with me'}
+                          </button>
+                        )
+                      )}
+                    </>
                   )}
                 </div>
               </div>
