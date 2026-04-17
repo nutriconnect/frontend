@@ -61,6 +61,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { href: '/dashboard', label: 'Overview', icon: '◎', roles: ['client', 'nutritionist'] },
     { href: '/dashboard/clients', label: 'Mis clientes', icon: '◉', roles: ['nutritionist'] },
     { href: '/dashboard/my-recipes', label: 'Mis recetas', icon: '◈', roles: ['nutritionist'] },
+    { href: '/dashboard/my-exercises', label: 'Mis ejercicios', icon: '◈', roles: ['nutritionist'] },
     { href: '/dashboard/my-nutritionist', label: 'My nutritionist', icon: '◉', roles: ['client'] },
     { href: '/dashboard/my-plans', label: 'Mis planes', icon: '◈', roles: ['client'] },
     { href: '/dashboard/business', label: 'Business Dashboard', icon: '◈', roles: ['nutritionist'] },
