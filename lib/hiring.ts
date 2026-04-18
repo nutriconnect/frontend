@@ -35,7 +35,7 @@ export async function cancelRelationship(relationshipID: string): Promise<void> 
 }
 
 export async function completeRelationship(relationshipID: string, notes: string): Promise<void> {
-  await api.post(`/hiring/relationships/${relationshipID}/complete`, { notes });
+  await api.post(`/relationships/${relationshipID}/complete`, { completion_notes: notes });
   mutate('/hiring/relationships');
   mutate('/hiring/relationships/nutritionist');
   mutate('/nutritionist/clients');
@@ -44,7 +44,7 @@ export async function completeRelationship(relationshipID: string, notes: string
 }
 
 export async function reactivateRelationship(relationshipID: string): Promise<void> {
-  await api.post(`/hiring/relationships/${relationshipID}/reactivate`, {});
+  await api.post(`/relationships/${relationshipID}/reactivate`, {});
   mutate('/hiring/relationships');
   mutate('/hiring/relationships/nutritionist');
   mutate('/nutritionist/clients');
@@ -53,7 +53,7 @@ export async function reactivateRelationship(relationshipID: string): Promise<vo
 }
 
 export async function activateRelationship(relationshipID: string): Promise<void> {
-  await api.post(`/hiring/relationships/${relationshipID}/activate`, {});
+  await api.post(`/relationships/${relationshipID}/activate`, {});
   mutate('/hiring/relationships');
   mutate('/hiring/relationships/nutritionist');
   mutate('/nutritionist/clients');
