@@ -12,7 +12,7 @@ import { Trash2 } from 'lucide-react';
 const DAYS = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 
 export function AvailabilityEditor() {
-  const { rules, isLoading } = useAvailabilityRules();
+  const { rules, isLoading, mutate } = useAvailabilityRules();
   const [dayOfWeek, setDayOfWeek] = useState<number>(1);
   const [startTime, setStartTime] = useState('09:00');
   const [endTime, setEndTime] = useState('13:00');
@@ -25,6 +25,7 @@ export function AvailabilityEditor() {
       await createAvailabilityRule({ day_of_week: dayOfWeek, start_time: startTime, end_time: endTime });
       setStartTime('09:00');
       setEndTime('13:00');
+      await mutate();
     } catch (err: any) {
       setError(err.message || 'Error al crear disponibilidad');
     }
@@ -33,6 +34,7 @@ export function AvailabilityEditor() {
   const handleDelete = async (id: string) => {
     try {
       await deleteAvailabilityRule(id);
+      await mutate();
     } catch (err: any) {
       console.error('Failed to delete availability rule:', err);
     }

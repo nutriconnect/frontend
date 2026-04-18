@@ -21,7 +21,6 @@ export default function AppointmentTypesPage() {
   const [name, setName] = useState('');
   const [durationMinutes, setDurationMinutes] = useState(30);
   const [description, setDescription] = useState('');
-  const [videoLink, setVideoLink] = useState('');
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -31,7 +30,6 @@ export default function AppointmentTypesPage() {
     setName('');
     setDurationMinutes(30);
     setDescription('');
-    setVideoLink('');
     setError('');
     setDialogOpen(true);
   };
@@ -41,7 +39,6 @@ export default function AppointmentTypesPage() {
     setName(type.name);
     setDurationMinutes(type.duration_minutes);
     setDescription(type.description);
-    setVideoLink(type.video_link);
     setError('');
     setDialogOpen(true);
   };
@@ -66,14 +63,14 @@ export default function AppointmentTypesPage() {
           name: name.trim(),
           duration_minutes: durationMinutes,
           description: description.trim(),
-          video_link: videoLink.trim(),
+          video_link: '',
         });
       } else {
         await createAppointmentType({
           name: name.trim(),
           duration_minutes: durationMinutes,
           description: description.trim(),
-          video_link: videoLink.trim(),
+          video_link: '',
         });
       }
       setDialogOpen(false);
@@ -175,18 +172,6 @@ export default function AppointmentTypesPage() {
                       placeholder="Describe brevemente qué incluye esta cita..."
                     />
                   </div>
-
-                  <div className="dash-field">
-                    <label className="dash-label">Enlace de videollamada</label>
-                    <input
-                      type="url"
-                      className="dash-input"
-                      value={videoLink}
-                      onChange={(e) => setVideoLink(e.target.value)}
-                      maxLength={500}
-                      placeholder="https://meet.google.com/... o https://zoom.us/..."
-                    />
-                  </div>
                 </div>
 
                 <div style={{ display: 'flex', gap: 12, marginTop: 24 }}>
@@ -263,20 +248,6 @@ export default function AppointmentTypesPage() {
                 {type.description && (
                   <div style={{ fontSize: 13, color: 'var(--nc-stone)', lineHeight: 1.5 }}>
                     {type.description}
-                  </div>
-                )}
-
-                {type.video_link && (
-                  <div style={{ fontSize: 12, color: 'var(--nc-stone)' }}>
-                    <span style={{ fontWeight: 500 }}>Video: </span>
-                    <a
-                      href={type.video_link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ color: 'var(--nc-terra)', textDecoration: 'none' }}
-                    >
-                      {type.video_link.length > 40 ? type.video_link.substring(0, 37) + '...' : type.video_link}
-                    </a>
                   </div>
                 )}
 
