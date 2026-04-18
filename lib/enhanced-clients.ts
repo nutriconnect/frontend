@@ -24,8 +24,9 @@ export async function getQuickStats(): Promise<QuickStats> {
   return api.get<QuickStats>('/nutritionist/stats');
 }
 
-export async function getEnhancedClient(clientId: string): Promise<EnhancedClient> {
-  return api.get<EnhancedClient>(`/nutritionist/clients/${clientId}`);
+export async function getEnhancedClient(clientId: string): Promise<EnhancedClient | null> {
+  const result = await api.get<{ clients: EnhancedClient[] }>('/nutritionist/clients');
+  return result.clients.find(c => c.client_id === clientId) || null;
 }
 
 export function useEnhancedClients(params: EnhancedClientsParams) {
@@ -66,13 +67,15 @@ export function useQuickStats() {
 
 export function useEnhancedClient(clientId: string) {
   const { data, error, isLoading, mutate } = useSWR(
-    `/nutritionist/clients/${clientId}`,
-    () => getEnhancedClient(clientId),
+    `/nutritionist/clients`,
+    () => getEnhancedClients({}),
     { revalidateOnFocus: false }
   );
 
+  const client = data?.clients.find(c => c.client_id === clientId) || null;
+
   return {
-    client: data || null,
+    client,
     isLoading,
     error,
     mutate,
