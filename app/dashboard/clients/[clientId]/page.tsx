@@ -103,24 +103,24 @@ function StatusManagementSection({ relationshipId, status, completionNotes, onSt
   return (
     <div className="dash-section">
       <div className="dash-section-head">
-        <div className="dash-section-title">Estado de la relación</div>
-        <div className="dash-section-sub">Gestiona el estado de la relación con este cliente</div>
+        <div className="dash-section-title">Gestión del cliente</div>
+        <div className="dash-section-sub">Gestiona el ciclo de vida de tu trabajo con este cliente</div>
       </div>
       <div className="dash-section-body">
         <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 16 }}>
           <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--nc-ink)' }}>
-            Estado actual:
+            Estado:
           </div>
           <RelationshipStatusBadge status={status} />
         </div>
 
         {completionNotes && status === 'completed' && (
           <div style={{
-            background: 'rgba(59,130,246,0.05)', border: '1px solid rgba(59,130,246,0.2)',
+            background: 'rgba(74,124,89,0.05)', border: '1px solid rgba(74,124,89,0.2)',
             borderRadius: 6, padding: 12, marginBottom: 16,
           }}>
-            <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#3b82f6', marginBottom: 6 }}>
-              Notas de finalización
+            <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#4a7c59', marginBottom: 6 }}>
+              Notas del cierre
             </div>
             <div style={{ fontSize: 13, color: 'var(--nc-ink)', fontWeight: 300, lineHeight: 1.5 }}>
               {completionNotes}
@@ -149,7 +149,7 @@ function StatusManagementSection({ relationshipId, status, completionNotes, onSt
                 opacity: isLoading ? 0.6 : 1,
               }}
             >
-              {isLoading ? 'Activando…' : 'Activar relación'}
+              {isLoading ? 'Activando…' : 'Activar cliente'}
             </button>
           )}
 
@@ -159,12 +159,13 @@ function StatusManagementSection({ relationshipId, status, completionNotes, onSt
               disabled={isLoading}
               style={{
                 padding: '10px 16px', fontSize: 13, fontWeight: 500,
-                color: 'white', background: '#3b82f6',
-                border: 'none', borderRadius: 6, cursor: isLoading ? 'not-allowed' : 'pointer',
+                color: 'var(--nc-forest)', background: 'transparent',
+                border: '1.5px solid var(--nc-border)', borderRadius: 6,
+                cursor: isLoading ? 'not-allowed' : 'pointer',
                 opacity: isLoading ? 0.6 : 1,
               }}
             >
-              Completar relación
+              Marcar como completado
             </button>
           )}
 
@@ -173,7 +174,7 @@ function StatusManagementSection({ relationshipId, status, completionNotes, onSt
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder="Añade notas sobre la finalización de la relación (ej: objetivos alcanzados, recomendaciones finales…)"
+                placeholder="Añade notas sobre el cierre (ej: objetivos alcanzados, recomendaciones…)"
                 rows={4}
                 style={{
                   width: '100%', padding: 10, fontSize: 13, fontFamily: 'inherit',
@@ -187,12 +188,12 @@ function StatusManagementSection({ relationshipId, status, completionNotes, onSt
                   disabled={isLoading || !notes.trim()}
                   style={{
                     padding: '10px 16px', fontSize: 13, fontWeight: 500,
-                    color: 'white', background: '#3b82f6',
+                    color: 'white', background: '#4a7c59',
                     border: 'none', borderRadius: 6, cursor: (isLoading || !notes.trim()) ? 'not-allowed' : 'pointer',
                     opacity: (isLoading || !notes.trim()) ? 0.6 : 1,
                   }}
                 >
-                  {isLoading ? 'Completando…' : 'Confirmar finalización'}
+                  {isLoading ? 'Guardando…' : 'Confirmar cierre'}
                 </button>
                 <button
                   onClick={() => {
@@ -224,7 +225,7 @@ function StatusManagementSection({ relationshipId, status, completionNotes, onSt
                 opacity: isLoading ? 0.6 : 1,
               }}
             >
-              {isLoading ? 'Reactivando…' : 'Reactivar relación'}
+              {isLoading ? 'Reactivando…' : 'Reactivar cliente'}
             </button>
           )}
         </div>
