@@ -6,6 +6,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { usePublicProfiles } from '@/lib/profile';
 import { SearchFilters } from './SearchFilters';
+import { Avatar } from '@/components/Avatar';
 import type { ProfileSummary } from '@/lib/types';
 
 // ─── helpers (unchanged from before) ─────────────────────────────────────────
@@ -14,10 +15,6 @@ const BANNER_CLASSES = [
   'nc-banner-1', 'nc-banner-2', 'nc-banner-3',
   'nc-banner-4', 'nc-banner-5', 'nc-banner-6',
 ];
-
-function initials(name: string): string {
-  return name.split(/\s+/).filter(Boolean).map((w) => w[0]).slice(0, 2).join('').toUpperCase();
-}
 
 function formatPrice(cents: number | null): string {
   if (cents === null) return '—';
@@ -29,7 +26,12 @@ function NutriCard({ profile, index }: { profile: ProfileSummary; index: number 
   return (
     <div className="nc-card">
       <div className={`nc-card-banner ${bannerClass}`}>
-        <div className="nc-card-initials">{initials(profile.display_name)}</div>
+        <Avatar
+          avatarUrl={profile.avatar_url}
+          displayName={profile.display_name}
+          size="medium"
+          className="nc-card-initials"
+        />
       </div>
       <div className="nc-card-body">
         <div className="nc-card-name">{profile.display_name}</div>

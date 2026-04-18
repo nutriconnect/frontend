@@ -7,11 +7,8 @@ import { usePublicProfile } from '@/lib/profile';
 import { connectWithNutritionist } from '@/lib/hiring';
 import { api } from '@/lib/api';
 import { WaitlistButton } from '@/components/WaitlistButton';
+import { Avatar } from '@/components/Avatar';
 import useSWR from 'swr';
-
-function initials(name: string): string {
-  return name.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase();
-}
 
 function formatPrice(cents: number): string {
   return `€${Math.floor(cents / 100)}`;
@@ -106,7 +103,12 @@ export default function PublicProfilePage() {
               {profile.years_exp !== null && <span className="nc-pill">{profile.years_exp} years experience</span>}
             </div>
           </div>
-          <div className="nc-hero-avatar">{initials(profile.display_name)}</div>
+          <Avatar
+            avatarUrl={profile.avatar_url}
+            displayName={profile.display_name}
+            size="large"
+            className="nc-hero-avatar"
+          />
         </div>
         <div className="nc-hero-tabs">
           <div className="nc-hero-tab active">About</div>

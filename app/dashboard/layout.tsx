@@ -7,14 +7,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/auth';
 import { api } from '@/lib/api';
 import { useMyProfile } from '@/lib/profile';
-
-function initials(text: string): string {
-  const words = text.trim().split(/\s+/);
-  if (words.length >= 2) {
-    return (words[0][0] + words[words.length - 1][0]).toUpperCase();
-  }
-  return text.slice(0, 2).toUpperCase();
-}
+import { Avatar } from '@/components/Avatar';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();
@@ -84,13 +77,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <Link href="/">Nutri<span>Red</span></Link>
         </div>
         <div className="dash-user">
-          <div className="dash-avatar">
-            {initials(
+          <Avatar
+            avatarUrl={user.role === 'nutritionist' ? (profile?.avatar_url ?? null) : null}
+            displayName={
               user.role === 'nutritionist' && profile?.display_name
                 ? profile.display_name
                 : user.email
-            )}
-          </div>
+            }
+            size="small"
+          />
           <div>
             <div className="dash-user-name">
               {user.role === 'nutritionist' && profile?.display_name

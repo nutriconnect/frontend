@@ -1,6 +1,6 @@
 // frontend/components/ClientCard.tsx
 import Link from 'next/link';
-import ClientAvatar from './ClientAvatar';
+import { Avatar } from './Avatar';
 import type { EnhancedClient } from '@/lib/types';
 
 interface ClientCardProps {
@@ -69,7 +69,11 @@ export default function ClientCard({ client }: ClientCardProps) {
     }}>
       {/* Left side */}
       <div style={{ display: 'flex', gap: 16, alignItems: 'center', flex: 1, minWidth: 0 }}>
-        <ClientAvatar name={client.client_display_name} size={48} />
+        <Avatar
+          avatarUrl={client.client_avatar_url}
+          displayName={client.client_display_name}
+          size="small"
+        />
 
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{

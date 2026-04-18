@@ -18,6 +18,7 @@ export interface NutritionistProfile {
   intro_consultation_required: boolean;
   accepting_new_clients: boolean;
   at_capacity: boolean;
+  avatar_url: string | null;
   created_at: string;
   updated_at: string;
   packages: ServicePackage[];
@@ -46,6 +47,7 @@ export interface ProfileSummary {
   lowest_price_cents: number | null;
   accepting_new_clients: boolean;
   at_capacity: boolean;
+  avatar_url: string | null;
 }
 
 export interface ProfileListResponse {
@@ -67,6 +69,7 @@ export interface ClientProfile {
   goals: string[];
   dietary_restrictions: string[];
   allergies: string[];
+  avatar_url: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -364,6 +367,7 @@ export interface EnhancedClient {
   client_display_name: string;
   client_email: string;
   client_goal: string;
+  client_avatar_url: string | null;
   status: 'pending_intro' | 'active' | 'cancelled';
   package_id: string;
   package_name: string;
