@@ -1,7 +1,7 @@
 // frontend/app/dashboard/messages/components/ChatThread.tsx
 'use client';
 
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useAuth } from '@/lib/auth';
 import { useChatMessages, useWebSocket, markMessagesAsRead } from '@/lib/chat';
 import { MessageBubble } from './MessageBubble';
@@ -27,8 +27,21 @@ export function ChatThread({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
-  // Combine historical + real-time messages
-  const allMessages = [...historicalMessages, ...wsMessages];
+  // Combine historical + real-time messages, deduplicate by ID
+  const allMessages = React.useMemo(() => {
+    const messageMap = new Map();
+
+    // Add historical messages first
+    historicalMessages.forEach(msg => messageMap.set(msg.id, msg));
+
+    // Add WebSocket messages (will overwrite if duplicate)
+    wsMessages.forEach(msg => messageMap.set(msg.id, msg));
+
+    // Convert back to array and sort by created_at
+    return Array.from(messageMap.values()).sort(
+      (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+    );
+  }, [historicalMessages, wsMessages]);
 
   // Scroll to bottom on new messages
   useEffect(() => {
