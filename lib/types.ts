@@ -436,3 +436,25 @@ export interface AvailabilityRule {
   end_time: string;
   created_at: string;
 }
+
+export interface Appointment {
+  id: string;
+  relationship_id: string;
+  start_time: string;
+  end_time: string;
+  status: 'scheduled' | 'completed' | 'cancelled' | 'no_show';
+  notes: string;
+  cancellation_reason?: string;
+  cancelled_at?: string;
+  appointment_type: {
+    id: string;
+    name: string;
+    duration_minutes: number;
+    description: string;
+    video_link: string;
+  };
+  client_name: string;
+  client_email: string;
+  nutritionist_name: string;
+  nutritionist_email: string;
+}
