@@ -84,15 +84,40 @@ function NutritionistWeekView({ appointments, weekStart }: WeekViewProps) {
 
   const hours = Array.from({ length: 13 }, (_, i) => i + 8); // 8am - 8pm
 
+  // Calculate grid row placement for each appointment
+  const getAppointmentStyle = (appt: Appointment, dayIndex: number) => {
+    const start = new Date(appt.start_time);
+    const end = new Date(appt.end_time);
+    const startHour = start.getHours();
+    const startMinute = start.getMinutes();
+    const durationMs = end.getTime() - start.getTime();
+    const durationHours = durationMs / (1000 * 60 * 60);
+
+    // Grid row starts at 2 (after header), each hour is one row
+    const rowStart = 2 + (startHour - 8); // 8am is row 2
+    const rowSpan = Math.ceil(durationHours);
+
+    // Column: 2 = first day (Monday), etc
+    const colStart = 2 + dayIndex;
+
+    return {
+      gridColumn: colStart,
+      gridRow: `${rowStart} / span ${rowSpan}`,
+      marginTop: `${(startMinute / 60) * 60}px`, // Offset within the hour
+    };
+  };
+
   return (
     <div style={{
       display: 'grid',
       gridTemplateColumns: '60px repeat(7, 1fr)',
+      gridTemplateRows: 'auto repeat(13, 60px)', // Header + 13 hour rows
       gap: 1,
       background: 'var(--nc-border)',
       border: '1px solid var(--nc-border)',
       borderRadius: 8,
       overflow: 'hidden',
+      position: 'relative',
     }}>
       {/* Header row */}
       <div style={{ background: 'white', padding: '12px 8px' }} />
@@ -108,40 +133,47 @@ function NutritionistWeekView({ appointments, weekStart }: WeekViewProps) {
         </div>
       ))}
 
-      {/* Time slots */}
+      {/* Time labels */}
       {hours.map((hour) => (
-        <React.Fragment key={`hour-${hour}`}>
-          <div style={{
-            background: 'white',
-            padding: '8px',
-            fontSize: 12,
-            color: 'var(--nc-stone)',
-            textAlign: 'right',
-          }}>
-            {hour}:00
-          </div>
-          {days.map((day, dayIndex) => {
-            const dayAppointments = appointments.filter((a: Appointment) => {
-              const apptDate = new Date(a.start_time);
-              return apptDate.toDateString() === day.toDateString() &&
-                     apptDate.getHours() === hour;
-            });
-
-            return (
-              <div key={`${hour}-${dayIndex}`} style={{
-                background: 'white',
-                padding: 4,
-                minHeight: 60,
-                position: 'relative',
-              }}>
-                {dayAppointments.map((appt: Appointment) => (
-                  <AppointmentCard key={appt.id} appointment={appt} isNutritionist={true} />
-                ))}
-              </div>
-            );
-          })}
-        </React.Fragment>
+        <div key={`time-${hour}`} style={{
+          background: 'white',
+          padding: '8px',
+          fontSize: 12,
+          color: 'var(--nc-stone)',
+          textAlign: 'right',
+          gridColumn: 1,
+        }}>
+          {hour}:00
+        </div>
       ))}
+
+      {/* Empty cells for grid structure */}
+      {hours.map((hour) =>
+        days.map((_, dayIndex) => (
+          <div key={`cell-${hour}-${dayIndex}`} style={{
+            background: 'white',
+            minHeight: 60,
+          }} />
+        ))
+      )}
+
+      {/* Appointments positioned absolutely over grid */}
+      {days.map((day, dayIndex) => {
+        const dayAppointments = appointments.filter((a: Appointment) => {
+          const apptDate = new Date(a.start_time);
+          return apptDate.toDateString() === day.toDateString();
+        });
+
+        return dayAppointments.map((appt: Appointment) => (
+          <div key={appt.id} style={{
+            ...getAppointmentStyle(appt, dayIndex),
+            padding: 4,
+            zIndex: 1,
+          }}>
+            <AppointmentCard appointment={appt} isNutritionist={true} />
+          </div>
+        ));
+      })}
     </div>
   );
 }
@@ -229,9 +261,10 @@ function AppointmentCard({ appointment, isNutritionist }: AppointmentCardProps) 
         borderRadius: 4,
         padding: '4px 6px',
         fontSize: 11,
-        marginBottom: 2,
         cursor: 'pointer',
         position: 'relative',
+        height: '100%',
+        overflow: 'hidden',
       }}
       onMouseEnter={() => setShowActions(true)}
       onMouseLeave={() => setShowActions(false)}
