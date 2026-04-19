@@ -7,6 +7,7 @@ import { useParams } from 'next/navigation';
 import { useClientProfile, useNutritionPlans, useExercisePlans } from '@/lib/plans';
 import { useEnhancedClient } from '@/lib/enhanced-clients';
 import { completeRelationship, reactivateRelationship, activateRelationship } from '@/lib/hiring';
+import HealthTrackingSection from './components/HealthTrackingSection';
 import type { NutritionPlan, ExercisePlan, PlanStatus } from '@/lib/types';
 
 function PlanStatusBadge({ status }: { status: PlanStatus }) {
@@ -455,12 +456,18 @@ export default function ClientDetailPage() {
         )}
 
         {!clientLoading && client && (
-          <StatusManagementSection
-            relationshipId={client.relationship_id}
-            status={client.status}
-            completionNotes={client.completion_notes}
-            onStatusChange={mutateClient}
-          />
+          <>
+            <StatusManagementSection
+              relationshipId={client.relationship_id}
+              status={client.status}
+              completionNotes={client.completion_notes}
+              onStatusChange={mutateClient}
+            />
+            <HealthTrackingSection
+              clientId={clientId}
+              relationshipStatus={client.status}
+            />
+          </>
         )}
 
         <NutritionSection clientId={clientId} plans={nutritionPlans} isLoading={nutritionLoading} />
