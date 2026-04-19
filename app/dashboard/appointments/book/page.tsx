@@ -22,11 +22,15 @@ export default function BookAppointmentPage() {
   const { types, isLoading: typesLoading } = useAppointmentTypes(nutritionistID || undefined);
   const selectedType = types.find(t => t.id === selectedTypeID);
 
-  const { slots, isLoading: slotsLoading } = useAvailableSlots(
+  const { slots, isLoading: slotsLoading, error: slotsError } = useAvailableSlots(
     nutritionistID || '',
     selectedDate,
     selectedType?.duration_minutes || 0
   );
+
+  // Check if nutritionist has no appointment types configured
+  const hasNoAppointmentTypes = slotsError?.message?.includes('NO_APPOINTMENT_TYPES') ||
+                                  slotsError?.message?.includes('no ha configurado tipos de cita');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,6 +82,22 @@ export default function BookAppointmentPage() {
             </div>
           )}
 
+          {hasNoAppointmentTypes && !error && (
+            <div style={{
+              background: 'rgba(196,98,45,0.08)',
+              color: 'var(--nc-terra)',
+              padding: '16px',
+              borderRadius: 8,
+              fontSize: 14,
+              marginBottom: 24,
+              lineHeight: 1.6,
+            }}>
+              <strong>No se pueden agendar citas aún</strong>
+              <br />
+              Este nutricionista aún no ha configurado sus tipos de cita. Por favor, contacta con soporte o espera a que el nutricionista complete su configuración.
+            </div>
+          )}
+
           <div className="dash-field">
             <label className="dash-label">Tipo de cita</label>
             <select
@@ -85,6 +105,7 @@ export default function BookAppointmentPage() {
               value={selectedTypeID}
               onChange={(e) => setSelectedTypeID(e.target.value)}
               required
+              disabled={hasNoAppointmentTypes}
             >
               <option value="">Seleccionar...</option>
               {types.map((type) => (
@@ -146,7 +167,7 @@ export default function BookAppointmentPage() {
           <div style={{ display: 'flex', gap: 12, marginTop: 24 }}>
             <button
               type="submit"
-              disabled={submitting || !selectedSlot}
+              disabled={submitting || !selectedSlot || hasNoAppointmentTypes}
               className="dash-btn-publish"
               style={{ flex: 1 }}
             >
