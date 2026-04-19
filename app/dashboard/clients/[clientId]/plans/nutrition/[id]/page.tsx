@@ -341,6 +341,8 @@ export default function EditNutritionPlanPage() {
             options: s.options.map((o, oi) => ({ ...o, display_order: oi })),
           }))
         : [],
+      include_supplements: false,
+      supplements: [],
     };
   }
 

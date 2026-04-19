@@ -234,6 +234,8 @@ export default function NewNutritionPlanPage() {
               options: s.options.map((o, oi) => ({ ...o, display_order: oi })),
             }))
           : [],
+        include_supplements: false,
+        supplements: [],
       };
       const { id } = await createNutritionPlan(payload);
       router.push(`/dashboard/clients/${clientId}/plans/nutrition/${id}`);

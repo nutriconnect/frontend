@@ -8,6 +8,8 @@ import type {
   ExercisePlan,
   ClientProfileSummary,
   MealType,
+  SupplementTiming,
+  PlanStyle,
 } from '@/lib/types';
 
 // ─── Payload types (used only in this file + callers) ────────────────────────
@@ -52,13 +54,30 @@ export interface NutritionDayPayload {
   meals: MealPayload[];
 }
 
+export interface SupplementPayload {
+  id?: string;
+  name: string;
+  brand?: string | null;
+  dosage: string;
+  timing: SupplementTiming;
+  linked_meal_id?: string | null;
+  notes?: string | null;
+  calories?: number | null;
+  protein_g?: number | null;
+  carbs_g?: number | null;
+  fat_g?: number | null;
+  display_order: number;
+}
+
 export interface NutritionPlanPayload {
   client_id: string;
   title: string;
   notes: string;
-  plan_style: 'structured' | 'flexible';
-  days: NutritionDayPayload[];
-  slots: NutritionPlanSlotPayload[];
+  plan_style: PlanStyle;
+  days?: NutritionDayPayload[];
+  slots?: NutritionPlanSlotPayload[];
+  include_supplements: boolean;
+  supplements: SupplementPayload[];
 }
 
 export interface ExercisePayload {
