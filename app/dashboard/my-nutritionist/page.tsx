@@ -4,6 +4,7 @@
 import { useState } from 'react';
 import { useMyRelationships, cancelRelationship } from '@/lib/hiring';
 import { timeSince } from '@/lib/utils';
+import Link from 'next/link';
 
 export default function MyNutritionistPage() {
   const { relationships, isLoading } = useMyRelationships();
@@ -87,6 +88,15 @@ export default function MyNutritionistPage() {
             Estado: <strong>{rel.status === 'active' ? 'Activo' : rel.status === 'pending_intro' ? 'Pendiente' : 'Cancelado'}</strong>
           </div>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            {rel.status === 'active' && (
+              <Link
+                href={`/dashboard/appointments/book?relationship_id=${rel.id}&nutritionist_id=${rel.nutritionist_id}`}
+                className="dash-btn-publish"
+                style={{ fontSize: 12, textDecoration: 'none', padding: '6px 12px' }}
+              >
+                Agendar Cita
+              </Link>
+            )}
             <a href={`/nutritionists/${rel.nutritionist_slug}`} target="_blank"
                style={{ fontSize: 12, color: 'var(--nc-terra)', textDecoration: 'none' }}>
               Ver perfil ↗
