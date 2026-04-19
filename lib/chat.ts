@@ -4,6 +4,7 @@ import useSWR, { mutate } from 'swr';
 import { api } from './api';
 import type { ChatMessage, Conversation, UploadAttachmentResponse } from './types';
 
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080/api/v1';
 const WS_URL = process.env.NEXT_PUBLIC_WS_URL ?? 'ws://localhost:8080';
 
 // ─── API Functions ────────────────────────────────────────────────────────────
@@ -30,7 +31,7 @@ export async function uploadChatAttachment(
   formData.append('file', file);
 
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/v1/chat/${relationshipId}/upload`,
+    `${BASE_URL}/chat/${relationshipId}/upload`,
     {
       method: 'POST',
       credentials: 'include',
