@@ -90,4 +90,17 @@ export const api = {
 
   getWaitlistStatus: (slug: string): Promise<{ on_waitlist: boolean }> =>
     request<{ on_waitlist: boolean }>(`/nutritionists/${slug}/waitlist`, { method: 'GET' }),
+
+  // Recurring appointments
+  createRecurringAppointment: <T>(data: T) =>
+    request(`/appointments/recurring`, { method: 'POST', body: JSON.stringify(data) }),
+
+  getRecurringSeries: (seriesId: string) =>
+    request(`/appointments/series/${seriesId}`, { method: 'GET' }),
+
+  cancelRecurringSeries: (seriesId: string, reason: string) =>
+    request(`/appointments/series/${seriesId}/cancel`, {
+      method: 'POST',
+      body: JSON.stringify({ reason }),
+    }),
 };

@@ -446,6 +446,7 @@ export interface Appointment {
   notes: string;
   cancellation_reason?: string;
   cancelled_at?: string;
+  series_id?: string;
   appointment_type: {
     id: string;
     name: string;
@@ -459,4 +460,50 @@ export interface Appointment {
   nutritionist_id: string;
   nutritionist_name: string;
   nutritionist_email: string;
+}
+
+export interface RecurrencePattern {
+  id: string;
+  series_id: string;
+  frequency: 'weekly' | 'biweekly' | 'monthly';
+  interval: number;
+  end_type: 'after_count' | 'on_date' | 'never';
+  end_after_count?: number;
+  end_date?: string;
+  created_at: string;
+}
+
+export interface AppointmentReminder {
+  id: string;
+  appointment_id: string;
+  reminder_type: '24h' | '1h';
+  scheduled_for: string;
+  sent_at?: string;
+  created_at: string;
+}
+
+export interface RecurringSeriesDetails {
+  pattern: RecurrencePattern;
+  appointments: Appointment[];
+}
+
+export interface CreateRecurringAppointmentRequest {
+  relationship_id: string;
+  appointment_type_id: string;
+  start_time: string; // ISO 8601
+  notes?: string;
+  recurrence: {
+    frequency: 'weekly' | 'biweekly' | 'monthly';
+    interval: number;
+    end_type: 'after_count' | 'on_date' | 'never';
+    end_after_count?: number;
+    end_date?: string; // YYYY-MM-DD
+  };
+}
+
+export interface CreateRecurringAppointmentResponse {
+  series_id: string;
+  appointments_created: number;
+  first_start_time: string;
+  last_start_time: string;
 }
