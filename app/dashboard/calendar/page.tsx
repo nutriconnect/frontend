@@ -686,7 +686,7 @@ function AppointmentModal({ appointment, isNutritionist, onClose }: AppointmentM
               </div>
               {isNutritionist && (
                 <Link
-                  href={`/dashboard/clients/${appointment.relationship_id}`}
+                  href={`/dashboard/clients/${appointment.client_id}`}
                   style={{
                     fontSize: 12,
                     color: 'var(--nc-forest)',

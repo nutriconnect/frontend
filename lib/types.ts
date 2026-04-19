@@ -453,8 +453,10 @@ export interface Appointment {
     description: string;
     video_link: string;
   };
+  client_id: string;
   client_name: string;
   client_email: string;
+  nutritionist_id: string;
   nutritionist_name: string;
   nutritionist_email: string;
 }
