@@ -217,6 +217,9 @@ interface AppointmentCardProps {
 
 function AppointmentCard({ appointment, isNutritionist }: AppointmentCardProps) {
   const [showActions, setShowActions] = useState(false);
+  const startTime = new Date(appointment.start_time);
+  const endTime = new Date(appointment.end_time);
+  const durationMinutes = Math.round((endTime.getTime() - startTime.getTime()) / 60000);
 
   return (
     <div
@@ -237,7 +240,10 @@ function AppointmentCard({ appointment, isNutritionist }: AppointmentCardProps) 
         {isNutritionist ? appointment.client_name : appointment.nutritionist_name}
       </div>
       <div style={{ color: 'var(--nc-stone)' }}>
-        {format(new Date(appointment.start_time), 'HH:mm')} - {appointment.appointment_type.name}
+        {format(startTime, 'HH:mm')}-{format(endTime, 'HH:mm')} ({durationMinutes}min)
+      </div>
+      <div style={{ fontSize: 10, color: 'var(--nc-stone)' }}>
+        {appointment.appointment_type.name}
       </div>
       {isNutritionist && showActions && appointment.status === 'scheduled' && (
         <NutritionistActions appointmentId={appointment.id} />
@@ -271,6 +277,19 @@ function NutritionistActions({ appointmentId }: NutritionistActionsProps) {
       await markNoShow(appointmentId);
     } catch (err) {
       alert('Error marking as no-show');
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const handleCancel = async () => {
+    const reason = window.prompt('Motivo de cancelación:');
+    if (!reason) return;
+    setProcessing(true);
+    try {
+      await cancelAppointment(appointmentId, reason);
+    } catch (err: any) {
+      alert(err.message || 'Error cancelando cita');
     } finally {
       setProcessing(false);
     }
@@ -322,6 +341,21 @@ function NutritionistActions({ appointmentId }: NutritionistActionsProps) {
         }}
       >
         No asistió
+      </button>
+      <button
+        onClick={handleCancel}
+        disabled={processing}
+        style={{
+          padding: '4px 8px',
+          fontSize: 11,
+          background: '#666',
+          color: 'white',
+          border: 'none',
+          borderRadius: 4,
+          cursor: 'pointer',
+        }}
+      >
+        Cancelar
       </button>
     </div>
   );
