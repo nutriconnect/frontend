@@ -15,7 +15,7 @@ export default function MessagesPage() {
   );
 
   return (
-    <>
+    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
       <div className="dash-topbar">
         <div className="dash-topbar-title">Mensajes</div>
       </div>
@@ -24,8 +24,8 @@ export default function MessagesPage() {
         style={{
           display: 'grid',
           gridTemplateColumns: '320px 1fr',
-          height: 'calc(100vh - 60px)',
-          overflow: 'hidden',
+          flex: 1,
+          minHeight: 0,
         }}
       >
         {/* Conversations Sidebar */}
@@ -34,6 +34,7 @@ export default function MessagesPage() {
             borderRight: '1px solid var(--nc-border)',
             background: 'white',
             overflowY: 'auto',
+            height: '100%',
           }}
         >
           <ConversationsList
@@ -43,7 +44,7 @@ export default function MessagesPage() {
         </div>
 
         {/* Chat Thread */}
-        <div style={{ background: '#FAFAF9', height: '100%' }}>
+        <div style={{ background: '#FAFAF9', height: '100%', overflow: 'hidden' }}>
           {activeConversation ? (
             <ChatThread
               relationshipId={activeConversation.relationship_id}
@@ -67,6 +68,6 @@ export default function MessagesPage() {
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 }

@@ -7,9 +7,10 @@ import { format, isToday, isYesterday } from 'date-fns';
 interface MessageBubbleProps {
   message: ChatMessage;
   isOwnMessage: boolean;
+  onImageLoad?: () => void;
 }
 
-export function MessageBubble({ message, isOwnMessage }: MessageBubbleProps) {
+export function MessageBubble({ message, isOwnMessage, onImageLoad }: MessageBubbleProps) {
   const formatTimestamp = (timestamp: string) => {
     const date = new Date(timestamp);
     if (isToday(date)) return format(date, 'HH:mm');
@@ -74,6 +75,7 @@ export function MessageBubble({ message, isOwnMessage }: MessageBubbleProps) {
                 <img
                   src={message.attachment_url}
                   alt={message.attachment_filename || 'Attachment'}
+                  onLoad={onImageLoad}
                   style={{
                     maxWidth: 300,
                     maxHeight: 300,

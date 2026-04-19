@@ -57,6 +57,7 @@ export function MessageInput({ relationshipId, onSendMessage, disabled }: Messag
         borderTop: '1px solid var(--nc-border)',
         padding: 16,
         background: 'white',
+        flexShrink: 0,
       }}
     >
       {error && (

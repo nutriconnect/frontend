@@ -1,7 +1,7 @@
 // frontend/app/dashboard/messages/components/ChatThread.tsx
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '@/lib/auth';
 import { useChatMessages, useWebSocket, markMessagesAsRead } from '@/lib/chat';
 import { MessageBubble } from './MessageBubble';
@@ -25,6 +25,7 @@ export function ChatThread({
   const { status, messages: wsMessages, onlineUsers, sendMessage } = useWebSocket(relationshipId);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   // Combine historical + real-time messages, deduplicate by ID
@@ -43,10 +44,28 @@ export function ChatThread({
     );
   }, [historicalMessages, wsMessages]);
 
-  // Scroll to bottom on new messages
+  const scrollToBottom = useCallback(() => {
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
+  }, []);
+
+  // Scroll to bottom when conversation changes or new messages arrive
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [allMessages.length]);
+    // Use requestAnimationFrame to ensure DOM is fully laid out
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        scrollToBottom();
+      });
+    });
+  }, [scrollToBottom, relationshipId]);
+
+  // Also scroll when messages change (new message added)
+  useEffect(() => {
+    requestAnimationFrame(() => {
+      scrollToBottom();
+    });
+  }, [scrollToBottom, allMessages.length]);
 
   // Mark messages as read when they appear in viewport
   useEffect(() => {
@@ -94,7 +113,7 @@ export function ChatThread({
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       {/* Header */}
       <div
         style={{
@@ -151,11 +170,13 @@ export function ChatThread({
 
       {/* Messages */}
       <div
+        ref={messagesContainerRef}
         style={{
           flex: 1,
           overflowY: 'auto',
           padding: 16,
           background: '#FAFAF9',
+          minHeight: 0,
         }}
       >
         {allMessages.length === 0 ? (
@@ -175,6 +196,7 @@ export function ChatThread({
               key={msg.id}
               message={msg}
               isOwnMessage={msg.sender_id === user?.id}
+              onImageLoad={scrollToBottom}
             />
           ))
         )}
