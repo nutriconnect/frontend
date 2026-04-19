@@ -487,6 +487,18 @@ export interface RecurringSeriesDetails {
   appointments: Appointment[];
 }
 
+export interface UpcomingAppointment {
+  id: string;
+  nutritionist_id: string;
+  nutritionist_name: string;
+  appointment_type: string;
+  start_time: string; // ISO 8601
+  end_time: string; // ISO 8601
+  status: string;
+  can_cancel: boolean;
+  hours_until: number;
+}
+
 export interface CreateRecurringAppointmentRequest {
   relationship_id: string;
   appointment_type_id: string;

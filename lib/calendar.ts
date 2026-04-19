@@ -3,7 +3,7 @@
 
 import useSWR, { mutate } from 'swr';
 import { api } from './api';
-import type { AppointmentType, AvailabilityRule, Appointment } from './types';
+import type { AppointmentType, AvailabilityRule, Appointment, UpcomingAppointment } from './types';
 
 // ─── Appointment Types ────────────────────────────────────────────────────────
 
@@ -132,4 +132,14 @@ export async function completeAppointment(id: string, notes?: string): Promise<v
 export async function markNoShow(id: string): Promise<void> {
   await api.post(`/calendar/appointments/${id}/no-show`, {});
   mutate((key) => typeof key === 'string' && key.startsWith('/calendar'));
+}
+
+export function useUpcomingAppointments(limit: number = 5) {
+  const { data, error, isLoading } = useSWR<{ appointments: UpcomingAppointment[] }>(
+    `/dashboard/upcoming-appointments?limit=${limit}`,
+    () => api.get<{ appointments: UpcomingAppointment[] }>(
+      `/dashboard/upcoming-appointments?limit=${limit}`
+    )
+  );
+  return { appointments: data?.appointments ?? [], isLoading, error };
 }

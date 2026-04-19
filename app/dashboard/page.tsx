@@ -4,6 +4,7 @@
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth';
 import { useMyClientProfile, useWeightEntries, useActivityEntries } from '@/lib/client-profile';
+import { UpcomingAppointments } from './components/UpcomingAppointments';
 
 // ─── Mini weight chart (SVG, no deps) ─────────────────────────────────────────
 
@@ -117,6 +118,9 @@ function ClientOverview() {
           <div style={{ fontSize: 11, color: 'var(--nc-stone)', marginTop: 2 }}>sessions logged</div>
         </div>
       </div>
+
+      {/* Upcoming appointments */}
+      <UpcomingAppointments />
 
       {/* Weight chart card */}
       <div style={{ background: 'white', border: '1px solid var(--nc-border)', borderRadius: 10, padding: '20px 24px' }}>
