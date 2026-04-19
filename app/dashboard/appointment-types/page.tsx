@@ -2,6 +2,7 @@
 // frontend/app/dashboard/appointment-types/page.tsx
 
 import { useState } from 'react';
+import { useAuth } from '@/lib/auth';
 import { useAppointmentTypes, createAppointmentType, updateAppointmentType, deleteAppointmentType } from '@/lib/calendar';
 import type { AppointmentType } from '@/lib/types';
 import {
@@ -14,7 +15,13 @@ import {
 } from '@/components/ui/dialog';
 
 export default function AppointmentTypesPage() {
+  const { user } = useAuth();
   const { types, isLoading, mutate } = useAppointmentTypes();
+
+  // Nutritionist-only page
+  if (user?.role !== 'nutritionist') {
+    return null;
+  }
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingType, setEditingType] = useState<AppointmentType | null>(null);
 

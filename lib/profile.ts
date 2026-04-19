@@ -5,11 +5,12 @@ import { api, ApiRequestError } from './api';
 import type { NutritionistProfile, ProfileListResponse } from './types';
 
 // Hook for a nutritionist to read their own profile.
+// Silently returns null for clients (403) or missing profiles (404).
 export function useMyProfile() {
   const { data, error, isLoading, mutate } = useSWR<NutritionistProfile | null>(
     '/profile/me',
     () => api.get<NutritionistProfile>('/profile/me').catch((err) => {
-      if (err instanceof ApiRequestError && err.status === 404) return null;
+      if (err instanceof ApiRequestError && (err.status === 404 || err.status === 403)) return null;
       throw err;
     }),
     { revalidateOnFocus: false },
