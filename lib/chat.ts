@@ -1,6 +1,6 @@
 // frontend/lib/chat.ts
 import { useEffect, useRef, useState, useCallback } from 'react';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import { api } from './api';
 import type { ChatMessage, Conversation, UploadAttachmentResponse } from './types';
 
@@ -63,9 +63,12 @@ export async function markMessagesAsRead(
   relationshipId: string,
   lastReadMessageId: string,
 ): Promise<void> {
-  return api.put(`/chat/${relationshipId}/read`, {
+  await api.put(`/chat/${relationshipId}/read`, {
     last_read_message_id: lastReadMessageId,
   });
+
+  // Revalidate conversations to update unread count
+  mutate('/chat/conversations');
 }
 
 // ─── SWR Hooks ────────────────────────────────────────────────────────────────
