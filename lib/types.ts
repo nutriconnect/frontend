@@ -519,3 +519,35 @@ export interface CreateRecurringAppointmentResponse {
   first_start_time: string;
   last_start_time: string;
 }
+
+// Chat types
+export interface ChatMessage {
+  id: string;
+  sender_id: string;
+  sender_name: string;
+  sender_avatar_url?: string;
+  message_text?: string;
+  attachment_url?: string;
+  attachment_filename?: string;
+  attachment_size_bytes?: number;
+  attachment_content_type?: string;
+  created_at: string;
+}
+
+export interface Conversation {
+  relationship_id: string;
+  other_user_id: string;
+  other_user_name: string;
+  other_avatar_url?: string;
+  last_message_text?: string;
+  last_message_at?: string;
+  last_sender_id?: string;
+  unread_count: number;
+}
+
+export interface UploadAttachmentResponse {
+  url: string;
+  filename: string;
+  size_bytes: number;
+  content_type: string;
+}
