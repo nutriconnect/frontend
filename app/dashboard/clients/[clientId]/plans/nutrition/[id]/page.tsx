@@ -19,6 +19,7 @@ import type {
   NutritionPlanPayload,
   SlotOptionPayload,
   NutritionPlanSlotPayload,
+  SupplementPayload,
 } from '@/lib/plans';
 import type { PlanStatus, MealType } from '@/lib/types';
 import RecipePickerModal from '@/components/RecipePickerModal';
@@ -89,6 +90,8 @@ export default function EditNutritionPlanPage() {
   const [notes, setNotes] = useState('');
   const [days, setDays] = useState<NutritionDayPayload[]>([]);
   const [slots, setSlots] = useState<NutritionPlanSlotPayload[]>([]);
+  const [includeSupplements, setIncludeSupplements] = useState(false);
+  const [supplements, setSupplements] = useState<SupplementPayload[]>([]);
   const [openDay, setOpenDay] = useState<number | null>(1);
   const [saving, setSaving] = useState(false);
   const [activating, setActivating] = useState(false);
@@ -112,6 +115,21 @@ export default function EditNutritionPlanPage() {
     if (!plan) return;
     setTitle(plan.title);
     setNotes(plan.notes);
+    setIncludeSupplements(plan.include_supplements);
+    setSupplements(plan.supplements.map((s) => ({
+      id: s.id,
+      name: s.name,
+      brand: s.brand,
+      dosage: s.dosage,
+      timing: s.timing,
+      linked_meal_id: s.linked_meal_id,
+      notes: s.notes,
+      calories: s.calories,
+      protein_g: s.protein_g,
+      carbs_g: s.carbs_g,
+      fat_g: s.fat_g,
+      display_order: s.display_order,
+    })));
 
     // Merge plan.days (sparse) into a full 7-day array
     const merged: NutritionDayPayload[] = Array.from({ length: 7 }, (_, i) => {
@@ -341,8 +359,8 @@ export default function EditNutritionPlanPage() {
             options: s.options.map((o, oi) => ({ ...o, display_order: oi })),
           }))
         : [],
-      include_supplements: false,
-      supplements: [],
+      include_supplements: includeSupplements,
+      supplements,
     };
   }
 
@@ -531,6 +549,18 @@ export default function EditNutritionPlanPage() {
                   disabled={!isDraft}
                 />
               </div>
+            </div>
+            <div className="dash-row single">
+              <label className="dash-field-label" style={{ display: 'flex', alignItems: 'center', cursor: isDraft ? 'pointer' : 'default' }}>
+                <input
+                  type="checkbox"
+                  checked={includeSupplements}
+                  onChange={(e) => setIncludeSupplements(e.target.checked)}
+                  disabled={!isDraft}
+                  style={{ marginRight: '8px' }}
+                />
+                Incluir recomendaciones de suplementos
+              </label>
             </div>
           </div>
         </div>
