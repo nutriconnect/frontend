@@ -3,7 +3,8 @@
 
 import { useAuth } from '@/lib/auth';
 import { useCalendar, cancelAppointment, completeAppointment, markNoShow } from '@/lib/calendar';
-import { format, startOfWeek, endOfWeek, addWeeks } from 'date-fns';
+import { format, startOfWeek, endOfWeek, addWeeks, isSameDay, parseISO } from 'date-fns';
+import { es } from 'date-fns/locale';
 import { useState } from 'react';
 import React from 'react';
 import Link from 'next/link';
@@ -246,45 +247,88 @@ function ClientListView({ appointments, onAppointmentClick }: ListViewProps) {
     );
   }
 
+  // Group appointments by date
+  const sortedAppointments = [...appointments].sort((a, b) =>
+    new Date(a.start_time).getTime() - new Date(b.start_time).getTime()
+  );
+
+  const groupedByDate: { [key: string]: Appointment[] } = {};
+  sortedAppointments.forEach(appt => {
+    const dateKey = format(parseISO(appt.start_time), 'yyyy-MM-dd');
+    if (!groupedByDate[dateKey]) {
+      groupedByDate[dateKey] = [];
+    }
+    groupedByDate[dateKey].push(appt);
+  });
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      {appointments.map((appt: Appointment) => (
-        <div key={appt.id} style={{
-          background: 'white',
-          border: '1px solid var(--nc-border)',
-          borderRadius: 10,
-          padding: '20px 24px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'start',
-          cursor: 'pointer',
-        }}
-        onClick={() => onAppointmentClick(appt)}
-        >
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--nc-ink)', marginBottom: 4 }}>
-              {appt.appointment_type.name}
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+      {Object.entries(groupedByDate).map(([dateKey, dayAppointments]) => {
+        const firstApptDate = parseISO(dayAppointments[0].start_time);
+        const isToday = isSameDay(firstApptDate, new Date());
+
+        return (
+          <div key={dateKey}>
+            {/* Date header */}
+            <div style={{
+              fontSize: 14,
+              fontWeight: 600,
+              color: isToday ? 'var(--nc-terra)' : 'var(--nc-forest)',
+              marginBottom: 12,
+              paddingBottom: 8,
+              borderBottom: '2px solid',
+              borderColor: isToday ? 'rgba(217,120,72,0.2)' : 'rgba(26,51,41,0.1)',
+            }}>
+              {isToday && '🔔 '}
+              {format(firstApptDate, "EEEE, d 'de' MMMM", { locale: es })}
+              {isToday && ' (Hoy)'}
             </div>
-            <div style={{ fontSize: 14, color: 'var(--nc-stone)', marginBottom: 8 }}>
-              {format(new Date(appt.start_time), 'PPP')} • {format(new Date(appt.start_time), 'HH:mm')}
+
+            {/* Appointments for this day */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {dayAppointments.map((appt: Appointment) => (
+                <div key={appt.id} style={{
+                  background: 'white',
+                  border: '1px solid var(--nc-border)',
+                  borderRadius: 10,
+                  padding: '16px 20px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'start',
+                  cursor: 'pointer',
+                }}
+                onClick={() => onAppointmentClick(appt)}
+                >
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                      <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--nc-ink)' }}>
+                        {appt.appointment_type.name}
+                      </div>
+                      <div style={{ fontSize: 13, color: 'var(--nc-terra)', fontWeight: 500 }}>
+                        • {format(parseISO(appt.start_time), 'HH:mm')}
+                      </div>
+                    </div>
+                    <div style={{ fontSize: 13, color: 'var(--nc-stone)' }}>
+                      Con: {appt.nutritionist_name}
+                    </div>
+                    {appt.notes && (
+                      <div style={{ fontSize: 13, color: 'var(--nc-stone)', marginTop: 8, fontStyle: 'italic' }}>
+                        {appt.notes}
+                      </div>
+                    )}
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-end' }}>
+                    <StatusBadge status={appt.status} />
+                    {appt.status === 'scheduled' && (
+                      <CancelButton appointmentId={appt.id} startTime={appt.start_time} />
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
-            <div style={{ fontSize: 13, color: 'var(--nc-stone)' }}>
-              Con: {appt.nutritionist_name}
-            </div>
-            {appt.notes && (
-              <div style={{ fontSize: 13, color: 'var(--nc-stone)', marginTop: 8 }}>
-                {appt.notes}
-              </div>
-            )}
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-end' }}>
-            <StatusBadge status={appt.status} />
-            {appt.status === 'scheduled' && (
-              <CancelButton appointmentId={appt.id} startTime={appt.start_time} />
-            )}
-          </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
