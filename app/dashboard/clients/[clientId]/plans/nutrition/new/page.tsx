@@ -12,8 +12,10 @@ import type {
   NutritionPlanPayload,
   SlotOptionPayload,
   NutritionPlanSlotPayload,
+  SupplementPayload,
 } from '@/lib/plans';
 import type { MealType } from '@/lib/types';
+import SupplementItem from '@/app/dashboard/clients/[clientId]/plans/nutrition/[id]/components/SupplementItem';
 
 const MEAL_TYPES = [
   { value: 'breakfast',   label: 'Desayuno'       },
@@ -53,6 +55,15 @@ function emptySlotOption(displayOrder: number): SlotOptionPayload {
   };
 }
 
+function emptySupplement(displayOrder: number): SupplementPayload {
+  return {
+    name: '',
+    dosage: '',
+    timing: 'morning',
+    display_order: displayOrder,
+  };
+}
+
 function initDays(): NutritionDayPayload[] {
   return Array.from({ length: 7 }, (_, i) => emptyDay(i + 1));
 }
@@ -77,6 +88,8 @@ export default function NewNutritionPlanPage() {
   const [planStyle, setPlanStyle] = useState<'structured' | 'flexible'>('structured');
   const [days, setDays] = useState<NutritionDayPayload[]>(initDays);
   const [slots, setSlots] = useState<NutritionPlanSlotPayload[]>(initSlots);
+  const [includeSupplements, setIncludeSupplements] = useState(false);
+  const [supplements, setSupplements] = useState<SupplementPayload[]>([]);
   const [openDay, setOpenDay] = useState<number | null>(1);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -207,6 +220,24 @@ export default function NewNutritionPlanPage() {
     );
   }
 
+  const handleAddSupplement = () => setSupplements([...supplements, emptySupplement(supplements.length)]);
+  const handleDeleteSupplement = (index: number) => setSupplements(supplements.filter((_, i) => i !== index));
+  const handleMoveSupplementUp = (index: number) => {
+    if (index === 0) return;
+    const copy = [...supplements];
+    [copy[index - 1], copy[index]] = [copy[index], copy[index - 1]];
+    setSupplements(copy);
+  };
+  const handleMoveSupplementDown = (index: number) => {
+    if (index === supplements.length - 1) return;
+    const copy = [...supplements];
+    [copy[index], copy[index + 1]] = [copy[index + 1], copy[index]];
+    setSupplements(copy);
+  };
+  const updateSupplement = (index: number, updates: Partial<SupplementPayload>) => {
+    setSupplements(supplements.map((s, i) => (i === index ? { ...s, ...updates } : s)));
+  };
+
   async function handleSave() {
     if (!title.trim()) { setError('El título es obligatorio.'); return; }
     setSaving(true);
@@ -234,8 +265,8 @@ export default function NewNutritionPlanPage() {
               options: s.options.map((o, oi) => ({ ...o, display_order: oi })),
             }))
           : [],
-        include_supplements: false,
-        supplements: [],
+        include_supplements: includeSupplements,
+        supplements: supplements.map((s, i) => ({ ...s, display_order: i })),
       };
       const { id } = await createNutritionPlan(payload);
       router.push(`/dashboard/clients/${clientId}/plans/nutrition/${id}`);
@@ -326,6 +357,19 @@ export default function NewNutritionPlanPage() {
                   </div>
                 </label>
               ))}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginTop: '20px' }}>
+              <div style={{ flex: '0 0 auto' }}>
+                <button
+                  type="button"
+                  className={`dash-toggle ${includeSupplements ? 'on' : ''}`}
+                  onClick={() => setIncludeSupplements(!includeSupplements)}
+                />
+              </div>
+              <div>
+                <h3 style={{ fontSize: '14px', fontWeight: 500, color: 'var(--nc-ink)', marginBottom: '2px' }}>Incluir suplementos</h3>
+                <p style={{ fontSize: '12px', fontWeight: 300, color: 'var(--nc-stone)', margin: 0 }}>Añade recomendaciones de suplementos a este plan</p>
+              </div>
             </div>
           </div>
         </div>
@@ -587,6 +631,44 @@ export default function NewNutritionPlanPage() {
                   </button>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {includeSupplements && (
+          <div className="dash-section" style={{ marginTop: '2rem' }}>
+            <div className="dash-section-head">
+              <div className="dash-section-title">Suplementos</div>
+              <button
+                type="button"
+                className="btn-link"
+                onClick={handleAddSupplement}
+              >
+                + Agregar suplemento
+              </button>
+            </div>
+            <div className="dash-section-body">
+              {supplements.length === 0 ? (
+                <p style={{ color: 'var(--nc-stone)', fontSize: 14 }}>
+                  No hay suplementos agregados todavía.
+                </p>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  {supplements.map((supp, idx) => (
+                    <SupplementItem
+                      key={idx}
+                      supplement={supp}
+                      index={idx}
+                      onUpdate={updateSupplement}
+                      onDelete={handleDeleteSupplement}
+                      onMoveUp={handleMoveSupplementUp}
+                      onMoveDown={handleMoveSupplementDown}
+                      isFirst={idx === 0}
+                      isLast={idx === supplements.length - 1}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         )}

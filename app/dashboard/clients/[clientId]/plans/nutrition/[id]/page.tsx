@@ -592,17 +592,28 @@ export default function EditNutritionPlanPage() {
                 />
               </div>
             </div>
-            <div className="dash-row single">
-              <label className="dash-field-label" style={{ display: 'flex', alignItems: 'center', cursor: isDraft ? 'pointer' : 'default' }}>
-                <input
-                  type="checkbox"
-                  checked={includeSupplements}
-                  onChange={(e) => setIncludeSupplements(e.target.checked)}
+          </div>
+        </div>
+
+        <div className="dash-section">
+          <div className="dash-section-head">
+            <div className="dash-section-title">Estilo del plan</div>
+          </div>
+          <div className="dash-section-body">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <div style={{ flex: '0 0 auto' }}>
+                <button
+                  type="button"
+                  className={`dash-toggle ${includeSupplements ? 'on' : ''}`}
+                  onClick={() => isDraft && setIncludeSupplements(!includeSupplements)}
                   disabled={!isDraft}
-                  style={{ marginRight: '8px' }}
+                  style={{ opacity: isDraft ? 1 : 0.5, cursor: isDraft ? 'pointer' : 'not-allowed' }}
                 />
-                Incluir recomendaciones de suplementos
-              </label>
+              </div>
+              <div>
+                <h3 style={{ fontSize: '14px', fontWeight: 500, color: 'var(--nc-ink)', marginBottom: '2px' }}>Incluir suplementos</h3>
+                <p style={{ fontSize: '12px', fontWeight: 300, color: 'var(--nc-stone)', margin: 0 }}>Añade recomendaciones de suplementos a este plan</p>
+              </div>
             </div>
           </div>
         </div>

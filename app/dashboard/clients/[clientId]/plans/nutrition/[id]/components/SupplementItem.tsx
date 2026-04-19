@@ -85,14 +85,14 @@ export default function SupplementItem({
           placeholder="Nombre del suplemento"
           value={supplement.name}
           onChange={(e) => onUpdate(index, { name: e.target.value })}
-          style={{ padding: '8px', border: '1px solid #ddd', borderRadius: '4px' }}
+          className="dash-input"
         />
         <input
           type="text"
           placeholder="Marca (opcional)"
           value={supplement.brand || ''}
           onChange={(e) => onUpdate(index, { brand: e.target.value || null })}
-          style={{ padding: '8px', border: '1px solid #ddd', borderRadius: '4px' }}
+          className="dash-input"
         />
       </div>
 
@@ -103,12 +103,12 @@ export default function SupplementItem({
           placeholder="Dosis"
           value={supplement.dosage}
           onChange={(e) => onUpdate(index, { dosage: e.target.value })}
-          style={{ padding: '8px', border: '1px solid #ddd', borderRadius: '4px' }}
+          className="dash-input"
         />
         <select
           value={supplement.timing}
           onChange={(e) => onUpdate(index, { timing: e.target.value as SupplementTiming })}
-          style={{ padding: '8px', border: '1px solid #ddd', borderRadius: '4px' }}
+          className="dash-input"
         >
           {TIMING_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>
@@ -124,13 +124,8 @@ export default function SupplementItem({
         value={supplement.notes || ''}
         onChange={(e) => onUpdate(index, { notes: e.target.value || null })}
         rows={2}
-        style={{
-          width: '100%',
-          padding: '8px',
-          border: '1px solid #ddd',
-          borderRadius: '4px',
-          marginBottom: '0.5rem',
-        }}
+        className="dash-textarea"
+        style={{ marginBottom: '0.5rem' }}
       />
 
       {/* Macros toggle */}
@@ -149,7 +144,7 @@ export default function SupplementItem({
             placeholder="Cal"
             value={supplement.calories || ''}
             onChange={(e) => onUpdate(index, { calories: e.target.value ? parseInt(e.target.value) : null })}
-            style={{ padding: '8px', border: '1px solid #ddd', borderRadius: '4px' }}
+            className="dash-input"
           />
           <input
             type="number"
@@ -157,7 +152,7 @@ export default function SupplementItem({
             placeholder="Prot (g)"
             value={supplement.protein_g || ''}
             onChange={(e) => onUpdate(index, { protein_g: e.target.value ? parseFloat(e.target.value) : null })}
-            style={{ padding: '8px', border: '1px solid #ddd', borderRadius: '4px' }}
+            className="dash-input"
           />
           <input
             type="number"
@@ -165,7 +160,7 @@ export default function SupplementItem({
             placeholder="Carbs (g)"
             value={supplement.carbs_g || ''}
             onChange={(e) => onUpdate(index, { carbs_g: e.target.value ? parseFloat(e.target.value) : null })}
-            style={{ padding: '8px', border: '1px solid #ddd', borderRadius: '4px' }}
+            className="dash-input"
           />
           <input
             type="number"
@@ -173,7 +168,7 @@ export default function SupplementItem({
             placeholder="Fat (g)"
             value={supplement.fat_g || ''}
             onChange={(e) => onUpdate(index, { fat_g: e.target.value ? parseFloat(e.target.value) : null })}
-            style={{ padding: '8px', border: '1px solid #ddd', borderRadius: '4px' }}
+            className="dash-input"
           />
         </div>
       )}

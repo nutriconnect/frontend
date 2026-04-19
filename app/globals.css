@@ -1589,7 +1589,7 @@
 }
 .dash-btn-add-pkg:hover { border-color: var(--nc-forest); color: var(--nc-forest); }
 /* visibility toggle */
-.dash-publish-row { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; }
+.dash-publish-row { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; border-top: 1px solid var(--nc-border); }
 .dash-publish-label h3 { font-size: 14px; font-weight: 500; color: var(--nc-ink); margin-bottom: 2px; }
 .dash-publish-label p { font-size: 12px; font-weight: 300; color: var(--nc-stone); }
 .dash-toggle {
