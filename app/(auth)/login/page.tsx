@@ -23,7 +23,13 @@ function LoginForm() {
     setUnverified(false);
     setLoading(true);
     try {
-      const res = await api.post<{ id: string; email: string; role: string }>('/auth/login', { email, password });
+      const res = await api.post<{ id: string; email: string; role: string; access_token: string }>('/auth/login', { email, password });
+
+      // Store access token for WebSocket authentication
+      if (res.access_token) {
+        sessionStorage.setItem('access_token', res.access_token);
+      }
+
       const defaultRoute = res.role === 'nutritionist' ? '/dashboard/profile' : '/dashboard';
       router.push(from === '/' ? defaultRoute : from);
       router.refresh();

@@ -35,6 +35,10 @@ export default function BookAppointmentPage() {
     e.preventDefault();
 
     // Validation with helpful messages
+    if (!relationshipID) {
+      setError('Falta el ID de la relación');
+      return;
+    }
     if (!selectedTypeID) {
       setError('Por favor selecciona un tipo de cita');
       return;

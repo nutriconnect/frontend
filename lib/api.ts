@@ -40,6 +40,15 @@ async function request<T>(
       credentials: 'include',
     });
     if (refreshRes.ok) {
+      // Store new access token for WebSocket
+      try {
+        const data = await refreshRes.json();
+        if (data.access_token) {
+          sessionStorage.setItem('access_token', data.access_token);
+        }
+      } catch {
+        // Ignore JSON parse errors
+      }
       // Retry original request (no further retry to avoid loops).
       return request<T>(path, options, false);
     }
