@@ -103,7 +103,7 @@ export default function SurveyTemplatesPage() {
     if (!profile) return;
     setIsSavingDefault(true);
     try {
-      await api.put('/profile', {
+      await api.put('/profile/me', {
         display_name: profile.display_name,
         bio: profile.bio,
         city: profile.city,
