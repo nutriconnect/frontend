@@ -9,6 +9,7 @@ import { useMyClientProfile, useWeightEntries, useActivityEntries } from '@/lib/
 import { UpcomingAppointments } from './components/UpcomingAppointments';
 import { useMyRelationships } from '@/lib/hiring';
 import { useSurveyAssignment, usePendingSurveyReviews } from '@/lib/survey';
+import { BMIBadge } from '@/components/BMIBadge';
 import type { WeightEntry, ActivityEntry } from '@/lib/types';
 
 // ─── Client Health Graphs ──────────────────────────────────────────────────────
@@ -222,7 +223,7 @@ function ClientOverview() {
       )}
 
       {/* Top stats row */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
         <div style={{ background: 'white', border: '1px solid var(--nc-border)', borderRadius: 10, padding: '16px 18px' }}>
           <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.07em', color: 'var(--nc-stone)', textTransform: 'uppercase', marginBottom: 8 }}>Latest weight</div>
           {weightLoading ? (
@@ -253,6 +254,28 @@ function ClientOverview() {
           <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.07em', color: 'var(--nc-stone)', textTransform: 'uppercase', marginBottom: 8 }}>Activities</div>
           <div style={{ fontSize: 26, fontWeight: 600, color: 'var(--nc-ink)', fontFamily: 'var(--font-display)' }}>{activityLoading ? '—' : activityEntries.length}</div>
           <div style={{ fontSize: 11, color: 'var(--nc-stone)', marginTop: 2 }}>sessions logged</div>
+        </div>
+
+        <div style={{ background: 'white', border: '1px solid var(--nc-border)', borderRadius: 10, padding: '16px 18px' }}>
+          <div style={{
+            fontSize: 11,
+            fontWeight: 600,
+            letterSpacing: '0.07em',
+            color: 'var(--nc-stone)',
+            textTransform: 'uppercase',
+            marginBottom: 8
+          }}>
+            BMI
+          </div>
+          {!profileLoading && profile ? (
+            <BMIBadge
+              bmi={profile.bmi}
+              bmi_category={profile.bmi_category}
+              showLabel={false}
+            />
+          ) : (
+            <div style={{ fontSize: 13, color: 'var(--nc-stone)' }}>—</div>
+          )}
         </div>
       </div>
 
