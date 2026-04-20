@@ -919,6 +919,31 @@ function AppointmentModal({ appointment, isNutritionist, onClose }: AppointmentM
           )}
         </div>
 
+        {/* View Details Button */}
+        <div style={{ marginBottom: 12 }}>
+          <Link href={`/dashboard/appointments/${appointment.id}`}>
+            <button
+              style={{
+                width: '100%',
+                padding: '10px 16px',
+                background: 'linear-gradient(135deg, #4a7c59 0%, #5a9268 100%)',
+                color: 'white',
+                border: 'none',
+                borderRadius: 8,
+                fontSize: 13,
+                fontWeight: 500,
+                cursor: 'pointer',
+                boxShadow: '0 2px 8px rgba(74, 124, 89, 0.25)',
+                transition: 'transform 0.1s',
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-1px)'}
+              onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+            >
+              📋 Ver detalles y notas
+            </button>
+          </Link>
+        </div>
+
         {appointment.status === 'scheduled' && (
           <div style={{ display: 'grid', gridTemplateColumns: isNutritionist ? '1fr 1fr' : '1fr', gap: 12, marginBottom: 12 }}>
             {isNutritionist && (
