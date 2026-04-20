@@ -110,7 +110,7 @@ function ClientOverview() {
             </div>
           </div>
           <Link
-            href={`/dashboard/survey/${assignment.assignment_id}`}
+            href={`/dashboard/survey/${assignment.relationship_id}`}
             style={{
               fontSize: 13,
               fontWeight: 600,
