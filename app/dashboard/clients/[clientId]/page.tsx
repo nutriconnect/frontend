@@ -12,6 +12,7 @@ import HealthTrackingSection from './components/HealthTrackingSection';
 import SurveyAssignmentCard from '@/components/survey/SurveyAssignmentCard';
 import AssignSurveyModal from '@/components/survey/AssignSurveyModal';
 import SurveyResponseViewer from '@/components/survey/SurveyResponseViewer';
+import { BMIBadge } from '@/components/BMIBadge';
 import type { NutritionPlan, ExercisePlan, PlanStatus } from '@/lib/types';
 
 function PlanStatusBadge({ status }: { status: PlanStatus }) {
@@ -417,6 +418,12 @@ export default function ClientDetailPage() {
                 <div style={{ fontSize: 12, color: 'var(--nc-stone)', fontWeight: 300 }}>
                   🏃 {profile.activity_level.replace('_', ' ')}
                 </div>
+              )}
+              {profile.bmi && (
+                <BMIBadge
+                  bmi={profile.bmi}
+                  bmi_category={profile.bmi_category}
+                />
               )}
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
