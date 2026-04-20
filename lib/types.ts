@@ -483,6 +483,10 @@ export interface Appointment {
   cancellation_reason?: string;
   cancelled_at?: string;
   series_id?: string;
+  shared_summary?: string | null;
+  clinical_notes?: string | null;
+  internal_reminders?: string | null;
+  photos?: AppointmentPhoto[];
   appointment_type: {
     id: string;
     name: string;
@@ -496,6 +500,13 @@ export interface Appointment {
   nutritionist_id: string;
   nutritionist_name: string;
   nutritionist_email: string;
+}
+
+export interface AppointmentPhoto {
+  id: string;
+  uploaded_by: 'client' | 'nutritionist';
+  photo_url: string;
+  uploaded_at: string;
 }
 
 export interface RecurrencePattern {
