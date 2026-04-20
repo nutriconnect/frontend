@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useSurveyTemplates } from '@/lib/survey';
+import { useSurveyTemplates, archiveSurveyTemplate, unarchiveSurveyTemplate } from '@/lib/survey';
 import type { SurveyTemplateListItem } from '@/lib/types';
 
 function TemplateBadge({ active }: { active: boolean }) {
@@ -17,7 +17,25 @@ function TemplateBadge({ active }: { active: boolean }) {
   );
 }
 
-function TemplateRow({ template }: { template: SurveyTemplateListItem }) {
+function TemplateRow({ template, onToggleArchive }: { template: SurveyTemplateListItem; onToggleArchive: () => void }) {
+  const [isToggling, setIsToggling] = useState(false);
+
+  const handleToggleArchive = async () => {
+    setIsToggling(true);
+    try {
+      if (template.is_active) {
+        await archiveSurveyTemplate(template.id);
+      } else {
+        await unarchiveSurveyTemplate(template.id);
+      }
+      onToggleArchive();
+    } catch (err) {
+      alert('Error al cambiar el estado. Intenta de nuevo.');
+    } finally {
+      setIsToggling(false);
+    }
+  };
+
   return (
     <div style={{
       display: 'flex', justifyContent: 'space-between', alignItems: 'center',
@@ -44,19 +62,34 @@ function TemplateRow({ template }: { template: SurveyTemplateListItem }) {
           {template.question_count} {template.question_count === 1 ? 'pregunta' : 'preguntas'}
         </div>
       </div>
-      <Link
-        href={`/dashboard/surveys/${template.id}`}
-        style={{ fontSize: 12, color: 'var(--nc-terra)', textDecoration: 'none', fontWeight: 500 }}
-      >
-        Editar
-      </Link>
+      <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+        <button
+          onClick={handleToggleArchive}
+          disabled={isToggling}
+          style={{
+            fontSize: 12, fontWeight: 500, padding: '6px 12px',
+            border: '1px solid var(--nc-border)', borderRadius: 6,
+            background: 'white', color: 'var(--nc-stone)',
+            cursor: isToggling ? 'not-allowed' : 'pointer',
+            opacity: isToggling ? 0.5 : 1,
+          }}
+        >
+          {isToggling ? '...' : (template.is_active ? 'Archivar' : 'Desarchivar')}
+        </button>
+        <Link
+          href={`/dashboard/surveys/${template.id}`}
+          style={{ fontSize: 12, color: 'var(--nc-terra)', textDecoration: 'none', fontWeight: 500 }}
+        >
+          Editar
+        </Link>
+      </div>
     </div>
   );
 }
 
 export default function SurveyTemplatesPage() {
   const [showArchived, setShowArchived] = useState(false);
-  const { templates, isLoading, error } = useSurveyTemplates(showArchived ? undefined : true);
+  const { templates, isLoading, error, mutate } = useSurveyTemplates(showArchived ? undefined : true);
 
   const filteredTemplates = showArchived
     ? templates
@@ -143,7 +176,7 @@ export default function SurveyTemplatesPage() {
             {!isLoading && filteredTemplates.length > 0 && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {filteredTemplates.map((t) => (
-                  <TemplateRow key={t.id} template={t} />
+                  <TemplateRow key={t.id} template={t} onToggleArchive={mutate} />
                 ))}
               </div>
             )}

@@ -77,6 +77,24 @@ export async function reviewSurveyAssignment(
   );
 }
 
+export async function archiveSurveyTemplate(
+  templateId: string,
+): Promise<{ template_id: string; is_active: boolean }> {
+  return api.post<{ template_id: string; is_active: boolean }>(
+    `/surveys/templates/${templateId}/archive`,
+    {},
+  );
+}
+
+export async function unarchiveSurveyTemplate(
+  templateId: string,
+): Promise<{ template_id: string; is_active: boolean }> {
+  return api.post<{ template_id: string; is_active: boolean }>(
+    `/surveys/templates/${templateId}/unarchive`,
+    {},
+  );
+}
+
 // ─── SWR Hooks ───────────────────────────────────────────────────────────────
 
 export function useSurveyTemplate(id: string | null | undefined) {
