@@ -7,7 +7,11 @@ import { useParams } from 'next/navigation';
 import { useClientProfile, useNutritionPlans, useExercisePlans } from '@/lib/plans';
 import { useEnhancedClient } from '@/lib/enhanced-clients';
 import { completeRelationship, reactivateRelationship, activateRelationship } from '@/lib/hiring';
+import { useSurveyAssignment, reviewSurveyAssignment } from '@/lib/survey';
 import HealthTrackingSection from './components/HealthTrackingSection';
+import SurveyAssignmentCard from '@/components/survey/SurveyAssignmentCard';
+import AssignSurveyModal from '@/components/survey/AssignSurveyModal';
+import SurveyResponseViewer from '@/components/survey/SurveyResponseViewer';
 import type { NutritionPlan, ExercisePlan, PlanStatus } from '@/lib/types';
 
 function PlanStatusBadge({ status }: { status: PlanStatus }) {
@@ -360,6 +364,26 @@ export default function ClientDetailPage() {
   const { plans: exercisePlans, isLoading: exerciseLoading } = useExercisePlans(clientId);
   const { client, isLoading: clientLoading, mutate: mutateClient } = useEnhancedClient(clientId);
 
+  // Survey state
+  const relationshipId = client?.relationship_id ?? null;
+  const { assignment: surveyAssignment, isLoading: surveyLoading, mutate: mutateSurvey } = useSurveyAssignment(relationshipId);
+  const [showAssignModal, setShowAssignModal] = useState(false);
+  const [showResponseViewer, setShowResponseViewer] = useState(false);
+  const [isReviewing, setIsReviewing] = useState(false);
+
+  const handleReviewSurvey = async () => {
+    if (!relationshipId) return;
+    setIsReviewing(true);
+    try {
+      await reviewSurveyAssignment(relationshipId);
+      mutateSurvey();
+    } catch {
+      // Error silently handled
+    } finally {
+      setIsReviewing(false);
+    }
+  };
+
   return (
     <>
       <div className="dash-topbar">
@@ -467,6 +491,59 @@ export default function ClientDetailPage() {
               clientId={clientId}
               relationshipStatus={client.status}
             />
+          </>
+        )}
+
+        {/* Survey section */}
+        {!clientLoading && client && (
+          <>
+            <SurveyAssignmentCard
+              assignment={surveyAssignment}
+              relationshipId={client.relationship_id}
+              isLoading={surveyLoading}
+              onAssign={() => setShowAssignModal(true)}
+              isNutritionist
+              onReview={handleReviewSurvey}
+              onViewResponses={() => setShowResponseViewer(true)}
+            />
+
+            <AssignSurveyModal
+              open={showAssignModal}
+              onOpenChange={setShowAssignModal}
+              relationshipId={client.relationship_id}
+              onAssigned={() => mutateSurvey()}
+            />
+
+            {/* Response viewer section (inline, not modal) */}
+            {showResponseViewer && surveyAssignment && (
+              <div className="dash-section">
+                <div className="dash-section-head">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <div className="dash-section-title">Respuestas de la encuesta</div>
+                      <div className="dash-section-sub">Vista de las respuestas del cliente</div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowResponseViewer(false)}
+                      style={{
+                        fontSize: 12, fontWeight: 500, color: 'var(--nc-stone)',
+                        background: 'white', border: '1px solid var(--nc-border)',
+                        borderRadius: 6, padding: '6px 12px', cursor: 'pointer',
+                      }}
+                    >
+                      Cerrar
+                    </button>
+                  </div>
+                </div>
+                <div className="dash-section-body">
+                  <SurveyResponseViewer
+                    responses={surveyAssignment.responses}
+                    status={surveyAssignment.status}
+                  />
+                </div>
+              </div>
+            )}
           </>
         )}
 

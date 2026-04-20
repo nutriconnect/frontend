@@ -549,6 +549,64 @@ export interface CreateRecurringAppointmentResponse {
   last_start_time: string;
 }
 
+// ─── Surveys ─────────────────────────────────────────────────────────────────
+
+export type QuestionType = 'short_text' | 'long_text' | 'multiple_choice' | 'numeric_scale' | 'file_upload';
+
+export type SurveyAssignmentStatus = 'pending' | 'completed' | 'reviewed';
+
+export interface SurveyTemplateListItem {
+  id: string;
+  title: string;
+  description: string;
+  is_active: boolean;
+  question_count: number;
+  assigned_count: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TemplateQuestion {
+  question_text: string;
+  question_type: QuestionType;
+  options: unknown; // multiple_choice: string[], numeric_scale: { min: number; max: number; label: string }
+  is_required: boolean;
+  display_order: number;
+}
+
+export interface SurveyTemplateDetail {
+  id: string;
+  title: string;
+  description: string;
+  is_active: boolean;
+  questions: TemplateQuestion[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface QuestionWithResponse {
+  id: string;
+  question_text: string;
+  question_type: QuestionType;
+  options: unknown;
+  is_required: boolean;
+  display_order: number;
+  answer_text: string | null;
+  answer_numeric: number | null;
+  answer_file_url: string | null;
+}
+
+export interface SurveyAssignmentDetail {
+  assignment_id: string;
+  relationship_id: string;
+  template_id: string;
+  status: SurveyAssignmentStatus;
+  assigned_at: string;
+  completed_at: string | null;
+  reviewed_at: string | null;
+  responses: QuestionWithResponse[];
+}
+
 // Chat types
 export interface ChatMessage {
   id: string;
