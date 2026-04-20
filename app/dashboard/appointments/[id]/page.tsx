@@ -2,15 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
 import { getAppointment } from '@/lib/appointment-notes';
 import { useAuth } from '@/lib/auth';
 import { AppointmentNotesSection } from '@/components/appointments/AppointmentNotesSection';
 import { AppointmentPhotosSection } from '@/components/appointments/AppointmentPhotosSection';
-import { ArrowLeft, Calendar, Clock, Video, User } from 'lucide-react';
 import type { Appointment } from '@/lib/types';
 
 export default function AppointmentDetailPage() {
@@ -43,18 +38,18 @@ export default function AppointmentDetailPage() {
     }
   }, [appointmentId]);
 
-  const getStatusColor = (status: string) => {
+  const getStatusStyle = (status: string) => {
     switch (status) {
       case 'scheduled':
-        return 'bg-blue-500';
+        return { background: 'rgba(90,138,64,0.1)', color: 'var(--nc-sage)', border: '1px solid rgba(90,138,64,0.2)' };
       case 'completed':
-        return 'bg-green-500';
+        return { background: 'rgba(26,51,41,0.08)', color: 'var(--nc-forest)', border: '1px solid rgba(26,51,41,0.15)' };
       case 'cancelled':
-        return 'bg-red-500';
+        return { background: 'rgba(196,98,45,0.08)', color: 'var(--nc-terra)', border: '1px solid rgba(196,98,45,0.15)' };
       case 'no_show':
-        return 'bg-gray-500';
+        return { background: 'rgba(139,115,85,0.1)', color: 'var(--nc-stone)', border: '1px solid rgba(139,115,85,0.2)' };
       default:
-        return 'bg-gray-500';
+        return { background: 'rgba(139,115,85,0.1)', color: 'var(--nc-stone)', border: '1px solid rgba(139,115,85,0.2)' };
     }
   };
 
@@ -76,29 +71,29 @@ export default function AppointmentDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto py-8">
-        <div className="animate-pulse space-y-4">
-          <div className="h-8 w-64 bg-muted rounded"></div>
-          <div className="h-64 bg-muted rounded"></div>
-        </div>
+      <div className="dash-content" style={{ padding: 40, color: 'var(--nc-stone)', fontWeight: 300 }}>
+        Cargando…
       </div>
     );
   }
 
   if (error || !appointment || !user) {
     return (
-      <div className="container mx-auto py-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>Error</CardTitle>
-            <CardDescription>{error || 'Appointment not found'}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button onClick={() => router.push('/dashboard/appointments')}>
-              Back to Appointments
-            </Button>
-          </CardContent>
-        </Card>
+      <div className="dash-content" style={{ padding: 40 }}>
+        <div className="dash-section">
+          <div className="dash-section-head">
+            <div className="dash-section-title">Error</div>
+            <div className="dash-section-sub">{error || 'Cita no encontrada'}</div>
+          </div>
+          <div className="dash-section-body">
+            <button
+              className="dash-btn-save"
+              onClick={() => router.push('/dashboard/appointments')}
+            >
+              Volver a citas
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
@@ -106,163 +101,207 @@ export default function AppointmentDetailPage() {
   const startDateTime = formatDateTime(appointment.start_time);
   const isNutritionist = user.role === 'nutritionist';
   const photos = appointment.photos || [];
+  const statusStyle = getStatusStyle(appointment.status);
 
   return (
-    <div className="container mx-auto py-8 space-y-6">
-      <div className="flex items-center gap-4">
-        <Button
-          variant="ghost"
-          size="icon"
+    <>
+      <div className="dash-topbar">
+        <button
           onClick={() => router.push('/dashboard/appointments')}
+          style={{
+            background: 'transparent',
+            border: 'none',
+            color: 'var(--nc-stone)',
+            cursor: 'pointer',
+            fontSize: 20,
+            marginRight: 12,
+            padding: 0,
+          }}
         >
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        <div className="flex-1">
-          <h1 className="text-3xl font-bold">{appointment.appointment_type.name}</h1>
-          <p className="text-muted-foreground">Appointment Details</p>
+          ←
+        </button>
+        <div style={{ flex: 1 }}>
+          <div className="dash-topbar-title">{appointment.appointment_type.name}</div>
+          <div style={{ fontSize: 12, fontWeight: 300, color: 'var(--nc-stone)', marginTop: 2 }}>
+            Detalles de la cita
+          </div>
         </div>
-        <Badge className={getStatusColor(appointment.status)}>
+        <span
+          style={{
+            ...statusStyle,
+            padding: '4px 12px',
+            borderRadius: 6,
+            fontSize: 11,
+            fontWeight: 500,
+            textTransform: 'capitalize',
+          }}
+        >
           {appointment.status.replace('_', ' ')}
-        </Badge>
+        </span>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Calendar className="h-5 w-5" />
-              Date & Time
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <p className="text-lg">{startDateTime.date}</p>
-            <p className="text-muted-foreground flex items-center gap-2">
-              <Clock className="h-4 w-4" />
-              {startDateTime.time}
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Duration: {appointment.appointment_type.duration_minutes} minutes
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <User className="h-5 w-5" />
-              Participants
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <div>
-              <p className="font-medium">{appointment.nutritionist_name}</p>
-              <p className="text-sm text-muted-foreground">Nutritionist</p>
+      <div className="dash-content">
+        <div style={{ display: 'grid', gap: 20, gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', marginBottom: 20 }}>
+          <div className="dash-section">
+            <div className="dash-section-head">
+              <div className="dash-section-title">📅 Fecha y hora</div>
             </div>
-            <div>
-              <p className="font-medium">{appointment.client_name}</p>
-              <p className="text-sm text-muted-foreground">Client</p>
+            <div className="dash-section-body">
+              <p style={{ fontSize: 15, fontWeight: 500, color: 'var(--nc-ink)', marginBottom: 8 }}>
+                {startDateTime.date}
+              </p>
+              <p style={{ fontSize: 13, color: 'var(--nc-stone)', marginBottom: 4 }}>
+                🕐 {startDateTime.time}
+              </p>
+              <p style={{ fontSize: 13, color: 'var(--nc-stone)' }}>
+                Duración: {appointment.appointment_type.duration_minutes} minutos
+              </p>
             </div>
-          </CardContent>
-        </Card>
-      </div>
+          </div>
 
-      {appointment.appointment_type.description && (
-        <Card>
-          <CardHeader>
-            <CardTitle>About This Appointment</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>{appointment.appointment_type.description}</p>
-            {appointment.appointment_type.video_link && (
-              <div className="mt-4">
+          <div className="dash-section">
+            <div className="dash-section-head">
+              <div className="dash-section-title">👥 Participantes</div>
+            </div>
+            <div className="dash-section-body">
+              <div style={{ marginBottom: 12 }}>
+                <p style={{ fontSize: 14, fontWeight: 500, color: 'var(--nc-ink)' }}>
+                  {appointment.nutritionist_name}
+                </p>
+                <p style={{ fontSize: 12, fontWeight: 300, color: 'var(--nc-stone)' }}>
+                  Nutricionista
+                </p>
+              </div>
+              <div>
+                <p style={{ fontSize: 14, fontWeight: 500, color: 'var(--nc-ink)' }}>
+                  {appointment.client_name}
+                </p>
+                <p style={{ fontSize: 12, fontWeight: 300, color: 'var(--nc-stone)' }}>
+                  Cliente
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {appointment.appointment_type.description && (
+          <div className="dash-section">
+            <div className="dash-section-head">
+              <div className="dash-section-title">Sobre esta cita</div>
+            </div>
+            <div className="dash-section-body">
+              <p style={{ fontSize: 14, fontWeight: 300, color: 'var(--nc-ink)', lineHeight: 1.7 }}>
+                {appointment.appointment_type.description}
+              </p>
+              {appointment.appointment_type.video_link && (
                 <a
                   href={appointment.appointment_type.video_link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-md border border-border bg-background hover:bg-muted text-sm font-medium transition-colors"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    marginTop: 16,
+                    padding: '10px 18px',
+                    background: 'linear-gradient(135deg, #4a7c59 0%, #5a9268 100%)',
+                    color: 'white',
+                    borderRadius: 6,
+                    fontSize: 13,
+                    fontWeight: 500,
+                    textDecoration: 'none',
+                    transition: 'transform 0.2s',
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.transform = 'translateY(-1px)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
                 >
-                  <Video className="h-4 w-4" />
-                  Join Video Call
+                  📹 Unirse a videollamada
                 </a>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      )}
+              )}
+            </div>
+          </div>
+        )}
 
-      {isNutritionist && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Session Notes</CardTitle>
-            <CardDescription>Document this appointment for reference and client communication</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <AppointmentNotesSection
+        {isNutritionist && (
+          <div className="dash-section">
+            <div className="dash-section-head">
+              <div className="dash-section-title">Notas de sesión</div>
+              <div className="dash-section-sub">Documenta esta cita para referencia y comunicación con el cliente</div>
+            </div>
+            <div className="dash-section-body">
+              <AppointmentNotesSection
+                appointmentId={appointmentId}
+                initialSharedSummary={appointment.shared_summary}
+                initialClinicalNotes={appointment.clinical_notes}
+                initialInternalReminders={appointment.internal_reminders}
+                onUpdate={loadAppointment}
+              />
+            </div>
+          </div>
+        )}
+
+        {!isNutritionist && appointment.shared_summary && (
+          <div className="dash-section">
+            <div className="dash-section-head">
+              <div className="dash-section-title">Resumen de sesión</div>
+            </div>
+            <div className="dash-section-body">
+              <p style={{ fontSize: 14, fontWeight: 300, color: 'var(--nc-ink)', lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+                {appointment.shared_summary}
+              </p>
+            </div>
+          </div>
+        )}
+
+        <div className="dash-section">
+          <div className="dash-section-head">
+            <div className="dash-section-title">Fotos de progreso</div>
+            <div className="dash-section-sub">Seguimiento visual del progreso a lo largo del tiempo</div>
+          </div>
+          <div className="dash-section-body">
+            <AppointmentPhotosSection
               appointmentId={appointmentId}
-              initialSharedSummary={appointment.shared_summary}
-              initialClinicalNotes={appointment.clinical_notes}
-              initialInternalReminders={appointment.internal_reminders}
+              photos={photos}
+              currentUserRole={user.role}
+              currentUserId={user.id}
               onUpdate={loadAppointment}
             />
-          </CardContent>
-        </Card>
-      )}
+          </div>
+        </div>
 
-      {!isNutritionist && appointment.shared_summary && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Session Summary</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="whitespace-pre-wrap">{appointment.shared_summary}</p>
-          </CardContent>
-        </Card>
-      )}
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Progress Photos</CardTitle>
-          <CardDescription>Track visual progress over time</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <AppointmentPhotosSection
-            appointmentId={appointmentId}
-            photos={photos}
-            currentUserRole={user.role}
-            currentUserId={user.id}
-            onUpdate={loadAppointment}
-          />
-        </CardContent>
-      </Card>
-
-      {appointment.notes && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Legacy Notes</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="whitespace-pre-wrap text-sm text-muted-foreground">
-              {appointment.notes}
-            </p>
-          </CardContent>
-        </Card>
-      )}
-
-      {appointment.cancellation_reason && (
-        <Card className="border-destructive">
-          <CardHeader>
-            <CardTitle>Cancellation Details</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>{appointment.cancellation_reason}</p>
-            {appointment.cancelled_at && (
-              <p className="text-sm text-muted-foreground mt-2">
-                Cancelled on {new Date(appointment.cancelled_at).toLocaleString()}
+        {appointment.notes && (
+          <div className="dash-section">
+            <div className="dash-section-head">
+              <div className="dash-section-title">Notas antiguas</div>
+            </div>
+            <div className="dash-section-body">
+              <p style={{ fontSize: 13, fontWeight: 300, color: 'var(--nc-stone)', lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+                {appointment.notes}
               </p>
-            )}
-          </CardContent>
-        </Card>
-      )}
-    </div>
+            </div>
+          </div>
+        )}
+
+        {appointment.cancellation_reason && (
+          <div className="dash-section" style={{ border: '1px solid var(--nc-terra)' }}>
+            <div className="dash-section-head" style={{ background: 'rgba(196,98,45,0.05)' }}>
+              <div className="dash-section-title" style={{ color: 'var(--nc-terra)' }}>
+                Detalles de cancelación
+              </div>
+            </div>
+            <div className="dash-section-body">
+              <p style={{ fontSize: 14, fontWeight: 300, color: 'var(--nc-ink)', lineHeight: 1.7 }}>
+                {appointment.cancellation_reason}
+              </p>
+              {appointment.cancelled_at && (
+                <p style={{ fontSize: 12, color: 'var(--nc-stone)', marginTop: 8 }}>
+                  Cancelado el {new Date(appointment.cancelled_at).toLocaleString('es-ES')}
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    </>
   );
 }
