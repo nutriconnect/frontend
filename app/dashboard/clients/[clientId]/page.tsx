@@ -392,88 +392,48 @@ export default function ClientDetailPage() {
             href="/dashboard/clients"
             style={{ fontSize: 13, color: 'var(--nc-stone)', textDecoration: 'none' }}
           >
-            ← Mis clientes
+            ← {profileLoading ? 'Mis clientes' : (profile?.display_name ?? 'Mis clientes')}
           </Link>
-          <div className="dash-topbar-title">
-            {profileLoading ? '…' : (profile?.display_name ?? 'Cliente')}
-          </div>
+          <div className="dash-topbar-title">Cliente</div>
         </div>
       </div>
       <div className="dash-content">
-        {/* Client info card */}
+        {/* Client quick info */}
         {!profileLoading && profile && (
           <div style={{
-            background: 'white', border: '1px solid var(--nc-border)',
-            borderRadius: 10, padding: '20px 24px', marginBottom: 24,
+            background: 'var(--nc-cream)', border: '1px solid rgba(139,115,85,0.12)',
+            borderRadius: 8, padding: '12px 16px', marginBottom: 20,
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12,
           }}>
-            <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--nc-ink)', marginBottom: 4 }}>
-              {profile.display_name}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1 }}>
+              {profile.city && (
+                <div style={{ fontSize: 12, color: 'var(--nc-stone)', fontWeight: 300 }}>
+                  📍 {profile.city}
+                </div>
+              )}
+              {profile.activity_level && (
+                <div style={{ fontSize: 12, color: 'var(--nc-stone)', fontWeight: 300 }}>
+                  🏃 {profile.activity_level.replace('_', ' ')}
+                </div>
+              )}
             </div>
-            {profile.city && (
-              <div style={{ fontSize: 12, color: 'var(--nc-stone)', fontWeight: 300, marginBottom: 8 }}>
-                {profile.city}
-              </div>
-            )}
-            {profile.bio && (
-              <div style={{
-                fontSize: 13, color: 'var(--nc-stone)', fontWeight: 300,
-                lineHeight: 1.5, marginBottom: 12,
-                display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
-              }}>
-                {profile.bio}
-              </div>
-            )}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16 }}>
-              {(profile.goals?.length ?? 0) > 0 && (
-                <div>
-                  <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--nc-stone)', marginBottom: 4 }}>
-                    Objetivos
-                  </div>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
-                    {profile.goals!.map((g) => (
-                      <span key={g} style={{
-                        fontSize: 11, padding: '2px 8px', borderRadius: 20,
-                        background: 'rgba(26,51,41,0.07)', color: 'var(--nc-forest)', fontWeight: 500,
-                      }}>
-                        {g}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+              {profile.goals?.slice(0, 2).map((g) => (
+                <span key={g} style={{
+                  fontSize: 11, padding: '2px 8px', borderRadius: 20,
+                  background: 'rgba(26,51,41,0.1)', color: 'var(--nc-forest)', fontWeight: 500,
+                }}>
+                  {g}
+                </span>
+              ))}
               {(profile.dietary_restrictions?.length ?? 0) > 0 && (
-                <div>
-                  <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--nc-stone)', marginBottom: 4 }}>
-                    Restricciones
-                  </div>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
-                    {profile.dietary_restrictions!.map((r) => (
-                      <span key={r} style={{
-                        fontSize: 11, padding: '2px 8px', borderRadius: 20,
-                        background: 'rgba(196,98,45,0.08)', color: 'var(--nc-terra)', fontWeight: 500,
-                      }}>
-                        {r}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {(profile.allergies?.length ?? 0) > 0 && (
-                <div>
-                  <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--nc-stone)', marginBottom: 4 }}>
-                    Alergias
-                  </div>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
-                    {profile.allergies!.map((a) => (
-                      <span key={a} style={{
-                        fontSize: 11, padding: '2px 8px', borderRadius: 20,
-                        background: 'rgba(139,115,85,0.1)', color: 'var(--nc-stone)', fontWeight: 500,
-                      }}>
-                        {a}
-                      </span>
-                    ))}
-                  </div>
-                </div>
+                <span style={{
+                  fontSize: 11, padding: '2px 8px', borderRadius: 20,
+                  background: 'rgba(196,98,45,0.1)', color: 'var(--nc-terra)', fontWeight: 500,
+                }}>
+                  {profile.dietary_restrictions![0]}
+                  {profile.dietary_restrictions!.length > 1 && ` +${profile.dietary_restrictions!.length - 1}`}
+                </span>
               )}
             </div>
           </div>
