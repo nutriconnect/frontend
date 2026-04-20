@@ -67,6 +67,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const navItems = [
     { href: '/dashboard', label: 'Overview', icon: '◎', roles: ['client', 'nutritionist'] },
     { href: '/dashboard/clients', label: 'Mis clientes', icon: '◉', roles: ['nutritionist'] },
+    { href: '/dashboard/surveys', label: 'Surveys', icon: '◈', roles: ['nutritionist'] },
     { href: '/dashboard/my-recipes', label: 'Mis recetas', icon: '◈', roles: ['nutritionist'] },
     { href: '/dashboard/my-exercises', label: 'Mis ejercicios', icon: '◈', roles: ['nutritionist'] },
     { href: '/dashboard/appointment-types', label: 'Tipos de Cita', icon: '◈', roles: ['nutritionist'] },
