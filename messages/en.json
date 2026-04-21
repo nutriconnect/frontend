@@ -41,6 +41,27 @@
       "no_account": "Don't have an account?",
       "register": "Sign up here",
       "error_invalid": "Invalid email or password",
+      "error_network": "Connection error. Please try again.",
+      "email_unverified": "Your email has not been verified.",
+      "resend_verification": "Resend verification"
+    },
+    "register": {
+      "title": "Create account",
+      "subtitle": "Join NutriConnect",
+      "role_label": "I am a",
+      "client": "Client",
+      "client_desc": "I'm looking for a nutritionist",
+      "nutritionist": "Nutritionist",
+      "nutritionist_desc": "I offer my services",
+      "email": "Email address",
+      "email_placeholder": "you@email.com",
+      "password": "Password",
+      "password_placeholder": "Minimum 8 characters",
+      "submit": "Create account",
+      "submitting": "Creating account…",
+      "already_have_account": "Already have an account?",
+      "login": "Log in here",
+      "error_email_exists": "This email is already registered",
       "error_network": "Connection error. Please try again."
     }
   }
