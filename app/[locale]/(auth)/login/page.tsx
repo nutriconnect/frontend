@@ -40,7 +40,7 @@ function LoginForm() {
         if (err.code === 'EMAIL_NOT_VERIFIED') {
           setUnverified(true);
         } else if (err.code === 'INVALID_CREDENTIALS') {
-          setError(t('error_invalid', { default: err.message }));
+          setError(t('error_invalid'));
         } else {
           setError(t('error_network'));
         }
@@ -65,9 +65,9 @@ function LoginForm() {
 
       {unverified && (
         <div className="auth-alert auth-alert-error">
-          Your email has not been verified.{' '}
+          {t('email_unverified')}{' '}
           <a href="/verify-email" style={{ fontWeight: 500, color: 'inherit', textDecoration: 'underline' }}>
-            Resend verification
+            {t('resend_verification')}
           </a>
         </div>
       )}
