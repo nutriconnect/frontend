@@ -15,7 +15,7 @@ import type {
   SupplementPayload,
 } from '@/lib/plans';
 import type { MealType } from '@/lib/types';
-import SupplementItem from '@/app/dashboard/clients/[clientId]/plans/nutrition/[id]/components/SupplementItem';
+import SupplementItem from '../[id]/components/SupplementItem';
 
 const MEAL_TYPES = [
   { value: 'breakfast',   label: 'Desayuno'       },
