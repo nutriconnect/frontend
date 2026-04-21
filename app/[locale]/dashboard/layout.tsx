@@ -9,7 +9,6 @@ import { api } from '@/lib/api';
 import { useMyProfile } from '@/lib/profile';
 import { useConversations } from '@/lib/chat';
 import { Avatar } from '@/components/Avatar';
-import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import useSWR from 'swr';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -223,9 +222,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
         </nav>
         <div className="dash-footer">
-          <div style={{ padding: '8px 16px 12px', display: 'flex', justifyContent: 'center' }}>
-            <LanguageSwitcher />
-          </div>
           <button onClick={handleSignOut} className="dash-nav-item" style={{ width: '100%', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}>
             <span>←</span> Sign out
           </button>

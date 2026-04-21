@@ -7,6 +7,8 @@ import { useMyProfile } from '@/lib/profile';
 import { api, ApiRequestError } from '@/lib/api';
 import type { ServicePackage } from '@/lib/types';
 import { AvatarUpload } from '@/components/AvatarUpload';
+import { useLocale } from 'next-intl';
+import { useRouter, usePathname } from 'next/navigation';
 
 interface PkgDraft {
   id?: string;
@@ -57,6 +59,9 @@ function TagInput({
 export default function DashboardProfilePage() {
   const { user } = useAuth();
   const { profile, isLoading, mutate } = useMyProfile();
+  const locale = useLocale();
+  const router = useRouter();
+  const pathname = usePathname();
 
   const [displayName, setDisplayName] = useState('');
   const [bio, setBio] = useState('');
@@ -72,6 +77,7 @@ export default function DashboardProfilePage() {
   const [introConsultationRequired, setIntroConsultationRequired] = useState(false);
   const [acceptingNewClients, setAcceptingNewClients] = useState(true);
   const [consultationType, setConsultationType] = useState<'in_person' | 'online' | 'both'>('in_person');
+  const [preferredLocale, setPreferredLocale] = useState<'es' | 'en'>(locale as 'es' | 'en');
 
   // Pre-fill form when profile loads.
   useEffect(() => {
@@ -279,6 +285,41 @@ export default function DashboardProfilePage() {
                     <span style={{ fontSize: 14 }}>Ambos</span>
                   </label>
                 </div>
+              </div>
+              <div className="dash-field">
+                <label className="dash-label">Preferred Language / Idioma preferido</label>
+                <select
+                  className="dash-input"
+                  value={preferredLocale}
+                  onChange={async (e) => {
+                    const newLocale = e.target.value as 'es' | 'en';
+                    setPreferredLocale(newLocale);
+
+                    // Update cookie
+                    document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000`;
+
+                    // Update backend
+                    try {
+                      await api.put('/user/preferences', { preferred_locale: newLocale });
+                    } catch (e) {
+                      console.error('Failed to update locale preference:', e);
+                    }
+
+                    // Redirect to new locale
+                    const segments = pathname.split('/');
+                    segments[1] = newLocale;
+                    const newPath = segments.join('/');
+                    router.push(newPath);
+                    router.refresh();
+                  }}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <option value="es">🇪🇸 Español (Spanish)</option>
+                  <option value="en">🇬🇧 English (Inglés)</option>
+                </select>
+                <span style={{ fontSize: 12, color: 'var(--nc-stone)', marginTop: 4 }}>
+                  Your interface language preference
+                </span>
               </div>
             </div>
             <div className="dash-row">
