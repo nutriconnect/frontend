@@ -3,11 +3,13 @@
 
 import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { api, ApiRequestError } from '@/lib/api';
 
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const t = useTranslations('auth.login');
   const raw = searchParams.get('from') ?? '/';
   const from = raw.startsWith('/') ? raw : '/';
 
@@ -38,12 +40,12 @@ function LoginForm() {
         if (err.code === 'EMAIL_NOT_VERIFIED') {
           setUnverified(true);
         } else if (err.code === 'INVALID_CREDENTIALS') {
-          setError('Email o contraseña incorrectos.');
+          setError(t('error_invalid', { default: err.message }));
         } else {
           setError(err.message);
         }
       } else {
-        setError('Algo salió mal. Inténtalo de nuevo.');
+        setError(t('error_generic'));
       }
     } finally {
       setLoading(false);
@@ -54,28 +56,30 @@ function LoginForm() {
     <div className="auth-card">
       <a href="/" className="auth-logo">nutri<span>red</span></a>
 
-      <h1 className="auth-heading">Bienvenido <em>de vuelta</em></h1>
-      <p className="auth-sub">Inicia sesión para continuar.</p>
+      <h1 className="auth-heading">
+        {t('title')} <em>{t('title_em')}</em>
+      </h1>
+      <p className="auth-sub">{t('subtitle')}</p>
 
       {error && <div className="auth-alert auth-alert-error">{error}</div>}
 
       {unverified && (
         <div className="auth-alert auth-alert-error">
-          Tu email no ha sido verificado.{' '}
+          {t('email_unverified')}{' '}
           <a href="/verify-email" style={{ fontWeight: 500, color: 'inherit', textDecoration: 'underline' }}>
-            Reenviar verificación
+            {t('resend_verification')}
           </a>
         </div>
       )}
 
       <form className="auth-form" onSubmit={handleSubmit}>
         <div className="form-field">
-          <label className="form-label" htmlFor="email">Email</label>
+          <label className="form-label" htmlFor="email">{t('email')}</label>
           <input
             id="email"
             type="email"
             className="form-input"
-            placeholder="tu@email.com"
+            placeholder={t('email_placeholder')}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -86,16 +90,16 @@ function LoginForm() {
 
         <div className="form-field">
           <label className="form-label" htmlFor="password">
-            Contraseña
+            {t('password')}
             <a href="/forgot-password" style={{ float: 'right', fontWeight: 400, color: 'var(--ink-soft)', fontSize: '0.8125rem' }}>
-              ¿Olvidaste tu contraseña?
+              {t('forgot_password')}
             </a>
           </label>
           <input
             id="password"
             type="password"
             className="form-input"
-            placeholder="Tu contraseña"
+            placeholder={t('password_placeholder')}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -105,14 +109,14 @@ function LoginForm() {
         </div>
 
         <button type="submit" className="btn-auth" disabled={loading}>
-          {loading ? 'Iniciando sesión…' : 'Iniciar sesión'}
+          {loading ? t('submitting') : t('submit')}
         </button>
       </form>
 
       <hr className="auth-divider" />
 
       <p className="auth-footer">
-        ¿No tienes cuenta? <a href="/register">Regístrate gratis</a>
+        {t('no_account')} <a href="/register">{t('register')}</a>
       </p>
     </div>
   );

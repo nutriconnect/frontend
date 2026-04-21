@@ -26,5 +26,24 @@
     "VALIDATION_ERROR": "Verifica los campos del formulario",
     "NETWORK_ERROR": "Error de conexión. Inténtalo de nuevo.",
     "INTERNAL_ERROR": "Error del servidor. Contacta con soporte."
+  },
+  "auth": {
+    "login": {
+      "title": "Bienvenido de vuelta",
+      "title_em": "de vuelta",
+      "subtitle": "Inicia sesión para continuar.",
+      "email": "Email",
+      "email_placeholder": "tu@email.com",
+      "password": "Contraseña",
+      "password_placeholder": "Tu contraseña",
+      "forgot_password": "¿Olvidaste tu contraseña?",
+      "submit": "Iniciar sesión",
+      "submitting": "Iniciando sesión…",
+      "no_account": "¿No tienes cuenta?",
+      "register": "Regístrate gratis",
+      "email_unverified": "Tu email no ha sido verificado.",
+      "resend_verification": "Reenviar verificación",
+      "error_generic": "Algo salió mal. Inténtalo de nuevo."
+    }
   }
 }
