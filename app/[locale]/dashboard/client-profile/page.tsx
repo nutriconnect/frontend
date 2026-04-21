@@ -7,6 +7,8 @@ import { useMyClientProfile, useWeightEntries, useActivityEntries } from '@/lib/
 import { api, ApiRequestError } from '@/lib/api';
 import { AvatarUpload } from '@/components/AvatarUpload';
 import { BMIBadge } from '@/components/BMIBadge';
+import { useLocale } from 'next-intl';
+import { useRouter, usePathname } from 'next/navigation';
 
 // ─── TagInput ─────────────────────────────────────────────────────────────────
 
@@ -312,6 +314,9 @@ function ActivityLogWidget() {
 export default function ClientProfilePage() {
   const { user } = useAuth();
   const { profile, isLoading, mutate } = useMyClientProfile();
+  const locale = useLocale();
+  const router = useRouter();
+  const pathname = usePathname();
 
   const [displayName, setDisplayName] = useState('');
   const [bio, setBio] = useState('');
@@ -323,6 +328,7 @@ export default function ClientProfilePage() {
   const [goals, setGoals] = useState<string[]>([]);
   const [dietaryRestrictions, setDietaryRestrictions] = useState<string[]>([]);
   const [allergies, setAllergies] = useState<string[]>([]);
+  const [preferredLocale, setPreferredLocale] = useState<'es' | 'en'>(locale as 'es' | 'en');
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState('');
 
@@ -442,6 +448,33 @@ export default function ClientProfilePage() {
                   onChange={(e) => setCity(e.target.value)}
                   placeholder="Madrid"
                 />
+              </div>
+            </div>
+            <div className="dash-row">
+              <div className="dash-field">
+                <label className="dash-label">Idioma / Language</label>
+                <select
+                  className="dash-input"
+                  value={preferredLocale}
+                  onChange={async (e) => {
+                    const newLocale = e.target.value as 'es' | 'en';
+                    setPreferredLocale(newLocale);
+                    document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000`;
+                    try {
+                      await api.put('/user/preferences', { preferred_locale: newLocale });
+                    } catch (e) {
+                      console.error('Failed to update locale preference:', e);
+                    }
+                    const segments = pathname.split('/');
+                    segments[1] = newLocale;
+                    const newPath = segments.join('/');
+                    router.push(newPath);
+                    router.refresh();
+                  }}
+                >
+                  <option value="es">🇪🇸 Español (Spanish)</option>
+                  <option value="en">🇬🇧 English (Inglés)</option>
+                </select>
               </div>
             </div>
             <div className="dash-row single">
