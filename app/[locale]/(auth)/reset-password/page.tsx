@@ -3,9 +3,11 @@
 
 import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { api, ApiRequestError } from '@/lib/api';
 
 function ResetPasswordForm() {
+  const t = useTranslations('auth.reset_password');
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
@@ -20,10 +22,10 @@ function ResetPasswordForm() {
       <div className="auth-card" style={{ textAlign: 'center' }}>
         <a href="/" className="auth-logo" style={{ textAlign: 'left' }}>nutri<span>connect</span></a>
         <div className="auth-alert auth-alert-error">
-          Enlace inválido. Solicita un nuevo enlace de restablecimiento.
+          {t('no_token_message')}
         </div>
         <a href="/forgot-password" className="btn-auth" style={{ display: 'block', textAlign: 'center', textDecoration: 'none', marginTop: '1rem' }}>
-          Solicitar nuevo enlace
+          {t('request_new_link')}
         </a>
       </div>
     );
@@ -33,7 +35,7 @@ function ResetPasswordForm() {
     e.preventDefault();
     setError('');
     if (password !== confirm) {
-      setError('Las contraseñas no coinciden.');
+      setError(t('error_mismatch'));
       return;
     }
     setLoading(true);
@@ -43,12 +45,12 @@ function ResetPasswordForm() {
     } catch (err) {
       if (err instanceof ApiRequestError) {
         if (err.code === 'TOKEN_EXPIRED') {
-          setError('El enlace ha expirado. Solicita uno nuevo.');
+          setError(t('error_token_expired'));
         } else {
-          setError('Enlace inválido o ya utilizado. Solicita uno nuevo.');
+          setError(t('error_token_used'));
         }
       } else {
-        setError('Algo salió mal. Inténtalo de nuevo.');
+        setError(t('error_generic'));
       }
     } finally {
       setLoading(false);
@@ -58,19 +60,19 @@ function ResetPasswordForm() {
   return (
     <div className="auth-card">
       <a href="/" className="auth-logo">nutri<span>connect</span></a>
-      <h1 className="auth-heading">Nueva <em>contraseña</em></h1>
-      <p className="auth-sub">Elige una contraseña segura de al menos 8 caracteres.</p>
+      <h1 className="auth-heading">{t('title')}</h1>
+      <p className="auth-sub">{t('subtitle')}</p>
 
       {error && <div className="auth-alert auth-alert-error">{error}</div>}
 
       <form className="auth-form" onSubmit={handleSubmit}>
         <div className="form-field">
-          <label className="form-label" htmlFor="password">Nueva contraseña</label>
+          <label className="form-label" htmlFor="password">{t('password')}</label>
           <input
             id="password"
             type="password"
             className="form-input"
-            placeholder="Mínimo 8 caracteres"
+            placeholder={t('password_placeholder')}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -80,12 +82,12 @@ function ResetPasswordForm() {
         </div>
 
         <div className="form-field">
-          <label className="form-label" htmlFor="confirm">Confirmar contraseña</label>
+          <label className="form-label" htmlFor="confirm">{t('confirm_password')}</label>
           <input
             id="confirm"
             type="password"
             className="form-input"
-            placeholder="Repite la contraseña"
+            placeholder={t('confirm_password_placeholder')}
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
             required
@@ -95,7 +97,7 @@ function ResetPasswordForm() {
         </div>
 
         <button type="submit" className="btn-auth" disabled={loading}>
-          {loading ? 'Guardando…' : 'Guardar contraseña'}
+          {loading ? t('submitting') : t('submit')}
         </button>
       </form>
     </div>

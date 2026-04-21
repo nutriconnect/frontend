@@ -2,9 +2,11 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { api } from '@/lib/api';
 
 export default function ForgotPasswordPage() {
+  const t = useTranslations('auth.forgot_password');
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -22,12 +24,12 @@ export default function ForgotPasswordPage() {
       <div className="auth-card" style={{ textAlign: 'center' }}>
         <a href="/" className="auth-logo" style={{ textAlign: 'left' }}>nutri<span>connect</span></a>
         <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📧</div>
-        <h1 className="auth-heading">Revisa tu <em>correo</em></h1>
+        <h1 className="auth-heading">{t('success')}</h1>
         <p className="auth-sub">
-          Si existe una cuenta con ese email, recibirás un enlace para restablecer tu contraseña en breve.
+          {t('success')}
         </p>
         <hr className="auth-divider" />
-        <p className="auth-footer"><a href="/login">Volver al inicio de sesión</a></p>
+        <p className="auth-footer"><a href="/login">{t('back_to_login')}</a></p>
       </div>
     );
   }
@@ -35,17 +37,17 @@ export default function ForgotPasswordPage() {
   return (
     <div className="auth-card">
       <a href="/" className="auth-logo">nutri<span>connect</span></a>
-      <h1 className="auth-heading">Restablecer <em>contraseña</em></h1>
-      <p className="auth-sub">Introduce tu email y te enviaremos un enlace para restablecer tu contraseña.</p>
+      <h1 className="auth-heading">{t('title')}</h1>
+      <p className="auth-sub">{t('subtitle')}</p>
 
       <form className="auth-form" onSubmit={handleSubmit}>
         <div className="form-field">
-          <label className="form-label" htmlFor="email">Email</label>
+          <label className="form-label" htmlFor="email">{t('email')}</label>
           <input
             id="email"
             type="email"
             className="form-input"
-            placeholder="tu@email.com"
+            placeholder={t('email_placeholder')}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -53,12 +55,12 @@ export default function ForgotPasswordPage() {
           />
         </div>
         <button type="submit" className="btn-auth" disabled={loading}>
-          {loading ? 'Enviando…' : 'Enviar enlace'}
+          {loading ? t('submitting') : t('submit')}
         </button>
       </form>
 
       <hr className="auth-divider" />
-      <p className="auth-footer"><a href="/login">Volver al inicio de sesión</a></p>
+      <p className="auth-footer"><a href="/login">{t('back_to_login')}</a></p>
     </div>
   );
 }
