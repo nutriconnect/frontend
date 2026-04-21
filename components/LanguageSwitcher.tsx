@@ -72,8 +72,8 @@ export function LanguageSwitcher() {
       onClick={() => switchLocale(locale === 'es' ? 'en' : 'es')}
       style={{
         width: '100%',
-        background: 'rgba(90, 138, 64, 0.08)',
-        border: '1px solid rgba(90, 138, 64, 0.2)',
+        background: 'rgba(240, 244, 235, 0.1)',
+        border: '1px solid rgba(240, 244, 235, 0.2)',
         borderRadius: 8,
         padding: '10px 14px',
         fontSize: 13,
@@ -83,16 +83,16 @@ export function LanguageSwitcher() {
         alignItems: 'center',
         justifyContent: 'center',
         gap: 8,
-        color: 'var(--nc-forest)',
+        color: 'rgba(240, 244, 235, 0.9)',
         transition: 'all 0.2s ease',
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.background = 'rgba(90, 138, 64, 0.15)';
-        e.currentTarget.style.borderColor = 'rgba(90, 138, 64, 0.3)';
+        e.currentTarget.style.background = 'rgba(240, 244, 235, 0.15)';
+        e.currentTarget.style.borderColor = 'rgba(240, 244, 235, 0.3)';
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.background = 'rgba(90, 138, 64, 0.08)';
-        e.currentTarget.style.borderColor = 'rgba(90, 138, 64, 0.2)';
+        e.currentTarget.style.background = 'rgba(240, 244, 235, 0.1)';
+        e.currentTarget.style.borderColor = 'rgba(240, 244, 235, 0.2)';
       }}
     >
       <span style={{ fontSize: 16 }}>🌐</span>
