@@ -17,32 +17,25 @@ export function LanguageSwitcher() {
 
   const switchLocale = async (newLocale: string) => {
     try {
-      console.log('[LanguageSwitcher] Switching from', locale, 'to', newLocale);
-      console.log('[LanguageSwitcher] Current pathname:', pathname);
-
       // Update cookie
       document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000`;
-      console.log('[LanguageSwitcher] Cookie set');
 
       // Update user preference if logged in (ignore errors)
       try {
         await api.put('/user/preferences', { preferred_locale: newLocale });
-        console.log('[LanguageSwitcher] User preference updated in backend');
       } catch (e) {
-        console.log('[LanguageSwitcher] Failed to update user preference (may not be logged in):', e);
+        // Silently fail - user may not be logged in
       }
 
       // Redirect to new locale
       const segments = pathname.split('/');
-      console.log('[LanguageSwitcher] Path segments:', segments);
       segments[1] = newLocale; // Replace locale segment
       const newPath = segments.join('/');
-      console.log('[LanguageSwitcher] New path:', newPath);
 
       router.push(newPath);
       router.refresh();
     } catch (error) {
-      console.error('[LanguageSwitcher] Error switching locale:', error);
+      console.error('Failed to switch locale:', error);
     }
   };
 
@@ -50,22 +43,26 @@ export function LanguageSwitcher() {
     return (
       <button
         style={{
-          background: 'transparent',
-          border: '1px solid var(--nc-border)',
-          borderRadius: 6,
-          padding: '6px 12px',
+          width: '100%',
+          background: 'rgba(90, 138, 64, 0.08)',
+          border: '1px solid rgba(90, 138, 64, 0.2)',
+          borderRadius: 8,
+          padding: '10px 14px',
           fontSize: 13,
           fontWeight: 500,
-          cursor: 'pointer',
+          cursor: 'not-allowed',
           display: 'flex',
           alignItems: 'center',
-          gap: 6,
-          color: 'var(--nc-ink)',
+          justifyContent: 'center',
+          gap: 8,
+          color: 'var(--nc-stone)',
+          transition: 'all 0.2s ease',
           opacity: 0.5,
         }}
         disabled
       >
-        🌐 ...
+        <span style={{ fontSize: 16 }}>🌐</span>
+        <span>Loading...</span>
       </button>
     );
   }
@@ -74,20 +71,32 @@ export function LanguageSwitcher() {
     <button
       onClick={() => switchLocale(locale === 'es' ? 'en' : 'es')}
       style={{
-        background: 'transparent',
-        border: '1px solid var(--nc-border)',
-        borderRadius: 6,
-        padding: '6px 12px',
+        width: '100%',
+        background: 'rgba(90, 138, 64, 0.08)',
+        border: '1px solid rgba(90, 138, 64, 0.2)',
+        borderRadius: 8,
+        padding: '10px 14px',
         fontSize: 13,
         fontWeight: 500,
         cursor: 'pointer',
         display: 'flex',
         alignItems: 'center',
-        gap: 6,
-        color: 'var(--nc-ink)',
+        justifyContent: 'center',
+        gap: 8,
+        color: 'var(--nc-forest)',
+        transition: 'all 0.2s ease',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.background = 'rgba(90, 138, 64, 0.15)';
+        e.currentTarget.style.borderColor = 'rgba(90, 138, 64, 0.3)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.background = 'rgba(90, 138, 64, 0.08)';
+        e.currentTarget.style.borderColor = 'rgba(90, 138, 64, 0.2)';
       }}
     >
-      {locale === 'es' ? '🇬🇧 English' : '🇪🇸 Español'}
+      <span style={{ fontSize: 16 }}>🌐</span>
+      <span>{locale === 'es' ? 'EN' : 'ES'}</span>
     </button>
   );
 }
