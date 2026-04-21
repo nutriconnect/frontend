@@ -1,0 +1,30 @@
+{
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "loading": "Cargando…",
+    "error": "Error",
+    "success": "Éxito"
+  },
+  "nav": {
+    "profile": "Mi perfil",
+    "calendar": "Calendario",
+    "appointments": "Citas",
+    "clients": "Mis clientes",
+    "plans": "Planes",
+    "chat": "Mensajes",
+    "billing": "Facturación",
+    "settings": "Ajustes"
+  },
+  "errors": {
+    "INVALID_CREDENTIALS": "Correo o contraseña incorrectos",
+    "EMAIL_ALREADY_EXISTS": "Este correo ya está registrado",
+    "UNAUTHORIZED": "No autorizado. Inicia sesión.",
+    "FORBIDDEN": "No tienes permiso para realizar esta acción",
+    "NOT_FOUND": "Recurso no encontrado",
+    "VALIDATION_ERROR": "Verifica los campos del formulario",
+    "NETWORK_ERROR": "Error de conexión. Inténtalo de nuevo.",
+    "INTERNAL_ERROR": "Error del servidor. Contacta con soporte."
+  }
+}

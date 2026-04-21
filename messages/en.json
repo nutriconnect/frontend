@@ -1,0 +1,30 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "loading": "Loading…",
+    "error": "Error",
+    "success": "Success"
+  },
+  "nav": {
+    "profile": "My profile",
+    "calendar": "Calendar",
+    "appointments": "Appointments",
+    "clients": "My clients",
+    "plans": "Plans",
+    "chat": "Messages",
+    "billing": "Billing",
+    "settings": "Settings"
+  },
+  "errors": {
+    "INVALID_CREDENTIALS": "Invalid email or password",
+    "EMAIL_ALREADY_EXISTS": "This email is already registered",
+    "UNAUTHORIZED": "Unauthorized. Please log in.",
+    "FORBIDDEN": "You don't have permission to perform this action",
+    "NOT_FOUND": "Resource not found",
+    "VALIDATION_ERROR": "Please check the form fields",
+    "NETWORK_ERROR": "Connection error. Please try again.",
+    "INTERNAL_ERROR": "Server error. Contact support."
+  }
+}
