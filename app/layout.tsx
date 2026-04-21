@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, DM_Sans } from "next/font/google";
 import "./globals.css";
+import { getThemeClassName } from "@/lib/theme";
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-display",
@@ -26,10 +27,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const themeClass = getThemeClassName();
+
   return (
     <html
       lang="es"
-      className={`${cormorant.variable} ${dmSans.variable} h-full`}
+      className={`${cormorant.variable} ${dmSans.variable} ${themeClass} h-full`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

@@ -1,0 +1,203 @@
+/* V2 Palette Override - Brand Guide Colors (#3FAF7A + #1F3C4D) */
+
+.v2-palette {
+  /* Override primary colors */
+  --olive:            #3FAF7A;  /* Verde Digital */
+  --olive-mid:        #54BF8C;  /* Lighter teal */
+  --olive-light:      #6FCC9F;  /* Lighter still */
+  --terracotta:       #A8E6CF;  /* Lima Suave as accent */
+  --terracotta-light: #C0EDD9;  /* Lighter lime */
+  --sand:             #E6F7EF;  /* Very light teal tint */
+  --ink:              #1F3C4D;  /* Teal-blue for dark text */
+  --ink-soft:         #4A6A7A;  /* Softer teal-blue */
+  --mist:             #F0F7F4;  /* Near-white with teal tint */
+  --lp-white:         #FAFAF7;  /* Keep neutral white */
+  --cream:            #FAFAF7;  /* Align with white */
+}
+
+/* Stats band */
+.v2-palette .stats {
+  background: #1F3C4D;
+}
+
+/* Hero tag color */
+.v2-palette .hero-tag {
+  color: #3FAF7A;
+}
+
+.v2-palette .hero-tag::before {
+  background: #3FAF7A;
+}
+
+/* Italic heading color */
+.v2-palette .h-italic {
+  color: #1F3C4D;
+}
+
+/* Primary button */
+.v2-palette .btn-primary {
+  background: #3FAF7A;
+}
+
+.v2-palette .btn-primary:hover {
+  background: #54BF8C;
+  box-shadow: 0 10px 28px rgba(63,175,122,0.28);
+}
+
+/* Ghost button */
+.v2-palette .btn-ghost {
+  color: #1F3C4D;
+}
+
+/* Section tags */
+.v2-palette .sec-tag {
+  color: #3FAF7A;
+}
+
+/* Section title em */
+.v2-palette .sec-title em {
+  color: #1F3C4D;
+}
+
+/* Step icon background */
+.v2-palette .step-icon {
+  background: #1F3C4D;
+}
+
+/* Step background on hover */
+.v2-palette .step:hover {
+  box-shadow: 0 24px 56px rgba(31,60,77,0.11);
+}
+
+/* Nutritionist card gradients */
+.v2-palette .bg-green {
+  background: linear-gradient(155deg,#6FCC9F 0%,#3FAF7A 100%);
+}
+
+.v2-palette .bg-terra {
+  background: linear-gradient(155deg,#C0EDD9 0%,#A8E6CF 100%);
+}
+
+.v2-palette .bg-slate {
+  background: linear-gradient(155deg,#4A6A7A 0%,#1F3C4D 100%);
+}
+
+/* Nutritionist card avatars */
+.v2-palette .av-1 {
+  background: linear-gradient(135deg,#A8E6CF,#3FAF7A);
+}
+
+.v2-palette .av-2 {
+  background: linear-gradient(135deg,#C0EDD9,#6FCC9F);
+}
+
+.v2-palette .av-3 {
+  background: linear-gradient(135deg,#4A6A7A,#1F3C4D);
+}
+
+.v2-palette .av-4 {
+  background: linear-gradient(135deg,#A8E6CF,#54BF8C);
+}
+
+/* Floating card avatar */
+.v2-palette .fc-avatar {
+  background: linear-gradient(135deg,rgba(63,175,122,0.4),rgba(63,175,122,0.2));
+  border: 1px solid rgba(63,175,122,0.35);
+}
+
+/* Floating card sub color */
+.v2-palette .fc-sub {
+  color: #3FAF7A;
+}
+
+/* Button small */
+.v2-palette .btn-sm {
+  background: #1F3C4D;
+}
+
+.v2-palette .btn-sm:hover {
+  background: #2A5161;
+}
+
+/* Button outline */
+.v2-palette .btn-outline {
+  color: #1F3C4D;
+  border: 1.5px solid #1F3C4D;
+}
+
+.v2-palette .btn-outline:hover {
+  background: #1F3C4D;
+  color: #FAFAF7;
+}
+
+/* Pricing featured card */
+.v2-palette .pricing-featured {
+  background: #1F3C4D;
+}
+
+.v2-palette .pricing-featured:hover {
+  box-shadow: 0 24px 56px rgba(31,60,77,0.32);
+}
+
+/* Pricing popular badge */
+.v2-palette .pricing-popular {
+  background: #3FAF7A;
+}
+
+/* Pricing tier color in featured */
+.v2-palette .pricing-featured .pricing-tier {
+  color: rgba(250,250,247,0.5);
+}
+
+/* CTA section */
+.v2-palette .cta {
+  background: #1F3C4D;
+}
+
+.v2-palette .cta-ring {
+  border: 1px solid rgba(250,250,247,0.08);
+}
+
+.v2-palette .cta-blob {
+  background: rgba(63,175,122,0.14);
+}
+
+.v2-palette .cta-h em {
+  color: rgba(250,250,247,0.62);
+}
+
+/* CTA buttons - use primary color */
+.v2-palette .btn-terra {
+  background: #3FAF7A;
+}
+
+.v2-palette .btn-terra:hover {
+  background: #54BF8C;
+  box-shadow: 0 10px 28px rgba(63,175,122,0.4);
+}
+
+/* Footer logo span */
+.v2-palette .ft-logo span {
+  color: #3FAF7A;
+}
+
+/* Nav logo */
+.v2-palette .nav-logo {
+  color: #1F3C4D;
+}
+
+.v2-palette .nav-logo span {
+  color: #3FAF7A;
+}
+
+.v2-palette .nav-links a:hover {
+  color: #1F3C4D;
+}
+
+.v2-palette .btn-nav {
+  background: #1F3C4D;
+}
+
+.v2-palette .btn-nav:hover {
+  background: #2A5161;
+}

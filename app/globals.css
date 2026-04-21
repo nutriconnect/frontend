@@ -1907,3 +1907,526 @@
     font-size: 1.5rem;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   THEME V2 — Brand Guide Palette (#3FAF7A + #1F3C4D)
+   Activated via NEXT_PUBLIC_COLOR_THEME=v2 in .env.local
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+html.theme-v2,
+.theme-v2 :root {
+  /* Override CSS variables */
+  --olive:            #3FAF7A;  /* Verde Digital */
+  --olive-mid:        #54BF8C;  /* Lighter teal */
+  --olive-light:      #6FCC9F;  /* Lighter still */
+  --terracotta:       #A8E6CF;  /* Lima Suave as accent */
+  --terracotta-light: #C0EDD9;  /* Lighter lime */
+  --sand:             #E6F7EF;  /* Very light teal tint */
+  --ink:              #1F3C4D;  /* Teal-blue for dark text */
+  --ink-soft:         #4A6A7A;  /* Softer teal-blue */
+  --mist:             #F0F7F4;  /* Near-white with teal tint */
+  --lp-white:         #FAFAF7;  /* Keep neutral white */
+  --cream:            #FAFAF7;  /* Align with white */
+}
+
+/* Stats band */
+.theme-v2 .stats {
+  background: #1F3C4D;
+}
+
+/* Hero tag color */
+.theme-v2 .hero-tag {
+  color: #3FAF7A;
+}
+
+.theme-v2 .hero-tag::before {
+  background: #3FAF7A;
+}
+
+/* Italic heading color */
+.theme-v2 .h-italic {
+  color: #1F3C4D;
+}
+
+/* Hero blob */
+.theme-v2 .hero-blob path {
+  fill: #1F3C4D;
+}
+
+/* Hero photo SVG colors */
+.theme-v2 .hero-photo ellipse {
+  fill: rgba(63,175,122,0.38);
+}
+
+.theme-v2 .hero-photo ellipse:nth-of-type(2) {
+  fill: rgba(63,175,122,0.28);
+}
+
+.theme-v2 .hero-photo ellipse:nth-of-type(3) {
+  fill: rgba(63,175,122,0.22);
+}
+
+.theme-v2 .hero-photo circle:nth-of-type(5) {
+  fill: rgba(168,230,207,0.50);
+}
+
+.theme-v2 .hero-photo circle:nth-of-type(6) {
+  fill: rgba(168,230,207,0.35);
+}
+
+/* Primary button */
+.theme-v2 .btn-primary {
+  background: #3FAF7A;
+}
+
+.theme-v2 .btn-primary:hover {
+  background: #54BF8C;
+  box-shadow: 0 10px 28px rgba(63,175,122,0.28);
+}
+
+/* Ghost button */
+.theme-v2 .btn-ghost {
+  color: #1F3C4D;
+}
+
+/* Section tags */
+.theme-v2 .sec-tag {
+  color: #3FAF7A;
+}
+
+/* Section title em */
+.theme-v2 .sec-title em {
+  color: #1F3C4D;
+}
+
+/* Step icon background */
+.theme-v2 .step-icon {
+  background: #1F3C4D;
+}
+
+/* Step background on hover */
+.theme-v2 .step:hover {
+  box-shadow: 0 24px 56px rgba(31,60,77,0.11);
+}
+
+/* Nutritionist card gradients */
+.theme-v2 .bg-green {
+  background: linear-gradient(155deg,#6FCC9F 0%,#3FAF7A 100%);
+}
+
+.theme-v2 .bg-terra {
+  background: linear-gradient(155deg,#C0EDD9 0%,#A8E6CF 100%);
+}
+
+.theme-v2 .bg-slate {
+  background: linear-gradient(155deg,#4A6A7A 0%,#1F3C4D 100%);
+}
+
+/* Nutritionist card SVG colors */
+.theme-v2 .nut-photo ellipse {
+  fill: rgba(63,175,122,0.5);
+}
+
+.theme-v2 .bg-terra ellipse {
+  fill: rgba(168,230,207,0.45);
+}
+
+.theme-v2 .bg-terra ellipse:nth-of-type(2) {
+  fill: rgba(168,230,207,0.35);
+}
+
+.theme-v2 .bg-slate ellipse {
+  fill: rgba(31,60,77,0.45);
+}
+
+.theme-v2 .bg-slate ellipse:nth-of-type(2) {
+  fill: rgba(31,60,77,0.35);
+}
+
+/* Avatar gradients */
+.theme-v2 .av-1 {
+  background: linear-gradient(135deg,#A8E6CF,#3FAF7A);
+}
+
+.theme-v2 .av-2 {
+  background: linear-gradient(135deg,#C0EDD9,#6FCC9F);
+}
+
+.theme-v2 .av-3 {
+  background: linear-gradient(135deg,#4A6A7A,#1F3C4D);
+}
+
+.theme-v2 .av-4 {
+  background: linear-gradient(135deg,#A8E6CF,#54BF8C);
+}
+
+/* Floating card avatar */
+.theme-v2 .fc-avatar {
+  background: linear-gradient(135deg,rgba(63,175,122,0.4),rgba(63,175,122,0.2));
+  border: 1px solid rgba(63,175,122,0.35);
+}
+
+/* Floating card sub color */
+.theme-v2 .fc-sub {
+  color: #3FAF7A;
+}
+
+/* Button small */
+.theme-v2 .btn-sm {
+  background: #1F3C4D;
+}
+
+.theme-v2 .btn-sm:hover {
+  background: #2A5161;
+}
+
+/* Button outline */
+.theme-v2 .btn-outline {
+  color: #1F3C4D;
+  border: 1.5px solid #1F3C4D;
+}
+
+.theme-v2 .btn-outline:hover {
+  background: #1F3C4D;
+  color: #FAFAF7;
+}
+
+/* Pricing featured card */
+.theme-v2 .pricing-featured {
+  background: #1F3C4D;
+}
+
+.theme-v2 .pricing-featured:hover {
+  box-shadow: 0 24px 56px rgba(31,60,77,0.32);
+}
+
+/* Pricing popular badge */
+.theme-v2 .pricing-popular {
+  background: #3FAF7A;
+}
+
+/* Pricing tier color in featured */
+.theme-v2 .pricing-featured .pricing-tier {
+  color: rgba(250,250,247,0.5);
+}
+
+/* CTA section */
+.theme-v2 .cta {
+  background: #1F3C4D;
+}
+
+.theme-v2 .cta-ring {
+  border: 1px solid rgba(250,250,247,0.08);
+}
+
+.theme-v2 .cta-blob {
+  background: rgba(63,175,122,0.14);
+}
+
+.theme-v2 .cta-h em {
+  color: rgba(250,250,247,0.62);
+}
+
+/* CTA buttons */
+.theme-v2 .btn-terra {
+  background: #3FAF7A;
+}
+
+.theme-v2 .btn-terra:hover {
+  background: #54BF8C;
+  box-shadow: 0 10px 28px rgba(63,175,122,0.4);
+}
+
+/* Footer logo span */
+.theme-v2 .ft-logo span {
+  color: #3FAF7A;
+}
+
+/* Nav logo */
+.theme-v2 .nav-logo {
+  color: #1F3C4D;
+}
+
+.theme-v2 .nav-logo span {
+  color: #3FAF7A;
+}
+
+.theme-v2 .nav-links a:hover {
+  color: #1F3C4D;
+}
+
+.theme-v2 .btn-nav {
+  background: #1F3C4D;
+}
+
+.theme-v2 .btn-nav:hover {
+  background: #2A5161;
+}
+
+/* ─── NUTRITIONIST/PUBLIC PAGES OVERRIDES ─── */
+
+html.theme-v2,
+.theme-v2 :root {
+  /* Override nc-* CSS variables */
+  --nc-forest:      #1F3C4D;  /* Teal-blue instead of dark green */
+  --nc-forest-lt:   #2A5161;  /* Lighter teal-blue */
+  --nc-forest-pale: #E6F7EF;  /* Light teal tint */
+  --nc-terra:       #3FAF7A;  /* Verde Digital instead of terracotta */
+  --nc-terra-lt:    #54BF8C;  /* Lighter teal */
+  --nc-sage:        #6FCC9F;  /* Lighter teal-green */
+  --nc-stone:       #4A6A7A;  /* Muted teal-grey */
+  --nc-stone-lt:    #748A9A;  /* Lighter teal-grey */
+  --nc-ink:         #1F3C4D;  /* Teal-blue for text */
+  --nc-cream:       #FAFAF7;  /* Match neutral white */
+  --nc-cream-dark:  #F0F0ED;  /* Slightly darker neutral */
+  --nc-card:        #FDFAF6;  /* Keep card background */
+  --nc-border:      #E5E7EB;  /* Modern grey border */
+}
+
+/* Dashboard sidebar background */
+.theme-v2 .dash-sidebar {
+  background: #1F3C4D;
+}
+
+/* Dashboard nav active item */
+.theme-v2 .dash-nav-item.active {
+  background: rgba(63,175,122,0.15);
+  color: #6FCC9F;
+}
+
+/* Dashboard topbar title */
+.theme-v2 .dash-topbar-title {
+  color: #1F3C4D;
+}
+
+/* Dashboard status badges */
+.theme-v2 .dash-status-badge.published {
+  background: rgba(63,175,122,0.1);
+  color: #3FAF7A;
+  border: 1px solid rgba(63,175,122,0.2);
+}
+
+/* Dashboard section title */
+.theme-v2 .dash-section-title {
+  color: #1F3C4D;
+}
+
+/* Dashboard input focus */
+.theme-v2 .dash-input:focus,
+.theme-v2 .dash-textarea:focus {
+  border-color: #3FAF7A;
+  box-shadow: 0 0 0 3px rgba(63,175,122,0.07);
+}
+
+/* Dashboard tag area focus */
+.theme-v2 .dash-tag-area:focus-within {
+  border-color: #3FAF7A;
+  box-shadow: 0 0 0 3px rgba(63,175,122,0.07);
+}
+
+/* Dashboard chips */
+.theme-v2 .dash-chip.specialty {
+  background: rgba(63,175,122,0.1);
+  color: #3FAF7A;
+  border: 1px solid rgba(63,175,122,0.2);
+}
+
+/* Dashboard buttons */
+.theme-v2 .dash-btn-publish {
+  background: #3FAF7A;
+}
+
+.theme-v2 .dash-btn-publish:hover {
+  background: #54BF8C;
+}
+
+.theme-v2 .dash-btn-save {
+  background: #3FAF7A;
+}
+
+.theme-v2 .dash-btn-save:hover {
+  background: #54BF8C;
+}
+
+.theme-v2 .dash-btn-preview:hover {
+  border-color: #3FAF7A;
+  color: #3FAF7A;
+}
+
+.theme-v2 .dash-btn-draft:hover {
+  border-color: #3FAF7A;
+  color: #3FAF7A;
+}
+
+/* Dashboard toggle */
+.theme-v2 .dash-toggle.on {
+  background: #3FAF7A;
+}
+
+/* Dashboard step icon */
+.theme-v2 .step-icon {
+  background: #1F3C4D;
+}
+
+/* Auth alert success */
+.theme-v2 .auth-alert-success {
+  background: rgba(63,175,122,0.1);
+  color: #047857;
+}
+
+/* Auth heading em */
+.theme-v2 .auth-heading em {
+  color: #1F3C4D;
+}
+
+/* Auth button */
+.theme-v2 .btn-auth {
+  background: #3FAF7A;
+}
+
+.theme-v2 .btn-auth:hover:not(:disabled) {
+  background: #54BF8C;
+}
+
+/* Auth input focus */
+.theme-v2 .form-input:focus {
+  border-color: #3FAF7A;
+}
+
+/* Auth role option selected */
+.theme-v2 .role-option.selected {
+  border-color: #3FAF7A;
+  background: rgba(63,175,122,0.05);
+}
+
+.theme-v2 .role-option:hover {
+  border-color: #6FCC9F;
+}
+
+/* Auth logo */
+.theme-v2 .auth-logo {
+  color: #1F3C4D;
+}
+
+.theme-v2 .auth-logo span {
+  color: #3FAF7A;
+}
+
+/* Auth footer links */
+.theme-v2 .auth-footer a {
+  color: #3FAF7A;
+}
+
+/* Nutritionist badge active */
+.theme-v2 .nut-badge {
+  background: rgba(63,175,122,0.15);
+  color: #047857;
+}
+
+/* Nutritionist card hover */
+.theme-v2 .nc-card:hover {
+  box-shadow: 0 18px 44px rgba(31,60,77,0.11);
+}
+
+/* Nutritionist tag specialty */
+.theme-v2 .nc-tag.specialty,
+.theme-v2 .nc-profile-tag.specialty {
+  background: rgba(63,175,122,0.1);
+  color: #047857;
+  border: 1px solid rgba(63,175,122,0.15);
+}
+
+/* NC button view */
+.theme-v2 .nc-btn-view {
+  border: 1.5px solid #1F3C4D;
+  color: #1F3C4D;
+}
+
+.theme-v2 .nc-btn-view:hover {
+  background: #1F3C4D;
+}
+
+/* NC button contact */
+.theme-v2 .nc-btn-contact {
+  background: #3FAF7A;
+}
+
+.theme-v2 .nc-btn-contact:hover {
+  background: #54BF8C;
+}
+
+/* Profile badge */
+.theme-v2 .nc-profile-badge {
+  background: rgba(63,175,122,0.2);
+  border: 1px solid rgba(63,175,122,0.35);
+  color: #047857;
+}
+
+.theme-v2 .nc-profile-badge::before {
+  background: #3FAF7A;
+}
+
+/* Profile hero */
+.theme-v2 .nc-profile-hero {
+  background: #1F3C4D;
+}
+
+/* Hero avatar */
+.theme-v2 .nc-hero-avatar,
+.theme-v2 .dash-avatar {
+  background: linear-gradient(135deg,rgba(63,175,122,0.4),rgba(63,175,122,0.2));
+  border: 2px solid rgba(63,175,122,0.4);
+}
+
+/* Hero tab active */
+.theme-v2 .nc-hero-tab.active {
+  color: var(--nc-cream);
+  border-bottom-color: #3FAF7A;
+}
+
+/* Filter button */
+.theme-v2 .nc-filter-btn {
+  background: #1F3C4D;
+}
+
+.theme-v2 .nc-filter-btn:hover {
+  background: #2A5161;
+}
+
+/* Filter input focus */
+.theme-v2 .nc-filter-input:focus,
+.theme-v2 .nc-filter-select:focus {
+  border-color: #3FAF7A;
+  box-shadow: 0 0 0 3px rgba(63,175,122,0.07);
+}
+
+/* Content CTA button */
+.theme-v2 .content-cta-btn {
+  background: #3FAF7A;
+}
+
+.theme-v2 .content-cta-btn:hover {
+  background: #54BF8C;
+}
+
+/* Content step card */
+.theme-v2 .content-step-card {
+  border-left: 4px solid #3FAF7A;
+}
+
+.theme-v2 .content-step-number {
+  color: #3FAF7A;
+}
+
+.theme-v2 .content-step-title {
+  color: #1F3C4D;
+}
+
+/* Content value card hover */
+.theme-v2 .content-value-card:hover {
+  border-color: #3FAF7A;
+}
+
+.theme-v2 .content-value-title {
+  color: #1F3C4D;
+}

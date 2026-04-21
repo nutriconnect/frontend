@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 // Routes accessible without authentication.
-const PUBLIC_PATHS = ['/', '/search', '/for-nutritionists', '/how', '/about', '/privacy', '/terms'];
+const PUBLIC_PATHS = ['/', '/search', '/for-nutritionists', '/how', '/about', '/privacy', '/terms', '/palette-v2'];
 const AUTH_PATHS = ['/login', '/register', '/forgot-password', '/reset-password'];
 // /verify-email is always accessible.
 const ALWAYS_ACCESSIBLE = ['/verify-email'];
