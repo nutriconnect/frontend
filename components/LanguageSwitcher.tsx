@@ -3,11 +3,17 @@
 import { useLocale } from 'next-intl';
 import { useRouter, usePathname } from 'next/navigation';
 import { api } from '@/lib/api';
+import { useState, useEffect } from 'react';
 
 export function LanguageSwitcher() {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const switchLocale = async (newLocale: string) => {
     // Update cookie
@@ -27,6 +33,30 @@ export function LanguageSwitcher() {
     router.push(newPath);
     router.refresh();
   };
+
+  if (!isClient) {
+    return (
+      <button
+        style={{
+          background: 'transparent',
+          border: '1px solid var(--nc-border)',
+          borderRadius: 6,
+          padding: '6px 12px',
+          fontSize: 13,
+          fontWeight: 500,
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 6,
+          color: 'var(--nc-ink)',
+          opacity: 0.5,
+        }}
+        disabled
+      >
+        🌐 ...
+      </button>
+    );
+  }
 
   return (
     <button
