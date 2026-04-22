@@ -794,9 +794,7 @@
       "sending": "Sending request…",
       "not_accepting_clients": "Not accepting new clients",
       "intro_consultation": "Includes a free intro consultation before your plan begins."
-    }
-  },
-  "public": {
+    },
     "static": {
       "about": {
         "title": "About Nutri Red",

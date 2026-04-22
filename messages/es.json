@@ -794,9 +794,7 @@
       "sending": "Enviando solicitud…",
       "not_accepting_clients": "No acepta nuevos clientes",
       "intro_consultation": "Incluye una consulta introductoria gratuita antes de que comience tu plan."
-    }
-  },
-  "public": {
+    },
     "static": {
       "about": {
         "title": "Sobre Nutri Red",
