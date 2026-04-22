@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
+import { useTranslations, useLocale } from 'next-intl';
 import { createExercisePlan } from '@/lib/plans';
 import ExerciseTemplatePicker from '@/components/ExerciseTemplatePicker';
 import type { ExerciseTemplate } from '@/lib/types';
@@ -13,8 +14,6 @@ import type {
   CardioActivityPayload,
   ExercisePlanPayload,
 } from '@/lib/plans';
-
-const DAY_LABELS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
 function emptyExercise(displayOrder: number): ExercisePayload {
   return { name: '', sets: null, reps: null, rest_seconds: null, notes: '', display_order: displayOrder };
@@ -37,9 +36,13 @@ function initDays(): ExerciseDayPayload[] {
 }
 
 export default function NewExercisePlanPage() {
+  const t = useTranslations('dashboard.exercise_plans');
+  const locale = useLocale();
   const router = useRouter();
   const params = useParams<{ clientId: string }>();
   const clientId = params.clientId;
+
+  const DAY_LABELS = [t('monday'), t('tuesday'), t('wednesday'), t('thursday'), t('friday'), t('saturday'), t('sunday')];
 
   const [title, setTitle] = useState('');
   const [notes, setNotes] = useState('');
