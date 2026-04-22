@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
+import { useTranslations, useLocale } from 'next-intl';
 import {
   useNutritionPlan,
   useExercisePlans,
@@ -25,22 +26,7 @@ import type { PlanStatus, MealType } from '@/lib/types';
 import RecipePickerModal from '@/components/RecipePickerModal';
 import SupplementItem from './components/SupplementItem';
 
-const MEAL_TYPES = [
-  { value: 'breakfast',   label: 'Desayuno'     },
-  { value: 'mid_morning', label: 'Media mañana' },
-  { value: 'lunch',       label: 'Almuerzo'     },
-  { value: 'snack',       label: 'Merienda'     },
-  { value: 'dinner',      label: 'Cena'         },
-];
-
-const MEAL_SLOT_LABELS: Record<MealType, string> = {
-  breakfast:   'Desayuno',
-  mid_morning: 'Media mañana',
-  lunch:       'Almuerzo',
-  snack:       'Merienda',
-  dinner:      'Cena',
-};
-
+// MEAL_TYPES, MEAL_SLOT_LABELS, MEAL_SLOT_ORDER are populated in the component with translation support
 const MEAL_SLOT_ORDER: MealType[] = ['breakfast', 'mid_morning', 'lunch', 'snack', 'dinner'];
 
 function emptyOption(): MealOptionPayload {
@@ -72,26 +58,49 @@ function emptySupplement(displayOrder: number): SupplementPayload {
   };
 }
 
-const DAY_LABELS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-
-function StatusPill({ status }: { status: PlanStatus }) {
-  const cfg: Record<PlanStatus, { bg: string; color: string; label: string }> = {
-    draft:    { bg: 'rgba(139,115,85,0.1)',  color: 'var(--nc-stone)',  label: 'Borrador'  },
-    active:   { bg: 'rgba(74,124,89,0.1)',   color: '#4a7c59',          label: 'Activo'    },
-    archived: { bg: 'rgba(0,0,0,0.06)',       color: 'var(--nc-stone)',  label: 'Archivado' },
+function StatusPill({ status, t }: { status: PlanStatus; t: ReturnType<typeof useTranslations> }) {
+  const labels: Record<PlanStatus, string> = {
+    draft:    t('plan_status_draft'),
+    active:   t('plan_status_active'),
+    archived: t('plan_status_archived'),
   };
-  const { bg, color, label } = cfg[status];
+  const cfg: Record<PlanStatus, { bg: string; color: string }> = {
+    draft:    { bg: 'rgba(139,115,85,0.1)',  color: 'var(--nc-stone)' },
+    active:   { bg: 'rgba(74,124,89,0.1)',   color: '#4a7c59' },
+    archived: { bg: 'rgba(0,0,0,0.06)',       color: 'var(--nc-stone)' },
+  };
+  const s = cfg[status];
   return (
-    <span style={{ fontSize: 12, fontWeight: 600, padding: '3px 10px', borderRadius: 100, background: bg, color }}>
-      {label}
+    <span style={{ fontSize: 12, fontWeight: 600, padding: '3px 10px', borderRadius: 100, background: s.bg, color: s.color }}>
+      {labels[status]}
     </span>
   );
 }
 
 export default function EditNutritionPlanPage() {
+  const t = useTranslations('dashboard.nutrition_plans');
+  const locale = useLocale();
   const router = useRouter();
   const params = useParams<{ clientId: string; id: string }>();
   const { clientId, id } = params;
+
+  const MEAL_TYPES = [
+    { value: 'breakfast',   label: t('breakfast')   },
+    { value: 'mid_morning', label: t('mid_morning') },
+    { value: 'lunch',       label: t('lunch')       },
+    { value: 'snack',       label: t('snack')       },
+    { value: 'dinner',      label: t('dinner')      },
+  ];
+
+  const MEAL_SLOT_LABELS: Record<MealType, string> = {
+    breakfast:   t('breakfast'),
+    mid_morning: t('mid_morning'),
+    lunch:       t('lunch'),
+    snack:       t('snack'),
+    dinner:      t('dinner'),
+  };
+
+  const DAY_LABELS = [t('monday'), t('tuesday'), t('wednesday'), t('thursday'), t('friday'), t('saturday'), t('sunday')];
 
   const { plan, isLoading, mutate } = useNutritionPlan(id);
   const { plans: exercisePlans } = useExercisePlans(plan?.client_id);

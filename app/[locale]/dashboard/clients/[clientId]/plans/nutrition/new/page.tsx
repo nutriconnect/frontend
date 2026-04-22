@@ -4,6 +4,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
+import { useTranslations, useLocale } from 'next-intl';
 import { createNutritionPlan } from '@/lib/plans';
 import type {
   MealOptionPayload,
@@ -17,22 +18,7 @@ import type {
 import type { MealType } from '@/lib/types';
 import SupplementItem from '../[id]/components/SupplementItem';
 
-const MEAL_TYPES = [
-  { value: 'breakfast',   label: 'Desayuno'       },
-  { value: 'mid_morning', label: 'Media mañana'   },
-  { value: 'lunch',       label: 'Almuerzo'        },
-  { value: 'snack',       label: 'Merienda'        },
-  { value: 'dinner',      label: 'Cena'            },
-];
-
-const MEAL_SLOT_LABELS: Record<MealType, string> = {
-  breakfast:   'Desayuno',
-  mid_morning: 'Media mañana',
-  lunch:       'Almuerzo',
-  snack:       'Merienda',
-  dinner:      'Cena',
-};
-
+// MEAL_TYPES, MEAL_SLOT_LABELS, MEAL_SLOT_ORDER are populated in the component with translation support
 const MEAL_SLOT_ORDER: MealType[] = ['breakfast', 'mid_morning', 'lunch', 'snack', 'dinner'];
 
 function emptyOption(): MealOptionPayload {
@@ -76,12 +62,30 @@ function initSlots(): NutritionPlanSlotPayload[] {
   }));
 }
 
-const DAY_LABELS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-
 export default function NewNutritionPlanPage() {
+  const t = useTranslations('dashboard.nutrition_plans');
+  const locale = useLocale();
   const router = useRouter();
   const params = useParams<{ clientId: string }>();
   const clientId = params.clientId;
+
+  const MEAL_TYPES = [
+    { value: 'breakfast',   label: t('breakfast')   },
+    { value: 'mid_morning', label: t('mid_morning') },
+    { value: 'lunch',       label: t('lunch')       },
+    { value: 'snack',       label: t('snack')       },
+    { value: 'dinner',      label: t('dinner')      },
+  ];
+
+  const MEAL_SLOT_LABELS: Record<MealType, string> = {
+    breakfast:   t('breakfast'),
+    mid_morning: t('mid_morning'),
+    lunch:       t('lunch'),
+    snack:       t('snack'),
+    dinner:      t('dinner'),
+  };
+
+  const DAY_LABELS = [t('monday'), t('tuesday'), t('wednesday'), t('thursday'), t('friday'), t('saturday'), t('sunday')];
 
   const [title, setTitle] = useState('');
   const [notes, setNotes] = useState('');
@@ -285,37 +289,37 @@ export default function NewNutritionPlanPage() {
             href={`/dashboard/clients/${clientId}`}
             style={{ fontSize: 13, color: 'var(--nc-stone)', textDecoration: 'none' }}
           >
-            ← Cliente
+            {t('back_to_client')}
           </Link>
-          <div className="dash-topbar-title">Nuevo plan de nutrición</div>
+          <div className="dash-topbar-title">{t('new_plan_title')}</div>
         </div>
       </div>
       <div className="dash-content">
         {/* Header fields */}
         <div className="dash-section">
           <div className="dash-section-head">
-            <div className="dash-section-title">Información del plan</div>
+            <div className="dash-section-title">{t('plan_title')}</div>
           </div>
           <div className="dash-section-body">
             <div className="dash-row">
               <div className="dash-field">
-                <label className="dash-label">Título <span className="opt">(obligatorio)</span></label>
+                <label className="dash-label">{t('plan_title')} <span className="opt">(obligatorio)</span></label>
                 <input
                   className="dash-input"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder="ej: Plan de nutrición semana 1"
+                  placeholder={t('plan_title_placeholder')}
                 />
               </div>
             </div>
             <div className="dash-row single">
               <div className="dash-field">
-                <label className="dash-label">Notas generales</label>
+                <label className="dash-label">{t('plan_notes')}</label>
                 <textarea
                   className="dash-textarea"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Instrucciones generales, contexto del plan…"
+                  placeholder={t('plan_notes_placeholder')}
                 />
               </div>
             </div>
