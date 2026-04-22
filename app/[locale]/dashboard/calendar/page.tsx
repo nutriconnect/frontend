@@ -4,15 +4,20 @@
 import { useAuth } from '@/lib/auth';
 import { useCalendar, cancelAppointment, completeAppointment, markNoShow } from '@/lib/calendar';
 import { format, startOfWeek, endOfWeek, addWeeks, isSameDay, parseISO, isSameWeek } from 'date-fns';
-import { es } from 'date-fns/locale';
+import { es, enUS } from 'date-fns/locale';
 import { useState } from 'react';
 import React from 'react';
 import Link from 'next/link';
+import { useLocale, useTranslations } from 'next-intl';
 import type { Appointment } from '@/lib/types';
 import { SeriesDetailModal } from './components/SeriesDetailModal';
 
 export default function CalendarPage() {
   const { user } = useAuth();
+  const t = useTranslations('dashboard.calendar');
+  const locale = useLocale();
+  const dateFnsLocale = locale === 'es' ? es : enUS;
+
   const [weekOffset, setWeekOffset] = useState(0);
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   const [seriesModalOpen, setSeriesModalOpen] = useState(false);
@@ -30,7 +35,7 @@ export default function CalendarPage() {
   );
 
   // Format week range display
-  const weekRangeText = `${format(weekStart, 'd MMM', { locale: es })} - ${format(weekEnd, 'd MMM yyyy', { locale: es })}`;
+  const weekRangeText = `${format(weekStart, 'd MMM', { locale: dateFnsLocale })} - ${format(weekEnd, 'd MMM yyyy', { locale: dateFnsLocale })}`;
 
   const handleViewSeries = (seriesId: string) => {
     setSelectedSeriesId(seriesId);
@@ -42,7 +47,7 @@ export default function CalendarPage() {
   return (
     <>
       <div className="dash-topbar">
-        <div className="dash-topbar-title">Calendario</div>
+        <div className="dash-topbar-title">{t('title')}</div>
         <div className="dash-topbar-right">
           <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
             {/* Week navigation */}
@@ -123,14 +128,14 @@ export default function CalendarPage() {
                   e.currentTarget.style.transform = 'translateY(0)';
                 }}
               >
-                • Hoy
+                {t('today_button')}
               </button>
             )}
 
             {/* Action button */}
             {user.role === 'client' && (
-              <Link href="/dashboard/my-nutritionist" className="dash-btn-publish">
-                Agendar Cita
+              <Link href={`/${locale}/dashboard/my-nutritionist`} className="dash-btn-publish">
+                {t('book_appointment')}
               </Link>
             )}
           </div>
@@ -139,11 +144,11 @@ export default function CalendarPage() {
 
       <div className="dash-content">
         {isLoading ? (
-          <div style={{ color: 'var(--nc-stone)', fontWeight: 300 }}>Cargando calendario...</div>
+          <div style={{ color: 'var(--nc-stone)', fontWeight: 300 }}>{t('loading')}</div>
         ) : user.role === 'nutritionist' ? (
-          <NutritionistWeekView appointments={appointments} weekStart={weekStart} onAppointmentClick={setSelectedAppointment} onViewSeries={handleViewSeries} />
+          <NutritionistWeekView appointments={appointments} weekStart={weekStart} onAppointmentClick={setSelectedAppointment} onViewSeries={handleViewSeries} dateFnsLocale={dateFnsLocale} t={t} />
         ) : (
-          <ClientListView appointments={appointments} onAppointmentClick={setSelectedAppointment} />
+          <ClientListView appointments={appointments} onAppointmentClick={setSelectedAppointment} dateFnsLocale={dateFnsLocale} t={t} />
         )}
       </div>
 
@@ -152,6 +157,9 @@ export default function CalendarPage() {
           appointment={selectedAppointment}
           isNutritionist={user.role === 'nutritionist'}
           onClose={() => setSelectedAppointment(null)}
+          locale={locale}
+          dateFnsLocale={dateFnsLocale}
+          t={t}
         />
       )}
 
@@ -172,9 +180,11 @@ interface WeekViewProps {
   weekStart: Date;
   onAppointmentClick: (appointment: Appointment) => void;
   onViewSeries?: (seriesId: string) => void;
+  dateFnsLocale: any;
+  t: any;
 }
 
-function NutritionistWeekView({ appointments, weekStart, onAppointmentClick, onViewSeries }: WeekViewProps) {
+function NutritionistWeekView({ appointments, weekStart, onAppointmentClick, onViewSeries, dateFnsLocale, t }: WeekViewProps) {
   const days = Array.from({ length: 7 }, (_, i) => {
     const date = new Date(weekStart);
     date.setDate(weekStart.getDate() + i);
@@ -206,7 +216,7 @@ function NutritionistWeekView({ appointments, weekStart, onAppointmentClick, onV
             fontSize: 13,
             fontWeight: 500,
           }}>
-            {format(day, 'EEE dd')}
+            {format(day, 'EEE dd', { locale: dateFnsLocale })}
           </div>
         ))}
       </div>
@@ -282,7 +292,7 @@ function NutritionistWeekView({ appointments, weekStart, onAppointmentClick, onV
                 padding: 4,
                 zIndex: 2,
               }}>
-                <AppointmentCard appointment={appt} isNutritionist={true} onClick={() => onAppointmentClick(appt)} onViewSeries={onViewSeries} />
+                <AppointmentCard appointment={appt} isNutritionist={true} onClick={() => onAppointmentClick(appt)} onViewSeries={onViewSeries} t={t} />
               </div>
             );
           });
@@ -295,9 +305,11 @@ function NutritionistWeekView({ appointments, weekStart, onAppointmentClick, onV
 interface ListViewProps {
   appointments: Appointment[];
   onAppointmentClick: (appointment: Appointment) => void;
+  dateFnsLocale: any;
+  t: any;
 }
 
-function ClientListView({ appointments, onAppointmentClick }: ListViewProps) {
+function ClientListView({ appointments, onAppointmentClick, dateFnsLocale, t }: ListViewProps) {
   if (appointments.length === 0) {
     return (
       <div style={{
@@ -308,10 +320,10 @@ function ClientListView({ appointments, onAppointmentClick }: ListViewProps) {
         textAlign: 'center',
       }}>
         <div style={{ fontSize: 15, fontWeight: 500, color: 'var(--nc-forest)', marginBottom: 8 }}>
-          No tienes citas programadas
+          {t('no_appointments')}
         </div>
         <div style={{ fontSize: 13, color: 'var(--nc-stone)', fontWeight: 300 }}>
-          Contacta con tu nutricionista para agendar una cita.
+          {t('no_appointments_desc')}
         </div>
       </div>
     );
@@ -350,8 +362,8 @@ function ClientListView({ appointments, onAppointmentClick }: ListViewProps) {
               borderColor: isToday ? 'rgba(217,120,72,0.2)' : 'rgba(26,51,41,0.1)',
             }}>
               {isToday && '🔔 '}
-              {format(firstApptDate, "EEEE, d 'de' MMMM", { locale: es })}
-              {isToday && ' (Hoy)'}
+              {format(firstApptDate, "EEEE, d 'de' MMMM", { locale: dateFnsLocale })}
+              {isToday && t('today_badge')}
             </div>
 
             {/* Appointments for this day */}
@@ -379,7 +391,7 @@ function ClientListView({ appointments, onAppointmentClick }: ListViewProps) {
                       </div>
                     </div>
                     <div style={{ fontSize: 13, color: 'var(--nc-stone)' }}>
-                      Con: {appt.nutritionist_name}
+                      {t('with')} {appt.nutritionist_name}
                     </div>
                     {appt.notes && (
                       <div style={{ fontSize: 13, color: 'var(--nc-stone)', marginTop: 8, fontStyle: 'italic' }}>
@@ -388,9 +400,9 @@ function ClientListView({ appointments, onAppointmentClick }: ListViewProps) {
                     )}
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-end' }}>
-                    <StatusBadge status={appt.status} />
+                    <StatusBadge status={appt.status} t={t} />
                     {appt.status === 'scheduled' && (
-                      <CancelButton appointmentId={appt.id} startTime={appt.start_time} />
+                      <CancelButton appointmentId={appt.id} startTime={appt.start_time} t={t} />
                     )}
                   </div>
                 </div>
@@ -408,9 +420,10 @@ interface AppointmentCardProps {
   isNutritionist: boolean;
   onClick: () => void;
   onViewSeries?: (seriesId: string) => void;
+  t?: any;
 }
 
-function AppointmentCard({ appointment, isNutritionist, onClick, onViewSeries }: AppointmentCardProps) {
+function AppointmentCard({ appointment, isNutritionist, onClick, onViewSeries, t }: AppointmentCardProps) {
   const [showActions, setShowActions] = useState(false);
   const startTime = new Date(appointment.start_time);
   const endTime = new Date(appointment.end_time);
@@ -465,13 +478,13 @@ function AppointmentCard({ appointment, isNutritionist, onClick, onViewSeries }:
         textOverflow: 'ellipsis',
         lineHeight: 1.3,
       }}>
-        {appointment.appointment_type.name} • {durationMinutes}min
+        {appointment.appointment_type.name} • {durationMinutes}{t?.('duration_minutes') || 'min'}
       </div>
       {appointment.series_id && (
-        <span style={{ fontSize: 9, color: 'var(--nc-stone)' }}>📅 Part of series</span>
+        <span style={{ fontSize: 9, color: 'var(--nc-stone)' }}>{t?.('part_of_series') || '📅 Part of series'}</span>
       )}
       {isNutritionist && showActions && appointment.status === 'scheduled' && (
-        <NutritionistActions appointmentId={appointment.id} seriesId={appointment.series_id} onViewSeries={onViewSeries} />
+        <NutritionistActions appointmentId={appointment.id} seriesId={appointment.series_id} onViewSeries={onViewSeries} t={t} />
       )}
     </div>
   );
@@ -481,9 +494,10 @@ interface NutritionistActionsProps {
   appointmentId: string;
   seriesId?: string;
   onViewSeries?: (seriesId: string) => void;
+  t?: any;
 }
 
-function NutritionistActions({ appointmentId, seriesId, onViewSeries }: NutritionistActionsProps) {
+function NutritionistActions({ appointmentId, seriesId, onViewSeries, t }: NutritionistActionsProps) {
   const [processing, setProcessing] = useState(false);
 
   const handleComplete = async () => {
@@ -491,32 +505,32 @@ function NutritionistActions({ appointmentId, seriesId, onViewSeries }: Nutritio
     try {
       await completeAppointment(appointmentId);
     } catch (err) {
-      alert('Error marking as completed');
+      alert(t?.('error_complete') || 'Error marking as completed');
     } finally {
       setProcessing(false);
     }
   };
 
   const handleNoShow = async () => {
-    if (!window.confirm('¿Marcar como no asistido?')) return;
+    if (!window.confirm(t?.('confirm_no_show') || '¿Marcar como no asistido?')) return;
     setProcessing(true);
     try {
       await markNoShow(appointmentId);
     } catch (err) {
-      alert('Error marking as no-show');
+      alert(t?.('error_no_show') || 'Error marking as no-show');
     } finally {
       setProcessing(false);
     }
   };
 
   const handleCancel = async () => {
-    const reason = window.prompt('Motivo de cancelación:');
+    const reason = window.prompt(t?.('cancel_reason_prompt') || 'Motivo de cancelación:');
     if (!reason) return;
     setProcessing(true);
     try {
       await cancelAppointment(appointmentId, reason);
     } catch (err: any) {
-      alert(err.message || 'Error cancelando cita');
+      alert(err.message || t?.('error_cancel') || 'Error cancelando cita');
     } finally {
       setProcessing(false);
     }
@@ -555,7 +569,7 @@ function NutritionistActions({ appointmentId, seriesId, onViewSeries }: Nutritio
             cursor: 'pointer',
           }}
         >
-          Ver serie
+          {t?.('view_series') || 'Ver serie'}
         </button>
       )}
       <button
@@ -571,7 +585,7 @@ function NutritionistActions({ appointmentId, seriesId, onViewSeries }: Nutritio
           cursor: 'pointer',
         }}
       >
-        Completar
+        {t?.('complete') || 'Completar'}
       </button>
       <button
         onClick={handleNoShow}
@@ -586,7 +600,7 @@ function NutritionistActions({ appointmentId, seriesId, onViewSeries }: Nutritio
           cursor: 'pointer',
         }}
       >
-        No asistió
+        {t?.('no_show') || 'No asistió'}
       </button>
       <button
         onClick={handleCancel}
@@ -601,7 +615,7 @@ function NutritionistActions({ appointmentId, seriesId, onViewSeries }: Nutritio
           cursor: 'pointer',
         }}
       >
-        Cancelar
+        {t?.('cancel') || 'Cancelar'}
       </button>
     </div>
   );
@@ -609,14 +623,22 @@ function NutritionistActions({ appointmentId, seriesId, onViewSeries }: Nutritio
 
 interface StatusBadgeProps {
   status: 'scheduled' | 'completed' | 'cancelled' | 'no_show';
+  t?: any;
 }
 
-function StatusBadge({ status }: StatusBadgeProps) {
+function StatusBadge({ status, t }: StatusBadgeProps) {
+  const statusTexts = {
+    scheduled: t?.('status_scheduled') || 'Programada',
+    completed: t?.('status_completed') || 'Completada',
+    cancelled: t?.('status_cancelled') || 'Cancelada',
+    no_show: t?.('status_no_show') || 'No asistió',
+  };
+
   const styles = {
-    scheduled: { bg: 'var(--nc-forest-pale)', color: 'var(--nc-forest)', text: 'Programada' },
-    completed: { bg: '#f0f0f0', color: 'var(--nc-stone)', text: 'Completada' },
-    cancelled: { bg: 'rgba(196,98,45,0.08)', color: 'var(--nc-terra)', text: 'Cancelada' },
-    no_show: { bg: 'rgba(242,172,75,0.12)', color: '#d97706', text: 'No asistió' },
+    scheduled: { bg: 'var(--nc-forest-pale)', color: 'var(--nc-forest)', text: statusTexts.scheduled },
+    completed: { bg: '#f0f0f0', color: 'var(--nc-stone)', text: statusTexts.completed },
+    cancelled: { bg: 'rgba(196,98,45,0.08)', color: 'var(--nc-terra)', text: statusTexts.cancelled },
+    no_show: { bg: 'rgba(242,172,75,0.12)', color: '#d97706', text: statusTexts.no_show },
   };
 
   const style = styles[status];
@@ -637,9 +659,10 @@ function StatusBadge({ status }: StatusBadgeProps) {
 interface CancelButtonProps {
   appointmentId: string;
   startTime: string;
+  t?: any;
 }
 
-function CancelButton({ appointmentId, startTime }: CancelButtonProps) {
+function CancelButton({ appointmentId, startTime, t }: CancelButtonProps) {
   const [showModal, setShowModal] = useState(false);
   const [reason, setReason] = useState('');
   const [processing, setProcessing] = useState(false);
@@ -648,7 +671,7 @@ function CancelButton({ appointmentId, startTime }: CancelButtonProps) {
 
   const handleCancel = async () => {
     if (hoursUntilAppointment < 24) {
-      if (!window.confirm('Cancelas con menos de 24 horas de antelación. ¿Continuar?')) {
+      if (!window.confirm(t?.('cancel_confirm') || 'Cancelas con menos de 24 horas de antelación. ¿Continuar?')) {
         return;
       }
     }
@@ -658,7 +681,7 @@ function CancelButton({ appointmentId, startTime }: CancelButtonProps) {
 
   const handleSubmitCancel = async () => {
     if (!reason.trim()) {
-      alert('Por favor indica el motivo de cancelación');
+      alert(t?.('cancel_reason_required') || 'Por favor indica el motivo de cancelación');
       return;
     }
 
@@ -667,7 +690,7 @@ function CancelButton({ appointmentId, startTime }: CancelButtonProps) {
       await cancelAppointment(appointmentId, reason);
       setShowModal(false);
     } catch (err: any) {
-      alert(err.message || 'Error cancelling appointment');
+      alert(err.message || (t?.('error_cancel') || 'Error cancelling appointment'));
     } finally {
       setProcessing(false);
     }
@@ -680,7 +703,7 @@ function CancelButton({ appointmentId, startTime }: CancelButtonProps) {
         className="dash-btn-plain"
         style={{ fontSize: 12, padding: '4px 12px' }}
       >
-        Cancelar cita
+        {t?.('cancel_confirm_button') || 'Cancelar cita'}
       </button>
 
       {showModal && (
@@ -704,16 +727,16 @@ function CancelButton({ appointmentId, startTime }: CancelButtonProps) {
             width: '90%',
           }}>
             <h3 style={{ fontSize: 18, fontWeight: 600, marginBottom: 16 }}>
-              Cancelar cita
+              {t?.('cancel_modal_title') || 'Cancelar cita'}
             </h3>
             <div className="dash-field">
-              <label className="dash-label">Motivo de cancelación</label>
+              <label className="dash-label">{t?.('cancel_reason_label') || 'Motivo de cancelación'}</label>
               <textarea
                 className="dash-textarea"
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
                 rows={3}
-                placeholder="Indica el motivo..."
+                placeholder={t?.('cancel_reason_placeholder') || 'Indica el motivo...'}
                 required
               />
             </div>
@@ -724,7 +747,7 @@ function CancelButton({ appointmentId, startTime }: CancelButtonProps) {
                 className="dash-btn-publish"
                 style={{ flex: 1 }}
               >
-                {processing ? 'Cancelando...' : 'Confirmar'}
+                {processing ? (t?.('cancel_confirm_button') + '...') || 'Cancelando...' : (t?.('cancel_confirm_button') || 'Confirmar')}
               </button>
               <button
                 onClick={() => setShowModal(false)}
@@ -732,7 +755,7 @@ function CancelButton({ appointmentId, startTime }: CancelButtonProps) {
                 className="dash-btn-plain"
                 style={{ flex: 1 }}
               >
-                Cerrar
+                {t?.('close') || 'Cerrar'}
               </button>
             </div>
           </div>
@@ -746,9 +769,12 @@ interface AppointmentModalProps {
   appointment: Appointment;
   isNutritionist: boolean;
   onClose: () => void;
+  locale?: string;
+  dateFnsLocale?: any;
+  t?: any;
 }
 
-function AppointmentModal({ appointment, isNutritionist, onClose }: AppointmentModalProps) {
+function AppointmentModal({ appointment, isNutritionist, onClose, locale, dateFnsLocale, t }: AppointmentModalProps) {
   const [processing, setProcessing] = useState(false);
   const startTime = new Date(appointment.start_time);
   const endTime = new Date(appointment.end_time);
@@ -760,34 +786,34 @@ function AppointmentModal({ appointment, isNutritionist, onClose }: AppointmentM
       await completeAppointment(appointment.id);
       onClose();
     } catch (err) {
-      alert('Error marking as completed');
+      alert(t?.('error_complete') || 'Error marking as completed');
     } finally {
       setProcessing(false);
     }
   };
 
   const handleNoShow = async () => {
-    if (!window.confirm('¿Marcar como no asistido?')) return;
+    if (!window.confirm(t?.('confirm_no_show') || '¿Marcar como no asistido?')) return;
     setProcessing(true);
     try {
       await markNoShow(appointment.id);
       onClose();
     } catch (err) {
-      alert('Error marking as no-show');
+      alert(t?.('error_no_show') || 'Error marking as no-show');
     } finally {
       setProcessing(false);
     }
   };
 
   const handleCancel = async () => {
-    const reason = window.prompt('Motivo de cancelación:');
+    const reason = window.prompt(t?.('cancel_reason_prompt') || 'Motivo de cancelación:');
     if (!reason) return;
     setProcessing(true);
     try {
       await cancelAppointment(appointment.id, reason);
       onClose();
     } catch (err: any) {
-      alert(err.message || 'Error cancelando cita');
+      alert(err.message || (t?.('error_cancel') || 'Error cancelando cita'));
     } finally {
       setProcessing(false);
     }
@@ -795,7 +821,7 @@ function AppointmentModal({ appointment, isNutritionist, onClose }: AppointmentM
 
   const handleReschedule = () => {
     // TODO: Implement reschedule flow - for now just alert
-    alert('Función de reprogramación próximamente. Por ahora, cancela y crea una nueva cita.');
+    alert(t?.('reschedule_message') || 'Función de reprogramación próximamente. Por ahora, cancela y crea una nueva cita.');
   };
 
   return (
@@ -829,13 +855,13 @@ function AppointmentModal({ appointment, isNutritionist, onClose }: AppointmentM
           <div style={{ fontSize: 20, fontWeight: 600, color: 'var(--nc-ink)', marginBottom: 8 }}>
             {appointment.appointment_type.name}
           </div>
-          <StatusBadge status={appointment.status} />
+          <StatusBadge status={appointment.status} t={t} />
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 24 }}>
           <div>
             <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--nc-stone)', textTransform: 'uppercase', marginBottom: 4 }}>
-              {isNutritionist ? 'Cliente' : 'Nutricionista'}
+              {isNutritionist ? t?.('client') || 'Cliente' : t?.('nutritionist') || 'Nutricionista'}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ fontSize: 14, color: 'var(--nc-ink)' }}>
@@ -843,7 +869,7 @@ function AppointmentModal({ appointment, isNutritionist, onClose }: AppointmentM
               </div>
               {isNutritionist && (
                 <Link
-                  href={`/dashboard/clients/${appointment.client_id}`}
+                  href={`/${locale}/dashboard/clients/${appointment.client_id}`}
                   style={{
                     fontSize: 12,
                     color: 'var(--nc-forest)',
@@ -862,17 +888,17 @@ function AppointmentModal({ appointment, isNutritionist, onClose }: AppointmentM
 
           <div>
             <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--nc-stone)', textTransform: 'uppercase', marginBottom: 4 }}>
-              Fecha y hora
+              {t?.('date_and_time') || 'Fecha y hora'}
             </div>
             <div style={{ fontSize: 14, color: 'var(--nc-ink)' }}>
-              {format(startTime, 'PPP')} • {format(startTime, 'HH:mm')} - {format(endTime, 'HH:mm')} ({durationMinutes}min)
+              {format(startTime, 'PPP', { locale: dateFnsLocale })} • {format(startTime, 'HH:mm')} - {format(endTime, 'HH:mm')} ({durationMinutes}{t?.('duration_minutes') || 'min'})
             </div>
           </div>
 
           {appointment.appointment_type.description && (
             <div>
               <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--nc-stone)', textTransform: 'uppercase', marginBottom: 4 }}>
-                Descripción
+                {t?.('description') || 'Descripción'}
               </div>
               <div style={{ fontSize: 14, color: 'var(--nc-ink)' }}>
                 {appointment.appointment_type.description}
@@ -883,7 +909,7 @@ function AppointmentModal({ appointment, isNutritionist, onClose }: AppointmentM
           {appointment.appointment_type.video_link && (
             <div>
               <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--nc-stone)', textTransform: 'uppercase', marginBottom: 4 }}>
-                Enlace de videollamada
+                {t?.('video_link') || 'Enlace de videollamada'}
               </div>
               <a
                 href={appointment.appointment_type.video_link}
@@ -899,7 +925,7 @@ function AppointmentModal({ appointment, isNutritionist, onClose }: AppointmentM
           {appointment.notes && (
             <div>
               <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--nc-stone)', textTransform: 'uppercase', marginBottom: 4 }}>
-                Notas
+                {t?.('notes') || 'Notas'}
               </div>
               <div style={{ fontSize: 14, color: 'var(--nc-ink)' }}>
                 {appointment.notes}
@@ -910,7 +936,7 @@ function AppointmentModal({ appointment, isNutritionist, onClose }: AppointmentM
           {appointment.cancellation_reason && (
             <div>
               <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--nc-stone)', textTransform: 'uppercase', marginBottom: 4 }}>
-                Motivo de cancelación
+                {t?.('cancellation_reason') || 'Motivo de cancelación'}
               </div>
               <div style={{ fontSize: 14, color: 'var(--nc-ink)' }}>
                 {appointment.cancellation_reason}
@@ -921,7 +947,7 @@ function AppointmentModal({ appointment, isNutritionist, onClose }: AppointmentM
 
         {/* View Details Button */}
         <div style={{ marginBottom: 12 }}>
-          <Link href={`/dashboard/appointments/${appointment.id}`}>
+          <Link href={`/${locale}/dashboard/appointments/${appointment.id}`}>
             <button
               style={{
                 width: '100%',
@@ -939,7 +965,7 @@ function AppointmentModal({ appointment, isNutritionist, onClose }: AppointmentM
               onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-1px)'}
               onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
             >
-              📋 Ver detalles y notas
+              {t?.('view_details') || '📋 Ver detalles y notas'}
             </button>
           </Link>
         </div>
@@ -953,7 +979,7 @@ function AppointmentModal({ appointment, isNutritionist, onClose }: AppointmentM
                   disabled={processing}
                   className="dash-btn-publish"
                 >
-                  Completar
+                  {t?.('complete') || 'Completar'}
                 </button>
                 <button
                   onClick={handleNoShow}
@@ -969,7 +995,7 @@ function AppointmentModal({ appointment, isNutritionist, onClose }: AppointmentM
                     cursor: 'pointer',
                   }}
                 >
-                  No asistió
+                  {t?.('no_show') || 'No asistió'}
                 </button>
               </>
             )}
@@ -997,7 +1023,7 @@ function AppointmentModal({ appointment, isNutritionist, onClose }: AppointmentM
                 onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-1px)'}
                 onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
               >
-                🔄 Reprogramar
+                {t?.('reschedule') || '🔄 Reprogramar'}
               </button>
               <button
                 onClick={handleCancel}
@@ -1013,7 +1039,7 @@ function AppointmentModal({ appointment, isNutritionist, onClose }: AppointmentM
                   cursor: 'pointer',
                 }}
               >
-                Cancelar cita
+                {t?.('cancel_confirm_button') || 'Cancelar cita'}
               </button>
             </>
           )}
@@ -1031,7 +1057,7 @@ function AppointmentModal({ appointment, isNutritionist, onClose }: AppointmentM
               cursor: 'pointer',
             }}
           >
-            Cerrar
+            {t?.('close') || 'Cerrar'}
           </button>
         </div>
       </div>
