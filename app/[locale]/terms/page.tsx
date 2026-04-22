@@ -1,5 +1,5 @@
 import { PublicNav } from '@/components/PublicNav';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 
 export default function Terms() {
   const t = useTranslations('public.static.terms');
@@ -209,7 +209,7 @@ export default function Terms() {
 
           <h2>16. Acuerdo Completo</h2>
           <p>
-            Estos Términos de Servicio, junto con nuestra <a href="/privacy">Política de Privacidad</a>,
+            Estos Términos de Servicio, junto con nuestra <a href={`/${locale}/privacy`}>Política de Privacidad</a>,
             constituyen el acuerdo completo entre tú y Nutri Red. Sustituyen cualquier acuerdo
             previo, verbal o escrito.
           </p>
@@ -228,10 +228,10 @@ export default function Terms() {
       <footer className="lp-footer">
         <div className="ft-logo">nutri<span>connect</span></div>
         <ul className="ft-links">
-          <li><a href="/about">Sobre nosotros</a></li>
-          <li><a href="/for-nutritionists">Para nutricionistas</a></li>
-          <li><a href="/privacy">Privacidad</a></li>
-          <li><a href="/terms">Términos</a></li>
+          <li><a href={`/${locale}/about`}>Sobre nosotros</a></li>
+          <li><a href={`/${locale}/for-nutritionists`}>Para nutricionistas</a></li>
+          <li><a href={`/${locale}/privacy`}>Privacidad</a></li>
+          <li><a href={`/${locale}/terms`}>Términos</a></li>
         </ul>
         <span className="ft-copy">© 2026 Nutriconnect</span>
       </footer>

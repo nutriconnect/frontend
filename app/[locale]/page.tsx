@@ -1,11 +1,12 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import LandingAnimations from '@/components/LandingAnimations';
 import { PublicNav } from '@/components/PublicNav';
 
 export default function Home() {
   const t = useTranslations('public.landing');
+  const locale = useLocale();
 
   return (
     <div className="lp-root">
@@ -31,10 +32,10 @@ export default function Home() {
           </p>
 
           <div className="hero-actions">
-            <a href="/nutritionists" className="btn-primary">
+            <a href={`/${locale}/nutritionists`} className="btn-primary">
               {t('hero_cta_explore')}
             </a>
-            <a href="/for-nutritionists" className="btn-ghost">{t('hero_cta_nutritionist')}</a>
+            <a href={`/${locale}/for-nutritionists`} className="btn-ghost">{t('hero_cta_nutritionist')}</a>
           </div>
 
           <div className="hero-proof">
@@ -207,7 +208,7 @@ export default function Home() {
               </div>
               <div className="nut-footer">
                 <div className="nut-price">60€ <span>/ sesión</span></div>
-                <a href="/nutritionists/laura-martinez" className="btn-sm">Ver perfil</a>
+                <a href={`/${locale}/nutritionists/laura-martinez" className="btn-sm">Ver perfil</a>
               </div>
             </div>
           </div>
@@ -240,7 +241,7 @@ export default function Home() {
               </div>
               <div className="nut-footer">
                 <div className="nut-price">75€ <span>/ sesión</span></div>
-                <a href="/nutritionists/carlos-ruiz" className="btn-sm">Ver perfil</a>
+                <a href={`/${locale}/nutritionists/carlos-ruiz" className="btn-sm">Ver perfil</a>
               </div>
             </div>
           </div>
@@ -273,7 +274,7 @@ export default function Home() {
               </div>
               <div className="nut-footer">
                 <div className="nut-price">55€ <span>/ sesión</span></div>
-                <a href="/nutritionists/ana-gonzalez" className="btn-sm">Ver perfil</a>
+                <a href={`/${locale}/nutritionists/ana-gonzalez" className="btn-sm">Ver perfil</a>
               </div>
             </div>
           </div>
@@ -281,7 +282,7 @@ export default function Home() {
         </div>
 
         <div className="see-all">
-          <a href="/nutritionists" className="btn-outline">{t('nutritionists_all')}</a>
+          <a href={`/${locale}/nutritionists`} className="btn-outline">{t('nutritionists_all')}</a>
         </div>
       </section>
 
@@ -308,7 +309,7 @@ export default function Home() {
                   <li key={feature}>{feature}</li>
                 ))}
               </ul>
-              <a href="/register" className="btn-outline pricing-btn">{t('pricing_free_cta')}</a>
+              <a href={`/${locale}/register`} className="btn-outline pricing-btn">{t('pricing_free_cta')}</a>
             </div>
 
             {/* Pro */}
@@ -325,7 +326,7 @@ export default function Home() {
                   <li key={feature}>{feature}</li>
                 ))}
               </ul>
-              <a href="/register" className="btn-terra pricing-btn">{t('pricing_pro_cta')}</a>
+              <a href={`/${locale}/register`} className="btn-terra pricing-btn">{t('pricing_pro_cta')}</a>
             </div>
 
             {/* Premium */}
@@ -341,7 +342,7 @@ export default function Home() {
                   <li key={feature}>{feature}</li>
                 ))}
               </ul>
-              <a href="/register" className="btn-outline pricing-btn">{t('pricing_premium_cta')}</a>
+              <a href={`/${locale}/register`} className="btn-outline pricing-btn">{t('pricing_premium_cta')}</a>
             </div>
 
           </div>
@@ -362,10 +363,10 @@ export default function Home() {
               {t('cta_desc')}
             </p>
             <div className="cta-btns">
-              <a href="/register" className="btn-terra">
+              <a href={`/${locale}/register`} className="btn-terra">
                 {t('cta_free')}
               </a>
-              <a href="/nutritionists" className="btn-light">{t('cta_see_nutritionists')}</a>
+              <a href={`/${locale}/nutritionists`} className="btn-light">{t('cta_see_nutritionists')}</a>
             </div>
           </div>
         </div>
@@ -375,10 +376,10 @@ export default function Home() {
       <footer className="lp-footer">
         <div className="ft-logo">nutri<span>red</span></div>
         <ul className="ft-links">
-          <li><a href="/about">{t('footer_about')}</a></li>
-          <li><a href="/for-nutritionists">{t('footer_for_nutritionists')}</a></li>
-          <li><a href="/privacy">{t('footer_privacy')}</a></li>
-          <li><a href="/terms">{t('footer_terms')}</a></li>
+          <li><a href={`/${locale}/about`}>{t('footer_about')}</a></li>
+          <li><a href={`/${locale}/for-nutritionists`}>{t('footer_for_nutritionists')}</a></li>
+          <li><a href={`/${locale}/privacy`}>{t('footer_privacy')}</a></li>
+          <li><a href={`/${locale}/terms`}>{t('footer_terms')}</a></li>
         </ul>
         <span className="ft-copy">{t('footer_copy')}</span>
       </footer>

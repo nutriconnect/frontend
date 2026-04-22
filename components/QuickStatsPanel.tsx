@@ -129,7 +129,7 @@ export default function QuickStatsPanel({ stats, isLoading }: QuickStatsPanelPro
 
       {/* Link to business dashboard (will be built in Plan B) */}
       <Link
-        href="/dashboard/business"
+        href={`/${locale}/dashboard/business`}
         style={{
           fontSize: 13,
           color: 'var(--nc-terra)',

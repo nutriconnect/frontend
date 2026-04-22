@@ -154,7 +154,7 @@ export default function EditExercisePage({ params }: { params: Promise<{ id: str
             El ejercicio solicitado no existe.
           </div>
           <Link
-            href="/dashboard/my-exercises"
+            href={`/${locale}/dashboard/my-exercises`}
             style={{
               marginTop: 16,
               display: 'inline-block',

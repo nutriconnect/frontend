@@ -49,7 +49,7 @@ export default function MyNutritionistPage() {
       {active.length === 0 && past.length === 0 && (
         <div style={{ background: 'white', border: '1px solid rgba(139,115,85,0.15)', borderRadius: 8, padding: '24px', textAlign: 'center' }}>
           <p style={{ color: 'var(--nc-stone)', fontWeight: 300 }}>You have no active programmes.</p>
-          <a href="/nutritionists" className="nc-btn-contact" style={{ display: 'inline-block', marginTop: 16, textDecoration: 'none', fontSize: 13 }}>
+          <a href={`/${locale}/nutritionists`} className="nc-btn-contact" style={{ display: 'inline-block', marginTop: 16, textDecoration: 'none', fontSize: 13 }}>
             Browse nutritionists
           </a>
         </div>

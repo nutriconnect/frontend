@@ -164,7 +164,7 @@ function ClientOverview() {
           <div style={{ fontSize: 15, fontWeight: 500, color: 'var(--nc-forest)', marginBottom: 4 }}>{t('setup_profile')}</div>
           <div style={{ fontSize: 13, color: 'var(--nc-stone)', fontWeight: 300 }}>{t('setup_profile_desc')}</div>
         </div>
-        <Link href="/dashboard/client-profile" style={{ color: 'var(--nc-terra)', fontSize: 14, fontWeight: 600, textDecoration: 'none', whiteSpace: 'nowrap' }}>
+        <Link href={`/${locale}/dashboard/client-profile`} style={{ color: 'var(--nc-terra)', fontSize: 14, fontWeight: 600, textDecoration: 'none', whiteSpace: 'nowrap' }}>
           {t('get_started')}
         </Link>
       </div>
@@ -292,7 +292,7 @@ function ClientOverview() {
       <div style={{ background: 'white', border: '1px solid var(--nc-border)', borderRadius: 10, padding: '20px 24px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
           <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--nc-ink)' }}>{t('health_tracking')}</div>
-          <Link href="/dashboard/client-profile" style={{ fontSize: 12, color: 'var(--nc-terra)', textDecoration: 'none', fontWeight: 500 }}>
+          <Link href={`/${locale}/dashboard/client-profile`} style={{ fontSize: 12, color: 'var(--nc-terra)', textDecoration: 'none', fontWeight: 500 }}>
             {t('log_data')}
           </Link>
         </div>
@@ -364,7 +364,7 @@ function ClientOverview() {
         <div style={{ background: 'white', border: '1px solid var(--nc-border)', borderRadius: 10, padding: '20px 24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
             <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--nc-ink)' }}>{t('recent_activity')}</div>
-            <Link href="/dashboard/client-profile" style={{ fontSize: 12, color: 'var(--nc-terra)', textDecoration: 'none', fontWeight: 500 }}>
+            <Link href={`/${locale}/dashboard/client-profile`} style={{ fontSize: 12, color: 'var(--nc-terra)', textDecoration: 'none', fontWeight: 500 }}>
               {t('log')}
             </Link>
           </div>
@@ -388,7 +388,7 @@ function ClientOverview() {
         <div style={{ background: 'white', border: '1px solid var(--nc-border)', borderRadius: 10, padding: '20px 24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
             <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--nc-ink)' }}>{t('your_profile')}</div>
-            <Link href="/dashboard/client-profile" style={{ fontSize: 12, color: 'var(--nc-terra)', textDecoration: 'none', fontWeight: 500 }}>
+            <Link href={`/${locale}/dashboard/client-profile`} style={{ fontSize: 12, color: 'var(--nc-terra)', textDecoration: 'none', fontWeight: 500 }}>
               {t('edit')}
             </Link>
           </div>
@@ -481,13 +481,13 @@ function NutritionistOverview() {
           {t('quick_actions_title')}
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <Link href="/dashboard/clients" style={{ fontSize: 13, color: 'var(--nc-terra)', textDecoration: 'none' }}>
+          <Link href={`/${locale}/dashboard/clients`} style={{ fontSize: 13, color: 'var(--nc-terra)', textDecoration: 'none' }}>
             → {t('view_my_clients')}
           </Link>
-          <Link href="/dashboard/surveys" style={{ fontSize: 13, color: 'var(--nc-terra)', textDecoration: 'none' }}>
+          <Link href={`/${locale}/dashboard/surveys`} style={{ fontSize: 13, color: 'var(--nc-terra)', textDecoration: 'none' }}>
             → {t('manage_surveys')}
           </Link>
-          <Link href="/dashboard/profile" style={{ fontSize: 13, color: 'var(--nc-terra)', textDecoration: 'none' }}>
+          <Link href={`/${locale}/dashboard/profile`} style={{ fontSize: 13, color: 'var(--nc-terra)', textDecoration: 'none' }}>
             → {t('edit_my_profile')}
           </Link>
         </div>

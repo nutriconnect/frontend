@@ -56,7 +56,7 @@ export function UpcomingAppointments() {
         </div>
         <div style={{ fontSize: 13, color: 'var(--nc-stone)', fontWeight: 300 }}>
           {t('no_appointments_scheduled')}{' '}
-          <Link href="/dashboard/calendar" style={{ color: 'var(--nc-terra)', textDecoration: 'none' }}>
+          <Link href={`/${locale}/dashboard/calendar`} style={{ color: 'var(--nc-terra)', textDecoration: 'none' }}>
             {t('book_appointment_link')}
           </Link>
         </div>
@@ -75,7 +75,7 @@ export function UpcomingAppointments() {
         <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--nc-ink)' }}>
           {t('upcoming_appointments_title')}
         </div>
-        <Link href="/dashboard/calendar" style={{ fontSize: 12, color: 'var(--nc-terra)', textDecoration: 'none', fontWeight: 500 }}>
+        <Link href={`/${locale}/dashboard/calendar`} style={{ fontSize: 12, color: 'var(--nc-terra)', textDecoration: 'none', fontWeight: 500 }}>
           {t('view_all_appointments')}
         </Link>
       </div>

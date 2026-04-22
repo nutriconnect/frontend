@@ -2,10 +2,43 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import Script from 'next/script';
+import { Metadata } from 'next';
 import { locales, type Locale } from '@/lib/i18n';
+
+export const metadata: Metadata = {
+  alternates: {
+    languages: {
+      es: '/es',
+      en: '/en',
+      'x-default': '/en',
+    },
+  },
+};
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+
+  if (!locales.includes(locale as Locale)) {
+    return {};
+  }
+
+  return {
+    alternates: {
+      languages: {
+        es: '/es',
+        en: '/en',
+        'x-default': '/en',
+      },
+    },
+  };
 }
 
 export default async function LocaleLayout({

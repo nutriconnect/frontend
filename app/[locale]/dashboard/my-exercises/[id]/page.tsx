@@ -1,6 +1,6 @@
 'use client'
 
-import { useTranslations } from 'next-intl';;
+import { useTranslations, useLocale } from 'next-intl';;
 // frontend/app/dashboard/my-exercises/[id]/page.tsx
 
 import { use, useState } from 'react';
@@ -86,7 +86,7 @@ export default function ExerciseDetailPage({ params }: { params: Promise<{ id: s
             El ejercicio solicitado no existe.
           </div>
           <Link
-            href="/dashboard/my-exercises"
+            href={`/${locale}/dashboard/my-exercises`}
             style={{
               marginTop: 16,
               display: 'inline-block',

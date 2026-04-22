@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { api } from '@/lib/api';
 
 export default function ForgotPasswordPage() {
@@ -22,21 +22,21 @@ export default function ForgotPasswordPage() {
   if (submitted) {
     return (
       <div className="auth-card" style={{ textAlign: 'center' }}>
-        <a href="/" className="auth-logo" style={{ textAlign: 'left' }}>nutri<span>connect</span></a>
+        <a href={`/${locale}/`} className="auth-logo" style={{ textAlign: 'left' }}>nutri<span>connect</span></a>
         <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📧</div>
         <h1 className="auth-heading">{t('success')}</h1>
         <p className="auth-sub">
           {t('success_message')}
         </p>
         <hr className="auth-divider" />
-        <p className="auth-footer"><a href="/login">{t('back_to_login')}</a></p>
+        <p className="auth-footer"><a href={`/${locale}/login`}>{t('back_to_login')}</a></p>
       </div>
     );
   }
 
   return (
     <div className="auth-card">
-      <a href="/" className="auth-logo">nutri<span>connect</span></a>
+      <a href={`/${locale}/`} className="auth-logo">nutri<span>connect</span></a>
       <h1 className="auth-heading">{t('title')}</h1>
       <p className="auth-sub">{t('subtitle')}</p>
 
@@ -60,7 +60,7 @@ export default function ForgotPasswordPage() {
       </form>
 
       <hr className="auth-divider" />
-      <p className="auth-footer"><a href="/login">{t('back_to_login')}</a></p>
+      <p className="auth-footer"><a href={`/${locale}/login`}>{t('back_to_login')}</a></p>
     </div>
   );
 }

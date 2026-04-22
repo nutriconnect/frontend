@@ -28,7 +28,7 @@ export default function ClientSurveyPage() {
       <div className="dash-topbar">
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <Link
-            href="/dashboard"
+            href={`/${locale}/dashboard`}
             style={{ fontSize: 13, color: 'var(--nc-stone)', textDecoration: 'none' }}
           >
             &larr; Dashboard

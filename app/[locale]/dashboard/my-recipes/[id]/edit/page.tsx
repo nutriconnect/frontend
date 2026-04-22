@@ -4,7 +4,7 @@
 import { use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import RecipeForm from '@/components/RecipeForm';
 import { useRecipe, updateRecipe } from '@/lib/recipes';
 import type { RecipePayload } from '@/lib/recipes';
@@ -57,7 +57,7 @@ export default function EditRecipePage({
             {t('recipe_not_exist')}
           </div>
           <Link
-            href="/dashboard/my-recipes"
+            href={`/${locale}/dashboard/my-recipes`}
             style={{
               marginTop: 16,
               display: 'inline-block',

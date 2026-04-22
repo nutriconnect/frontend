@@ -200,7 +200,7 @@ export default function RecipePickerModal({ isOpen, onClose, onSelect }: RecipeP
                 <>
                   No tienes recetas aún.{' '}
                   <Link
-                    href="/dashboard/my-recipes/new"
+                    href={`/${locale}/dashboard/my-recipes/new`}
                     style={{
                       color: 'var(--nc-forest)',
                       textDecoration: 'none',

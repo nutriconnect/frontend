@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { useSurveyTemplates, archiveSurveyTemplate, unarchiveSurveyTemplate } from '@/lib/survey';
 import { useMyProfile } from '@/lib/profile';
 import { api } from '@/lib/api';
@@ -142,7 +142,7 @@ export default function SurveyTemplatesPage() {
                 </div>
               </div>
               <Link
-                href="/dashboard/surveys/new"
+                href={`/${locale}/dashboard/surveys/new`}
                 style={{
                   display: 'inline-block', fontSize: 13, fontWeight: 500,
                   color: 'white', background: 'var(--nc-forest)',

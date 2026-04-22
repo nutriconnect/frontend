@@ -3,12 +3,13 @@
 
 import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { api, ApiRequestError } from '@/lib/api';
 
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const locale = useLocale();
   const t = useTranslations('auth.login');
   const raw = searchParams.get('from') ?? '/';
   const from = raw.startsWith('/') ? raw : '/';
@@ -32,7 +33,7 @@ function LoginForm() {
         sessionStorage.setItem('access_token', res.access_token);
       }
 
-      const defaultRoute = res.role === 'nutritionist' ? '/dashboard/profile' : '/dashboard';
+      const defaultRoute = res.role === 'nutritionist' ? `/${locale}/dashboard/profile` : `/${locale}/dashboard`;
       router.push(from === '/' ? defaultRoute : from);
       router.refresh();
     } catch (err) {
@@ -54,7 +55,7 @@ function LoginForm() {
 
   return (
     <div className="auth-card">
-      <a href="/" className="auth-logo">nutri<span>red</span></a>
+      <a href={`/${locale}`} className="auth-logo">nutri<span>red</span></a>
 
       <h1 className="auth-heading">
         {t('title')}
@@ -66,7 +67,7 @@ function LoginForm() {
       {unverified && (
         <div className="auth-alert auth-alert-error">
           {t('email_unverified')}{' '}
-          <a href="/verify-email" style={{ fontWeight: 500, color: 'inherit', textDecoration: 'underline' }}>
+          <a href={`/${locale}/verify-email`} style={{ fontWeight: 500, color: 'inherit', textDecoration: 'underline' }}>
             {t('resend_verification')}
           </a>
         </div>
@@ -91,7 +92,7 @@ function LoginForm() {
         <div className="form-field">
           <label className="form-label" htmlFor="password">
             {t('password')}
-            <a href="/forgot-password" style={{ float: 'right', fontWeight: 400, color: 'var(--ink-soft)', fontSize: '0.8125rem' }}>
+            <a href={`/${locale}/forgot-password`} style={{ float: 'right', fontWeight: 400, color: 'var(--ink-soft)', fontSize: '0.8125rem' }}>
               {t('forgot_password')}
             </a>
           </label>
@@ -116,7 +117,7 @@ function LoginForm() {
       <hr className="auth-divider" />
 
       <p className="auth-footer">
-        {t('no_account')} <a href="/register">{t('register')}</a>
+        {t('no_account')} <a href={`/${locale}/register`}>{t('register')}</a>
       </p>
     </div>
   );

@@ -178,7 +178,7 @@ export default function ForNutritionists() {
           </div>
 
           <div className="content-cta">
-            <a href="/register" className="content-cta-btn">
+            <a href={`/${locale}/register`} className="content-cta-btn">
               Crea tu perfil gratis
             </a>
             <p style={{ textAlign: 'center', marginTop: '1rem', color: 'var(--nc-stone)' }}>
@@ -192,10 +192,10 @@ export default function ForNutritionists() {
       <footer className="lp-footer">
         <div className="ft-logo">nutri<span>red</span></div>
         <ul className="ft-links">
-          <li><a href="/about">Sobre nosotros</a></li>
-          <li><a href="/for-nutritionists">Para nutricionistas</a></li>
-          <li><a href="/privacy">Privacidad</a></li>
-          <li><a href="/terms">Términos</a></li>
+          <li><a href={`/${locale}/about`}>Sobre nosotros</a></li>
+          <li><a href={`/${locale}/for-nutritionists`}>Para nutricionistas</a></li>
+          <li><a href={`/${locale}/privacy`}>Privacidad</a></li>
+          <li><a href={`/${locale}/terms`}>Términos</a></li>
         </ul>
         <span className="ft-copy">© 2026 Nutri Red</span>
       </footer>

@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { useRecipes } from '@/lib/recipes';
 import type { RecipeCategory } from '@/lib/types';
 
@@ -40,7 +40,7 @@ export default function MyRecipesPage() {
       <div className="dash-topbar">
         <div className="dash-topbar-title">{t('title')}</div>
         <div className="dash-topbar-right">
-          <Link href="/dashboard/my-recipes/new" className="dash-btn-publish">
+          <Link href={`/${locale}/dashboard/my-recipes/new`} className="dash-btn-publish">
             {t('new_recipe_button')}
           </Link>
         </div>
@@ -96,7 +96,7 @@ export default function MyRecipesPage() {
                 : t('no_recipes')}
             </div>
             {!debouncedSearch && category === 'all' && (
-              <Link href="/dashboard/my-recipes/new" className="dash-btn-publish">
+              <Link href={`/${locale}/dashboard/my-recipes/new`} className="dash-btn-publish">
                 {t('new_recipe_button')}
               </Link>
             )}

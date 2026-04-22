@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import SurveyBuilder from '@/components/survey/SurveyBuilder';
 import { createSurveyTemplate } from '@/lib/survey';
 import type { TemplateQuestion } from '@/lib/types';
@@ -17,7 +17,7 @@ export default function NewSurveyTemplatePage() {
       <div className="dash-topbar">
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <Link
-            href="/dashboard/surveys"
+            href={`/${locale}/dashboard/surveys`}
             style={{ fontSize: 13, color: 'var(--nc-stone)', textDecoration: 'none' }}
           >
             {t('surveys_link')}

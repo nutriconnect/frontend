@@ -3,7 +3,7 @@
 
 import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { api, ApiRequestError } from '@/lib/api';
 
 function VerifyEmailContent() {
@@ -41,7 +41,7 @@ function VerifyEmailContent() {
   if (token) {
     return (
       <div className="auth-card" style={{ textAlign: 'center' }}>
-        <a href="/" className="auth-logo" style={{ textAlign: 'left' }}>nutri<span>connect</span></a>
+        <a href={`/${locale}/`} className="auth-logo" style={{ textAlign: 'left' }}>nutri<span>connect</span></a>
 
         {(status === 'idle' || status === 'verifying') && (
           <>
@@ -63,7 +63,7 @@ function VerifyEmailContent() {
             <div className="auth-alert auth-alert-error">{errorMsg}</div>
             <h1 className="auth-heading">{t('error')}</h1>
             <p className="auth-sub">{t('error_message')}</p>
-            <a href="/register" className="btn-auth" style={{ display: 'block', textAlign: 'center', textDecoration: 'none', marginTop: '1rem' }}>
+            <a href={`/${locale}/register`} className="btn-auth" style={{ display: 'block', textAlign: 'center', textDecoration: 'none', marginTop: '1rem' }}>
               {t('back_to_register')}
             </a>
           </>
@@ -75,7 +75,7 @@ function VerifyEmailContent() {
   // No token — show "check your inbox" screen.
   return (
     <div className="auth-card" style={{ textAlign: 'center' }}>
-      <a href="/" className="auth-logo" style={{ textAlign: 'left' }}>nutri<span>connect</span></a>
+      <a href={`/${locale}/`} className="auth-logo" style={{ textAlign: 'left' }}>nutri<span>connect</span></a>
 
       <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📬</div>
       <h1 className="auth-heading">{t('check_email_title')}</h1>
@@ -83,13 +83,13 @@ function VerifyEmailContent() {
         {t('check_email_message')}
       </p>
 
-      <a href="/register" className="btn-auth" style={{ display: 'block', textAlign: 'center', textDecoration: 'none', width: '100%' }}>
+      <a href={`/${locale}/register`} className="btn-auth" style={{ display: 'block', textAlign: 'center', textDecoration: 'none', width: '100%' }}>
         {t('back_to_register')}
       </a>
 
       <hr className="auth-divider" />
       <p className="auth-footer">
-        <a href="/login">{t('back_to_login')}</a>
+        <a href={`/${locale}/login`}>{t('back_to_login')}</a>
       </p>
     </div>
   );

@@ -3,7 +3,7 @@
 
 import { Suspense, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { api, ApiRequestError } from '@/lib/api';
 
 type Role = 'client' | 'nutritionist';
@@ -41,7 +41,7 @@ function RegisterForm() {
 
   return (
     <div className="auth-card">
-      <a href="/" className="auth-logo">nutri<span>connect</span></a>
+      <a href={`/${locale}/`} className="auth-logo">nutri<span>connect</span></a>
 
       <h1 className="auth-heading">{t('title')}</h1>
       <p className="auth-sub">{t('subtitle')}</p>
@@ -106,7 +106,7 @@ function RegisterForm() {
       <hr className="auth-divider" />
 
       <p className="auth-footer">
-        {t('already_have_account')} <a href="/login">{t('login')}</a>
+        {t('already_have_account')} <a href={`/${locale}/login`}>{t('login')}</a>
       </p>
     </div>
   );

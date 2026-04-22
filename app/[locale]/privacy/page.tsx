@@ -1,5 +1,5 @@
 import { PublicNav } from '@/components/PublicNav';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 
 export default function Privacy() {
   const t = useTranslations('public.static.privacy');
@@ -193,10 +193,10 @@ export default function Privacy() {
       <footer className="lp-footer">
         <div className="ft-logo">nutri<span>connect</span></div>
         <ul className="ft-links">
-          <li><a href="/about">Sobre nosotros</a></li>
-          <li><a href="/for-nutritionists">Para nutricionistas</a></li>
-          <li><a href="/privacy">Privacidad</a></li>
-          <li><a href="/terms">Términos</a></li>
+          <li><a href={`/${locale}/about`}>Sobre nosotros</a></li>
+          <li><a href={`/${locale}/for-nutritionists`}>Para nutricionistas</a></li>
+          <li><a href={`/${locale}/privacy`}>Privacidad</a></li>
+          <li><a href={`/${locale}/terms`}>Términos</a></li>
         </ul>
         <span className="ft-copy">© 2026 Nutriconnect</span>
       </footer>

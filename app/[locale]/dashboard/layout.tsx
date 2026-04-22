@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { useAuth } from '@/lib/auth';
 import { api } from '@/lib/api';
 import { useMyProfile } from '@/lib/profile';
@@ -14,6 +14,7 @@ import useSWR from 'swr';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const t = useTranslations('dashboard');
+  const locale = useLocale();
   const { user, isLoading } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
@@ -47,9 +48,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   // Redirect unauthenticated users to login.
   useEffect(() => {
     if (!isLoading && !user) {
-      router.replace(`/login?from=${encodeURIComponent(pathname)}`);
+      router.replace(`/${locale}/login?from=${encodeURIComponent(pathname)}`);
     }
-  }, [user, isLoading, pathname, router]);
+  }, [user, isLoading, pathname, router, locale]);
 
   if (isLoading || !user) {
     return (
@@ -61,37 +62,37 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const handleSignOut = async () => {
     await api.post('/auth/logout', {}).catch(() => {});
-    router.push('/login');
+    router.push(`/${locale}/login`);
   };
 
   const totalUnreadCount = conversations.reduce((sum, c) => sum + c.unread_count, 0);
 
   const navItems = [
-    { href: '/dashboard', labelKey: 'home', icon: '◎', roles: ['client', 'nutritionist'] },
-    { href: '/dashboard/clients', labelKey: 'clients', icon: '◉', roles: ['nutritionist'] },
-    { href: '/dashboard/surveys', labelKey: 'surveys', icon: '◈', roles: ['nutritionist'] },
-    { href: '/dashboard/my-recipes', labelKey: 'recipes', icon: '◈', roles: ['nutritionist'] },
-    { href: '/dashboard/my-exercises', labelKey: 'exercises', icon: '◈', roles: ['nutritionist'] },
-    { href: '/dashboard/appointment-types', labelKey: 'appointment_types', icon: '◈', roles: ['nutritionist'] },
-    { href: '/dashboard/availability', labelKey: 'availability', icon: '◈', roles: ['nutritionist'] },
-    { href: '/dashboard/calendar', labelKey: 'calendar', icon: '◈', roles: ['client', 'nutritionist'] },
-    { href: '/dashboard/messages', labelKey: 'chat', icon: '◈', roles: ['client', 'nutritionist'] },
-    { href: '/dashboard/my-nutritionist', labelKey: 'my_nutritionist', icon: '◉', roles: ['client'] },
-    { href: '/dashboard/my-plans', labelKey: 'plans', icon: '◈', roles: ['client'] },
-    { href: '/dashboard/business', labelKey: 'business', icon: '◈', roles: ['nutritionist'] },
+    { href: `/${locale}/dashboard`, labelKey: 'home', icon: '◎', roles: ['client', 'nutritionist'] },
+    { href: `/${locale}/dashboard/clients`, labelKey: 'clients', icon: '◉', roles: ['nutritionist'] },
+    { href: `/${locale}/dashboard/surveys`, labelKey: 'surveys', icon: '◈', roles: ['nutritionist'] },
+    { href: `/${locale}/dashboard/my-recipes`, labelKey: 'recipes', icon: '◈', roles: ['nutritionist'] },
+    { href: `/${locale}/dashboard/my-exercises`, labelKey: 'exercises', icon: '◈', roles: ['nutritionist'] },
+    { href: `/${locale}/dashboard/appointment-types`, labelKey: 'appointment_types', icon: '◈', roles: ['nutritionist'] },
+    { href: `/${locale}/dashboard/availability`, labelKey: 'availability', icon: '◈', roles: ['nutritionist'] },
+    { href: `/${locale}/dashboard/calendar`, labelKey: 'calendar', icon: '◈', roles: ['client', 'nutritionist'] },
+    { href: `/${locale}/dashboard/messages`, labelKey: 'chat', icon: '◈', roles: ['client', 'nutritionist'] },
+    { href: `/${locale}/dashboard/my-nutritionist`, labelKey: 'my_nutritionist', icon: '◉', roles: ['client'] },
+    { href: `/${locale}/dashboard/my-plans`, labelKey: 'plans', icon: '◈', roles: ['client'] },
+    { href: `/${locale}/dashboard/business`, labelKey: 'business', icon: '◈', roles: ['nutritionist'] },
   ].filter((item) => item.roles.includes(user.role));
 
   const settingsItems = [
-    { href: '/dashboard/profile', labelKey: 'profile', icon: '◈', roles: ['nutritionist'] },
-    { href: '/dashboard/client-profile', labelKey: 'profile', icon: '◈', roles: ['client'] },
-    { href: '/dashboard/billing', labelKey: 'billing', icon: '◈', roles: ['nutritionist'] },
+    { href: `/${locale}/dashboard/profile`, labelKey: 'profile', icon: '◈', roles: ['nutritionist'] },
+    { href: `/${locale}/dashboard/client-profile`, labelKey: 'profile', icon: '◈', roles: ['client'] },
+    { href: `/${locale}/dashboard/billing`, labelKey: 'billing', icon: '◈', roles: ['nutritionist'] },
   ].filter((item) => item.roles.includes(user.role));
 
   return (
     <div className="dash-root">
       <aside className="dash-sidebar">
         <div className="dash-logo">
-          <Link href="/">Nutri<span>Red</span></Link>
+          <Link href={`/${locale}`}>Nutri<span>Red</span></Link>
         </div>
         <div className="dash-user">
           <Avatar
@@ -124,14 +125,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 {profile.tier}
               </span>
               {profile.tier === 'free' && (
-                <a href="/dashboard/billing" style={{ fontSize: 11, color: 'var(--nc-terra)', marginLeft: 8, textDecoration: 'none' }}>
+                <a href={`/${locale}/dashboard/billing`} style={{ fontSize: 11, color: 'var(--nc-terra)', marginLeft: 8, textDecoration: 'none' }}>
                   {t('tier.upgrade')}
                 </a>
               )}
             </div>
             {profile.slug && (
               <Link
-                href={`/nutritionists/${profile.slug}`}
+                href={`/${locale}/nutritionists/${profile.slug}`}
                 target="_blank"
                 style={{
                   fontSize: 11,

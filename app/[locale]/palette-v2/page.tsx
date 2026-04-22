@@ -31,10 +31,10 @@ export default function V2Landing() {
           </p>
 
           <div className="hero-actions">
-            <a href="/nutritionists" className="btn-primary">
+            <a href={`/${locale}/nutritionists`} className="btn-primary">
               Explorar nutricionistas
             </a>
-            <a href="/for-nutritionists" className="btn-ghost">Soy nutricionista →</a>
+            <a href={`/${locale}/for-nutritionists`} className="btn-ghost">Soy nutricionista →</a>
           </div>
 
           <div className="hero-proof">
@@ -208,7 +208,7 @@ export default function V2Landing() {
               </div>
               <div className="nut-footer">
                 <div className="nut-price">60€ <span>/ sesión</span></div>
-                <a href="/nutritionists/laura-martinez" className="btn-sm">Ver perfil</a>
+                <a href={`/${locale}/nutritionists/laura-martinez`} className="btn-sm">Ver perfil</a>
               </div>
             </div>
           </div>
@@ -241,7 +241,7 @@ export default function V2Landing() {
               </div>
               <div className="nut-footer">
                 <div className="nut-price">75€ <span>/ sesión</span></div>
-                <a href="/nutritionists/carlos-ruiz" className="btn-sm">Ver perfil</a>
+                <a href={`/${locale}/nutritionists/carlos-ruiz`} className="btn-sm">Ver perfil</a>
               </div>
             </div>
           </div>
@@ -274,7 +274,7 @@ export default function V2Landing() {
               </div>
               <div className="nut-footer">
                 <div className="nut-price">55€ <span>/ sesión</span></div>
-                <a href="/nutritionists/ana-gonzalez" className="btn-sm">Ver perfil</a>
+                <a href={`/${locale}/nutritionists/ana-gonzalez`} className="btn-sm">Ver perfil</a>
               </div>
             </div>
           </div>
@@ -282,7 +282,7 @@ export default function V2Landing() {
         </div>
 
         <div className="see-all">
-          <a href="/nutritionists" className="btn-outline">Ver todos los nutricionistas</a>
+          <a href={`/${locale}/nutritionists`} className="btn-outline">Ver todos los nutricionistas</a>
         </div>
       </section>
 
@@ -310,7 +310,7 @@ export default function V2Landing() {
                 <li>Paquetes de servicios</li>
                 <li>Soporte por email</li>
               </ul>
-              <a href="/register" className="btn-outline pricing-btn">Empezar gratis</a>
+              <a href={`/${locale}/register`} className="btn-outline pricing-btn">Empezar gratis</a>
             </div>
 
             {/* Pro */}
@@ -329,7 +329,7 @@ export default function V2Landing() {
                 <li>Análisis de rendimiento</li>
                 <li>Soporte prioritario</li>
               </ul>
-              <a href="/register" className="btn-primary pricing-btn">Empezar con Pro</a>
+              <a href={`/${locale}/register`} className="btn-primary pricing-btn">Empezar con Pro</a>
             </div>
 
             {/* Premium */}
@@ -347,7 +347,7 @@ export default function V2Landing() {
                 <li>Dashboard avanzado</li>
                 <li>Soporte dedicado</li>
               </ul>
-              <a href="/register" className="btn-outline pricing-btn">Empezar con Premium</a>
+              <a href={`/${locale}/register`} className="btn-outline pricing-btn">Empezar con Premium</a>
             </div>
 
           </div>
@@ -371,10 +371,10 @@ export default function V2Landing() {
               Sin compromisos, sin letra pequeña.
             </p>
             <div className="cta-btns">
-              <a href="/register" className="btn-primary">
+              <a href={`/${locale}/register`} className="btn-primary">
                 Empezar gratis
               </a>
-              <a href="/nutritionists" className="btn-light">Ver nutricionistas →</a>
+              <a href={`/${locale}/nutritionists`} className="btn-light">Ver nutricionistas →</a>
             </div>
           </div>
         </div>
@@ -384,10 +384,10 @@ export default function V2Landing() {
       <footer className="lp-footer">
         <div className="ft-logo">nutri<span>red</span></div>
         <ul className="ft-links">
-          <li><a href="/about">Sobre nosotros</a></li>
-          <li><a href="/for-nutritionists">Para nutricionistas</a></li>
-          <li><a href="/privacy">Privacidad</a></li>
-          <li><a href="/terms">Términos</a></li>
+          <li><a href={`/${locale}/about`}>Sobre nosotros</a></li>
+          <li><a href={`/${locale}/for-nutritionists`}>Para nutricionistas</a></li>
+          <li><a href={`/${locale}/privacy`}>Privacidad</a></li>
+          <li><a href={`/${locale}/terms`}>Términos</a></li>
         </ul>
         <span className="ft-copy">© 2026 Nutri Red</span>
       </footer>

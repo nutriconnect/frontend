@@ -1,5 +1,5 @@
 import { PublicNav } from '@/components/PublicNav';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 
 export default function HowItWorks() {
   const t = useTranslations('public.static.how');
@@ -89,14 +89,14 @@ export default function HowItWorks() {
             <div className="content-faq-item">
               <div className="content-faq-question">{t('faq_7_q')}</div>
               <div className="content-faq-answer">
-                {t('faq_7_a')} <a href="/privacy">política de privacidad</a> para más detalles.
+                {t('faq_7_a')} <a href={`/${locale}/privacy`}>política de privacidad</a> para más detalles.
               </div>
             </div>
 
           </div>
 
           <div className="content-cta">
-            <a href="/nutritionists" className="content-cta-btn">
+            <a href={`/${locale}/nutritionists`} className="content-cta-btn">
               {t('find_nutritionist_cta')}
             </a>
           </div>
@@ -107,10 +107,10 @@ export default function HowItWorks() {
       <footer className="lp-footer">
         <div className="ft-logo">nutri<span>red</span></div>
         <ul className="ft-links">
-          <li><a href="/about">Sobre nosotros</a></li>
-          <li><a href="/for-nutritionists">Para nutricionistas</a></li>
-          <li><a href="/privacy">Privacidad</a></li>
-          <li><a href="/terms">Términos</a></li>
+          <li><a href={`/${locale}/about`}>Sobre nosotros</a></li>
+          <li><a href={`/${locale}/for-nutritionists`}>Para nutricionistas</a></li>
+          <li><a href={`/${locale}/privacy`}>Privacidad</a></li>
+          <li><a href={`/${locale}/terms`}>Términos</a></li>
         </ul>
         <span className="ft-copy">© 2026 Nutri Red</span>
       </footer>

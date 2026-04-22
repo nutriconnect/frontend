@@ -4,7 +4,7 @@
 import { use, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { useRecipe, deleteRecipe } from '@/lib/recipes';
 import type { RecipeCategory } from '@/lib/types';
 
@@ -73,7 +73,7 @@ export default function RecipeDetailPage({
             {t('recipe_not_exist')}
           </div>
           <Link
-            href="/dashboard/my-recipes"
+            href={`/${locale}/dashboard/my-recipes`}
             style={{
               marginTop: 16,
               display: 'inline-block',

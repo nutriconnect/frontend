@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { useState } from 'react';
 import { usePublicProfile } from '@/lib/profile';
 import { connectWithNutritionist } from '@/lib/hiring';
@@ -54,7 +54,7 @@ export default function PublicProfilePage() {
     return (
       <div style={{ background: 'var(--nc-cream)', minHeight: '100vh' }}>
         <nav className="nc-nav">
-          <Link href="/nutritionists" className="nc-nav-logo">Nutri<span>Red</span></Link>
+          <Link href={`/${locale}/nutritionists`} className="nc-nav-logo">Nutri<span>Red</span></Link>
         </nav>
         <div style={{ padding: '80px 48px', color: 'var(--nc-stone)', fontWeight: 300 }}>{t('loading')}</div>
       </div>
@@ -65,8 +65,8 @@ export default function PublicProfilePage() {
     return (
       <div style={{ background: 'var(--nc-cream)', minHeight: '100vh' }}>
         <nav className="nc-nav">
-          <Link href="/nutritionists" className="nc-nav-logo">Nutri<span>Red</span></Link>
-          <Link href="/nutritionists" className="nc-nav-links" style={{ color: 'rgba(245,240,232,0.65)', textDecoration: 'none', fontSize: 13 }}>{t('back_to_nutritionists')}</Link>
+          <Link href={`/${locale}/nutritionists`} className="nc-nav-logo">Nutri<span>Red</span></Link>
+          <Link href={`/${locale}/nutritionists`} className="nc-nav-links" style={{ color: 'rgba(245,240,232,0.65)', textDecoration: 'none', fontSize: 13 }}>{t('back_to_nutritionists')}</Link>
         </nav>
         <div style={{ padding: '80px 48px', color: 'var(--nc-stone)', fontWeight: 300 }}>
           {t('not_found')}
@@ -86,8 +86,8 @@ export default function PublicProfilePage() {
   return (
     <div style={{ background: 'var(--nc-cream)', minHeight: '100vh' }}>
       <nav className="nc-nav">
-        <Link href="/nutritionists" className="nc-nav-logo">Nutri<span>Red</span></Link>
-        <Link href="/nutritionists" style={{ color: 'rgba(245,240,232,0.65)', textDecoration: 'none', fontSize: 13 }}>{t('back_to_nutritionists')}</Link>
+        <Link href={`/${locale}/nutritionists`} className="nc-nav-logo">Nutri<span>Red</span></Link>
+        <Link href={`/${locale}/nutritionists`} style={{ color: 'rgba(245,240,232,0.65)', textDecoration: 'none', fontSize: 13 }}>{t('back_to_nutritionists')}</Link>
       </nav>
 
       <div className="nc-profile-hero">

@@ -3,7 +3,7 @@
 
 import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { api, ApiRequestError } from '@/lib/api';
 
 function ResetPasswordForm() {
@@ -20,11 +20,11 @@ function ResetPasswordForm() {
   if (!token) {
     return (
       <div className="auth-card" style={{ textAlign: 'center' }}>
-        <a href="/" className="auth-logo" style={{ textAlign: 'left' }}>nutri<span>connect</span></a>
+        <a href={`/${locale}/`} className="auth-logo" style={{ textAlign: 'left' }}>nutri<span>connect</span></a>
         <div className="auth-alert auth-alert-error">
           {t('no_token_message')}
         </div>
-        <a href="/forgot-password" className="btn-auth" style={{ display: 'block', textAlign: 'center', textDecoration: 'none', marginTop: '1rem' }}>
+        <a href={`/${locale}/forgot-password`} className="btn-auth" style={{ display: 'block', textAlign: 'center', textDecoration: 'none', marginTop: '1rem' }}>
           {t('request_new_link')}
         </a>
       </div>
@@ -59,7 +59,7 @@ function ResetPasswordForm() {
 
   return (
     <div className="auth-card">
-      <a href="/" className="auth-logo">nutri<span>connect</span></a>
+      <a href={`/${locale}/`} className="auth-logo">nutri<span>connect</span></a>
       <h1 className="auth-heading">{t('title')}</h1>
       <p className="auth-sub">{t('subtitle')}</p>
 

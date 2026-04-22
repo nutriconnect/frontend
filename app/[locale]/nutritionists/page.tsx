@@ -1,7 +1,7 @@
 // frontend/app/nutritionists/page.tsx
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -179,10 +179,10 @@ export default function NutritionistsPage() {
   return (
     <div style={{ background: 'var(--nc-cream)', minHeight: '100vh' }}>
       <nav className="nc-nav">
-        <Link href="/" className="nc-nav-logo">Nutri<span>Red</span></Link>
+        <Link href={`/${locale}/`} className="nc-nav-logo">Nutri<span>Red</span></Link>
         <div className="nc-nav-links">
-          <Link href="/login">Sign in</Link>
-          <Link href="/register" className="nc-nav-cta">Join as nutritionist</Link>
+          <Link href={`/${locale}/login`}>Sign in</Link>
+          <Link href={`/${locale}/register`} className="nc-nav-cta">Join as nutritionist</Link>
         </div>
       </nav>
 

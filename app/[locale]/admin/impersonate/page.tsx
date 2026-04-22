@@ -2,10 +2,12 @@
 
 import { useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { useLocale } from 'next-intl';
 
 export default function ImpersonatePage() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const locale = useLocale();
   const token = searchParams.get('token');
 
   useEffect(() => {
@@ -15,12 +17,12 @@ export default function ImpersonatePage() {
       sessionStorage.setItem('access_token', token);
 
       // Redirect to dashboard where the user is now impersonated
-      router.push('/dashboard');
+      router.push(`/${locale}/dashboard`);
     } else {
       // No token provided, redirect to home
-      router.push('/');
+      router.push(`/${locale}`);
     }
-  }, [token, router]);
+  }, [token, router, locale]);
 
   return (
     <div className="flex items-center justify-center min-h-screen">

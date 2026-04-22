@@ -1,5 +1,5 @@
 import { PublicNav } from '@/components/PublicNav';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 
 export default function About() {
   const t = useTranslations('public.static.about');
@@ -74,7 +74,7 @@ export default function About() {
           </p>
 
           <div className="content-cta">
-            <a href="/register" className="content-cta-btn">
+            <a href={`/${locale}/register`} className="content-cta-btn">
               {t('join_cta')}
             </a>
           </div>
@@ -85,10 +85,10 @@ export default function About() {
       <footer className="lp-footer">
         <div className="ft-logo">nutri<span>connect</span></div>
         <ul className="ft-links">
-          <li><a href="/about">Sobre nosotros</a></li>
-          <li><a href="/for-nutritionists">Para nutricionistas</a></li>
-          <li><a href="/privacy">Privacidad</a></li>
-          <li><a href="/terms">Términos</a></li>
+          <li><a href={`/${locale}/about`}>Sobre nosotros</a></li>
+          <li><a href={`/${locale}/for-nutritionists`}>Para nutricionistas</a></li>
+          <li><a href={`/${locale}/privacy`}>Privacidad</a></li>
+          <li><a href={`/${locale}/terms`}>Términos</a></li>
         </ul>
         <span className="ft-copy">© 2026 Nutriconnect</span>
       </footer>
