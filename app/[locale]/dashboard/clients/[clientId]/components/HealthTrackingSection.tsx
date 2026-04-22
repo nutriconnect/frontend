@@ -1,13 +1,17 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations, useLocale } from 'next-intl';
 import { useClientWeight, useClientActivity } from '@/lib/client-health';
 import { WeightGraph, ActivityGraph } from './HealthGraph';
 import type { WeightEntry, ActivityEntry } from '@/lib/types';
 
 function WeightView({ entries, isLoading }: { entries: WeightEntry[]; isLoading: boolean }) {
+  const t = useTranslations('dashboard.client_detail');
+  const locale = useLocale();
+
   if (isLoading) {
-    return <div style={{ color: 'var(--nc-stone)', fontSize: 13, fontWeight: 300 }}>Cargando…</div>;
+    return <div style={{ color: 'var(--nc-stone)', fontSize: 13, fontWeight: 300 }}>{t('loading')}</div>;
   }
 
   // Show last 5 entries
@@ -29,7 +33,7 @@ function WeightView({ entries, isLoading }: { entries: WeightEntry[]; isLoading:
             color: 'var(--nc-stone)',
             marginBottom: 8
           }}>
-            Entradas recientes
+            {t('recent_entries')}
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {recent.map(e => (
@@ -43,7 +47,7 @@ function WeightView({ entries, isLoading }: { entries: WeightEntry[]; isLoading:
                 <span style={{ fontWeight: 500 }}>{e.weight_kg} kg</span>
                 {' · '}
                 <span style={{ color: 'var(--nc-stone)' }}>
-                  {new Date(e.recorded_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}
+                  {new Date(e.recorded_at).toLocaleDateString(locale, { day: 'numeric', month: 'short', year: 'numeric' })}
                 </span>
               </div>
             ))}
@@ -55,8 +59,11 @@ function WeightView({ entries, isLoading }: { entries: WeightEntry[]; isLoading:
 }
 
 function ActivityView({ entries, isLoading }: { entries: ActivityEntry[]; isLoading: boolean }) {
+  const t = useTranslations('dashboard.client_detail');
+  const locale = useLocale();
+
   if (isLoading) {
-    return <div style={{ color: 'var(--nc-stone)', fontSize: 13, fontWeight: 300 }}>Cargando…</div>;
+    return <div style={{ color: 'var(--nc-stone)', fontSize: 13, fontWeight: 300 }}>{t('loading')}</div>;
   }
 
   // Show last 5 entries
@@ -78,7 +85,7 @@ function ActivityView({ entries, isLoading }: { entries: ActivityEntry[]; isLoad
             color: 'var(--nc-stone)',
             marginBottom: 8
           }}>
-            Entradas recientes
+            {t('recent_entries')}
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {recent.map(e => (
@@ -94,7 +101,7 @@ function ActivityView({ entries, isLoading }: { entries: ActivityEntry[]; isLoad
                 <span>{e.duration_minutes} min</span>
                 {' · '}
                 <span style={{ color: 'var(--nc-stone)' }}>
-                  {new Date(e.recorded_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}
+                  {new Date(e.recorded_at).toLocaleDateString(locale, { day: 'numeric', month: 'short', year: 'numeric' })}
                 </span>
               </div>
             ))}
@@ -112,6 +119,7 @@ export default function HealthTrackingSection({
   clientId: string;
   relationshipStatus: string;
 }) {
+  const t = useTranslations('dashboard.client_detail');
   const [activeTab, setActiveTab] = useState<'weight' | 'activity'>('weight');
   const [showFullHistory, setShowFullHistory] = useState(false);
   const days = showFullHistory ? 0 : 30;
@@ -127,8 +135,8 @@ export default function HealthTrackingSection({
   return (
     <div className="dash-section">
       <div className="dash-section-head">
-        <div className="dash-section-title">Health Tracking</div>
-        <div className="dash-section-sub">Monitorea el peso y actividad física de tu cliente</div>
+        <div className="dash-section-title">{t('health_tracking_title')}</div>
+        <div className="dash-section-sub">{t('health_tracking_desc')}</div>
       </div>
       <div className="dash-section-body">
         {/* Tab buttons */}
@@ -153,7 +161,7 @@ export default function HealthTrackingSection({
               transition: 'color 0.2s, border-color 0.2s',
             }}
           >
-            Peso
+            {t('weight')}
           </button>
           <button
             onClick={() => setActiveTab('activity')}
@@ -169,7 +177,7 @@ export default function HealthTrackingSection({
               transition: 'color 0.2s, border-color 0.2s',
             }}
           >
-            Actividad
+            {t('activity')}
           </button>
         </div>
 
@@ -198,7 +206,7 @@ export default function HealthTrackingSection({
           onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--nc-terra)'}
           onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--nc-border)'}
         >
-          {showFullHistory ? '← Últimos 30 días' : 'Ver historial completo →'}
+          {showFullHistory ? t('last_30_days') : t('view_full_history')}
         </button>
       </div>
     </div>

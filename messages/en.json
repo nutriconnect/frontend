@@ -718,6 +718,18 @@
       "day_thursday": "Thursday",
       "day_friday": "Friday",
       "day_saturday": "Saturday"
+    },
+    "client_detail": {
+      "loading": "Loading…",
+      "health_tracking_title": "Health Tracking",
+      "health_tracking_desc": "Monitor your client's weight and physical activity",
+      "weight": "Weight",
+      "activity": "Activity",
+      "recent_entries": "Recent entries",
+      "last_30_days": "← Last 30 days",
+      "view_full_history": "View full history →",
+      "no_weight_data": "This client hasn't logged any weight data yet.",
+      "no_activity_data": "This client hasn't logged any activity data yet."
     }
   },
   "errors": {

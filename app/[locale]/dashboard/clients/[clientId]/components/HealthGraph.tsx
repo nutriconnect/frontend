@@ -18,7 +18,7 @@ export function WeightGraph({ entries }: { entries: WeightEntry[] }) {
         padding: '40px 0',
         textAlign: 'center'
       }}>
-        Este cliente aún no ha registrado datos de peso.
+        {t('no_weight_data')}
       </div>
     );
   }
@@ -86,7 +86,7 @@ export function ActivityGraph({ entries }: { entries: ActivityEntry[] }) {
         padding: '40px 0',
         textAlign: 'center'
       }}>
-        Este cliente aún no ha registrado datos de actividad.
+        {t('no_activity_data')}
       </div>
     );
   }

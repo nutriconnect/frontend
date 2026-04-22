@@ -718,6 +718,18 @@
       "day_thursday": "Jueves",
       "day_friday": "Viernes",
       "day_saturday": "Sábado"
+    },
+    "client_detail": {
+      "loading": "Cargando…",
+      "health_tracking_title": "Health Tracking",
+      "health_tracking_desc": "Monitorea el peso y actividad física de tu cliente",
+      "weight": "Peso",
+      "activity": "Actividad",
+      "recent_entries": "Entradas recientes",
+      "last_30_days": "← Últimos 30 días",
+      "view_full_history": "Ver historial completo →",
+      "no_weight_data": "Este cliente aún no ha registrado datos de peso.",
+      "no_activity_data": "Este cliente aún no ha registrado datos de actividad."
     }
   },
   "errors": {
