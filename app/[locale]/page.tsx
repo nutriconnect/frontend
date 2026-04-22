@@ -125,7 +125,7 @@ export default function Home() {
       <section className="how">
         <div className="sec-hdr">
           <span className="sec-tag">{t('how_tag')}</span>
-          <h2 className="sec-title">{t('how_title')} <em>sencillo</em></h2>
+          <h2 className="sec-title">{t('how_title')} <em>{t('how_title_em')}</em></h2>
         </div>
 
         <div className="steps">
@@ -175,7 +175,7 @@ export default function Home() {
       <section className="nutritionists">
         <div className="sec-hdr">
           <span className="sec-tag">{t('nutritionists_tag')}</span>
-          <h2 className="sec-title">Nutricionistas <em>verificados</em></h2>
+          <h2 className="sec-title">{t('nutritionists_title')} <em>{t('nutritionists_title_em')}</em></h2>
         </div>
 
         <div className="nut-grid">
@@ -291,7 +291,7 @@ export default function Home() {
         <div className="pricing-inner">
           <div className="sec-hdr">
             <span className="sec-tag">{t('pricing_tag')}</span>
-            <h2 className="sec-title">Planes y <em>precios</em></h2>
+            <h2 className="sec-title">{t('pricing_title')} <em>{t('pricing_title_em')}</em></h2>
           </div>
 
           <div className="pricing-grid">

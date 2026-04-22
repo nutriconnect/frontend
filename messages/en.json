@@ -705,10 +705,10 @@
       "step_3_title": "Begin your journey",
       "step_3_desc": "Get your personalised nutrition plan, chat with your nutritionist in real-time, and start seeing real results in your life.",
       "nutritionists_tag": "Featured",
-      "nutritionists_title": "Verified nutritionists",
+      "nutritionists_title": "Verified",
       "nutritionists_all": "See all nutritionists",
       "pricing_tag": "For nutritionists",
-      "pricing_title": "Plans and pricing",
+      "pricing_title": "Plans &",
       "pricing_free_tier": "Free",
       "pricing_free_desc": "Start building your online practice at no cost.",
       "pricing_free_features": [
@@ -751,7 +751,10 @@
       "card_rating_label": "Average rating",
       "card_rating_specialty": "Sports nutrition",
       "card_growth_label": "New clients",
-      "card_growth_period": "this month ↑"
+      "card_growth_period": "this month ↑",
+      "how_title_em": "simple",
+      "nutritionists_title_em": "nutritionists",
+      "pricing_title_em": "pricing"
     },
     "nutritionists": {
       "stats_label": "Certified nutritionists",
