@@ -3,14 +3,16 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { format, formatDistanceToNow } from 'date-fns';
-import { es } from 'date-fns/locale';
+import { es, enUS } from 'date-fns/locale';
 import { useUpcomingAppointments } from '@/lib/calendar';
 import { cancelAppointment } from '@/lib/calendar';
 
 export function UpcomingAppointments() {
   const t = useTranslations('dashboard.home');
+  const locale = useLocale();
+  const dateFnsLocale = locale === 'es' ? es : enUS;
   const { appointments, isLoading } = useUpcomingAppointments(5);
   const [canceling, setCanceling] = useState<string | null>(null);
 
@@ -81,7 +83,7 @@ export function UpcomingAppointments() {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         {appointments.map((appt) => {
           const startDate = new Date(appt.start_time);
-          const countdown = formatDistanceToNow(startDate, { locale: es, addSuffix: true });
+          const countdown = formatDistanceToNow(startDate, { locale: dateFnsLocale, addSuffix: true });
           const isWithin24h = appt.hours_until < 24;
 
           return (
@@ -119,7 +121,7 @@ export function UpcomingAppointments() {
 
               <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 10 }}>
                 <div style={{ fontSize: 12, color: 'var(--nc-stone)', fontWeight: 300 }}>
-                  📅 {format(startDate, "EEEE, d 'de' MMMM", { locale: es })}
+                  📅 {format(startDate, locale === 'es' ? "EEEE, d 'de' MMMM" : 'EEEE, MMMM d', { locale: dateFnsLocale })}
                 </div>
                 <div style={{ fontSize: 12, color: 'var(--nc-stone)', fontWeight: 300 }}>
                   🕒 {format(startDate, 'HH:mm')}

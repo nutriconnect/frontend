@@ -204,10 +204,10 @@ function ClientOverview() {
         }}>
           <div>
             <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--nc-terra)', marginBottom: 4 }}>
-              📋 Cuestionario pendiente
+              📋 {t('pending_survey')}
             </div>
             <div style={{ fontSize: 13, color: 'var(--nc-stone)', fontWeight: 300 }}>
-              Tu nutricionista necesita que completes un cuestionario inicial.
+              {t('pending_survey_desc')}
             </div>
           </div>
           <Link
@@ -223,7 +223,7 @@ function ClientOverview() {
               whiteSpace: 'nowrap',
             }}
           >
-            Completar →
+            {t('complete_survey')}
           </Link>
         </div>
       )}
@@ -245,7 +245,7 @@ function ClientOverview() {
               )}
             </div>
           ) : (
-            <div style={{ fontSize: 13, color: 'var(--nc-stone)', fontWeight: 300 }}>No entries yet</div>
+            <div style={{ fontSize: 13, color: 'var(--nc-stone)', fontWeight: 300 }}>{t('no_entries_yet')}</div>
           )}
           {latestWeight && <div style={{ fontSize: 11, color: 'var(--nc-stone)', marginTop: 2 }}>{fmtDate(latestWeight.recorded_at)}</div>}
         </div>
@@ -403,7 +403,7 @@ function ClientOverview() {
           )}
           {profile.activity_level && (
             <div style={{ fontSize: 12, color: 'var(--nc-stone)', fontWeight: 300, marginTop: 8 }}>
-              Activity: {profile.activity_level.replace('_', ' ')}
+              {t('activity_label')}: {profile.activity_level.replace('_', ' ')}
             </div>
           )}
         </div>

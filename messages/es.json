@@ -102,7 +102,12 @@
       "cancel_reason": "Cancelada por el cliente",
       "completed_on": "Completado el",
       "and_more": "Y {count} más...",
-      "review_survey": "Revisar"
+      "review_survey": "Revisar",
+      "pending_survey": "Cuestionario pendiente",
+      "pending_survey_desc": "Tu nutricionista necesita que completes un cuestionario inicial.",
+      "complete_survey": "Completar →",
+      "no_entries_yet": "Sin registros aún",
+      "activity_label": "Actividad"
     }
   },
   "errors": {

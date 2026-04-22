@@ -102,7 +102,12 @@
       "cancel_reason": "Cancelled by client",
       "completed_on": "Completed on",
       "and_more": "And {count} more...",
-      "review_survey": "Review"
+      "review_survey": "Review",
+      "pending_survey": "Pending survey",
+      "pending_survey_desc": "Your nutritionist needs you to complete an initial survey.",
+      "complete_survey": "Complete →",
+      "no_entries_yet": "No entries yet",
+      "activity_label": "Activity"
     }
   },
   "errors": {
