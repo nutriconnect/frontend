@@ -50,19 +50,7 @@
     },
     "profile": {
       "view_public": "↗ Ver perfil público"
-    }
-  },
-  "errors": {
-    "INVALID_CREDENTIALS": "Correo o contraseña incorrectos",
-    "EMAIL_ALREADY_EXISTS": "Este correo ya está registrado",
-    "UNAUTHORIZED": "No autorizado. Inicia sesión.",
-    "FORBIDDEN": "No tienes permiso para realizar esta acción",
-    "NOT_FOUND": "Recurso no encontrado",
-    "VALIDATION_ERROR": "Verifica los campos del formulario",
-    "NETWORK_ERROR": "Error de conexión. Inténtalo de nuevo.",
-    "INTERNAL_ERROR": "Error del servidor. Contacta con soporte."
-  },
-  "dashboard": {
+    },
     "home": {
       "welcome": "Bienvenido, {name}",
       "upcoming_appointments": "Próximas citas",
@@ -111,8 +99,21 @@
       "cannot_cancel_within_24h": "No se puede cancelar (<24h)",
       "confirm_cancel": "¿Estás seguro de que quieres cancelar esta cita?",
       "error_cancel": "Error al cancelar la cita",
-      "cancel_reason": "Cancelada por el cliente"
+      "cancel_reason": "Cancelada por el cliente",
+      "completed_on": "Completado el",
+      "and_more": "Y {count} más...",
+      "review_survey": "Revisar"
     }
+  },
+  "errors": {
+    "INVALID_CREDENTIALS": "Correo o contraseña incorrectos",
+    "EMAIL_ALREADY_EXISTS": "Este correo ya está registrado",
+    "UNAUTHORIZED": "No autorizado. Inicia sesión.",
+    "FORBIDDEN": "No tienes permiso para realizar esta acción",
+    "NOT_FOUND": "Recurso no encontrado",
+    "VALIDATION_ERROR": "Verifica los campos del formulario",
+    "NETWORK_ERROR": "Error de conexión. Inténtalo de nuevo.",
+    "INTERNAL_ERROR": "Error del servidor. Contacta con soporte."
   },
   "auth": {
     "login": {

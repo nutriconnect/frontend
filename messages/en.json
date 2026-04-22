@@ -50,19 +50,7 @@
     },
     "profile": {
       "view_public": "↗ View public profile"
-    }
-  },
-  "errors": {
-    "INVALID_CREDENTIALS": "Invalid email or password",
-    "EMAIL_ALREADY_EXISTS": "This email is already registered",
-    "UNAUTHORIZED": "Unauthorized. Please log in.",
-    "FORBIDDEN": "You don't have permission to perform this action",
-    "NOT_FOUND": "Resource not found",
-    "VALIDATION_ERROR": "Please check the form fields",
-    "NETWORK_ERROR": "Connection error. Please try again.",
-    "INTERNAL_ERROR": "Server error. Contact support."
-  },
-  "dashboard": {
+    },
     "home": {
       "welcome": "Welcome, {name}",
       "upcoming_appointments": "Upcoming appointments",
@@ -111,8 +99,21 @@
       "cannot_cancel_within_24h": "Cannot cancel (<24h)",
       "confirm_cancel": "Are you sure you want to cancel this appointment?",
       "error_cancel": "Error cancelling appointment",
-      "cancel_reason": "Cancelled by client"
+      "cancel_reason": "Cancelled by client",
+      "completed_on": "Completed on",
+      "and_more": "And {count} more...",
+      "review_survey": "Review"
     }
+  },
+  "errors": {
+    "INVALID_CREDENTIALS": "Invalid email or password",
+    "EMAIL_ALREADY_EXISTS": "This email is already registered",
+    "UNAUTHORIZED": "Unauthorized. Please log in.",
+    "FORBIDDEN": "You don't have permission to perform this action",
+    "NOT_FOUND": "Resource not found",
+    "VALIDATION_ERROR": "Please check the form fields",
+    "NETWORK_ERROR": "Connection error. Please try again.",
+    "INTERNAL_ERROR": "Server error. Contact support."
   },
   "auth": {
     "login": {
