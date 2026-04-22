@@ -74,7 +74,8 @@
       "email_placeholder": "tu@email.com",
       "submit": "Enviar enlace",
       "submitting": "Enviando…",
-      "success": "Enlace enviado. Revisa tu correo.",
+      "success": "Revisa tu correo",
+      "success_message": "Si existe una cuenta con ese email, recibirás un enlace para restablecer tu contraseña en breve.",
       "back_to_login": "Volver al inicio de sesión"
     },
     "reset_password": {

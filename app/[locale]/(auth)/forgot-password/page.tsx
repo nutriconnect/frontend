@@ -26,7 +26,7 @@ export default function ForgotPasswordPage() {
         <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📧</div>
         <h1 className="auth-heading">{t('success')}</h1>
         <p className="auth-sub">
-          {t('success')}
+          {t('success_message')}
         </p>
         <hr className="auth-divider" />
         <p className="auth-footer"><a href="/login">{t('back_to_login')}</a></p>

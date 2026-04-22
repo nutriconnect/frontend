@@ -74,7 +74,8 @@
       "email_placeholder": "you@email.com",
       "submit": "Send link",
       "submitting": "Sending…",
-      "success": "Link sent. Check your email.",
+      "success": "Check your email",
+      "success_message": "If an account exists with that email, you'll receive a password reset link shortly.",
       "back_to_login": "Back to log in"
     },
     "reset_password": {
