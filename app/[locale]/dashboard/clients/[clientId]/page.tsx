@@ -4,6 +4,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { useTranslations, useLocale } from 'next-intl';
 import { useClientProfile, useNutritionPlans, useExercisePlans } from '@/lib/plans';
 import { useEnhancedClient } from '@/lib/enhanced-clients';
 import { completeRelationship, reactivateRelationship, activateRelationship } from '@/lib/hiring';
@@ -16,10 +17,16 @@ import { BMIBadge } from '@/components/BMIBadge';
 import type { NutritionPlan, ExercisePlan, PlanStatus } from '@/lib/types';
 
 function PlanStatusBadge({ status }: { status: PlanStatus }) {
-  const styles: Record<PlanStatus, { bg: string; color: string; label: string }> = {
-    draft:    { bg: 'rgba(139,115,85,0.1)',  color: 'var(--nc-stone)',  label: 'Borrador' },
-    active:   { bg: 'rgba(74,124,89,0.1)',   color: '#4a7c59',          label: 'Activo'   },
-    archived: { bg: 'rgba(0,0,0,0.06)',       color: 'var(--nc-stone)',  label: 'Archivado'},
+  const t = useTranslations('dashboard.clients');
+  const labels: Record<PlanStatus, string> = {
+    draft:    t('plan_status_draft'),
+    active:   t('plan_status_active'),
+    archived: t('plan_status_archived'),
+  };
+  const styles: Record<PlanStatus, { bg: string; color: string }> = {
+    draft:    { bg: 'rgba(139,115,85,0.1)',  color: 'var(--nc-stone)' },
+    active:   { bg: 'rgba(74,124,89,0.1)',   color: '#4a7c59' },
+    archived: { bg: 'rgba(0,0,0,0.06)',       color: 'var(--nc-stone)' },
   };
   const s = styles[status];
   return (
@@ -27,17 +34,24 @@ function PlanStatusBadge({ status }: { status: PlanStatus }) {
       fontSize: 11, fontWeight: 600, padding: '2px 8px', borderRadius: 4,
       background: s.bg, color: s.color,
     }}>
-      {s.label}
+      {labels[status]}
     </span>
   );
 }
 
 function RelationshipStatusBadge({ status }: { status: string }) {
-  const styles: Record<string, { bg: string; color: string; label: string }> = {
-    pending_intro: { bg: 'rgba(184,134,11,0.1)', color: '#b8860b', label: 'Pendiente' },
-    active: { bg: 'rgba(74,124,89,0.1)', color: '#4a7c59', label: 'Activo' },
-    completed: { bg: 'rgba(59,130,246,0.1)', color: '#3b82f6', label: 'Completado' },
-    cancelled: { bg: 'rgba(139,115,85,0.1)', color: 'var(--nc-stone)', label: 'Cancelado' },
+  const t = useTranslations('dashboard.clients');
+  const labels: Record<string, string> = {
+    pending_intro: t('pending_intro'),
+    active: t('active'),
+    completed: t('completed'),
+    cancelled: t('cancelled'),
+  };
+  const styles: Record<string, { bg: string; color: string }> = {
+    pending_intro: { bg: 'rgba(184,134,11,0.1)', color: '#b8860b' },
+    active: { bg: 'rgba(74,124,89,0.1)', color: '#4a7c59' },
+    completed: { bg: 'rgba(59,130,246,0.1)', color: '#3b82f6' },
+    cancelled: { bg: 'rgba(139,115,85,0.1)', color: 'var(--nc-stone)' },
   };
   const s = styles[status] || styles.pending_intro;
   return (
@@ -45,7 +59,7 @@ function RelationshipStatusBadge({ status }: { status: string }) {
       fontSize: 12, fontWeight: 600, padding: '4px 10px', borderRadius: 4,
       background: s.bg, color: s.color,
     }}>
-      {s.label}
+      {labels[status] || labels.pending_intro}
     </span>
   );
 }
@@ -56,6 +70,7 @@ function StatusManagementSection({ relationshipId, status, completionNotes, onSt
   completionNotes: string;
   onStatusChange: () => void;
 }) {
+  const t = useTranslations('dashboard.clients');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notes, setNotes] = useState('');
@@ -63,7 +78,7 @@ function StatusManagementSection({ relationshipId, status, completionNotes, onSt
 
   const handleComplete = async () => {
     if (!notes.trim()) {
-      setError('Por favor, añade notas de finalización');
+      setError(t('error_notes_required'));
       return;
     }
     setIsLoading(true);
@@ -74,7 +89,7 @@ function StatusManagementSection({ relationshipId, status, completionNotes, onSt
       setShowNotesInput(false);
       setNotes('');
     } catch (err) {
-      setError('Error al completar la relación. Por favor, intenta de nuevo.');
+      setError(t('error_complete'));
     } finally {
       setIsLoading(false);
     }
@@ -87,7 +102,7 @@ function StatusManagementSection({ relationshipId, status, completionNotes, onSt
       await reactivateRelationship(relationshipId);
       onStatusChange();
     } catch (err) {
-      setError('Error al reactivar la relación. Por favor, intenta de nuevo.');
+      setError(t('error_reactivate'));
     } finally {
       setIsLoading(false);
     }
@@ -100,7 +115,7 @@ function StatusManagementSection({ relationshipId, status, completionNotes, onSt
       await activateRelationship(relationshipId);
       onStatusChange();
     } catch (err) {
-      setError('Error al activar la relación. Por favor, intenta de nuevo.');
+      setError(t('error_activate'));
     } finally {
       setIsLoading(false);
     }
@@ -109,13 +124,13 @@ function StatusManagementSection({ relationshipId, status, completionNotes, onSt
   return (
     <div className="dash-section">
       <div className="dash-section-head">
-        <div className="dash-section-title">Gestión del cliente</div>
-        <div className="dash-section-sub">Gestiona el ciclo de vida de tu trabajo con este cliente</div>
+        <div className="dash-section-title">{t('management_title')}</div>
+        <div className="dash-section-sub">{t('management_desc')}</div>
       </div>
       <div className="dash-section-body">
         <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 16 }}>
           <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--nc-ink)' }}>
-            Estado:
+            {t('status_label')}
           </div>
           <RelationshipStatusBadge status={status} />
         </div>
@@ -126,7 +141,7 @@ function StatusManagementSection({ relationshipId, status, completionNotes, onSt
             borderRadius: 6, padding: 12, marginBottom: 16,
           }}>
             <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#4a7c59', marginBottom: 6 }}>
-              Notas del cierre
+              {t('completion_notes')}
             </div>
             <div style={{ fontSize: 13, color: 'var(--nc-ink)', fontWeight: 300, lineHeight: 1.5 }}>
               {completionNotes}
@@ -155,7 +170,7 @@ function StatusManagementSection({ relationshipId, status, completionNotes, onSt
                 opacity: isLoading ? 0.6 : 1,
               }}
             >
-              {isLoading ? 'Activando…' : 'Activar cliente'}
+              {isLoading ? t('activating') : t('activate_button')}
             </button>
           )}
 
@@ -171,7 +186,7 @@ function StatusManagementSection({ relationshipId, status, completionNotes, onSt
                 opacity: isLoading ? 0.6 : 1,
               }}
             >
-              Marcar como completado
+              {t('mark_complete')}
             </button>
           )}
 
@@ -180,7 +195,7 @@ function StatusManagementSection({ relationshipId, status, completionNotes, onSt
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder="Añade notas sobre el cierre (ej: objetivos alcanzados, recomendaciones…)"
+                placeholder={t('complete_notes_placeholder')}
                 rows={4}
                 style={{
                   width: '100%', padding: 10, fontSize: 13, fontFamily: 'inherit',
@@ -199,7 +214,7 @@ function StatusManagementSection({ relationshipId, status, completionNotes, onSt
                     opacity: (isLoading || !notes.trim()) ? 0.6 : 1,
                   }}
                 >
-                  {isLoading ? 'Guardando…' : 'Confirmar cierre'}
+                  {isLoading ? t('saving') : t('complete_button')}
                 </button>
                 <button
                   onClick={() => {
@@ -214,7 +229,7 @@ function StatusManagementSection({ relationshipId, status, completionNotes, onSt
                     border: '1px solid var(--nc-border)', borderRadius: 6, cursor: isLoading ? 'not-allowed' : 'pointer',
                   }}
                 >
-                  Cancelar
+                  {t('cancel')}
                 </button>
               </div>
             </div>
@@ -231,7 +246,7 @@ function StatusManagementSection({ relationshipId, status, completionNotes, onSt
                 opacity: isLoading ? 0.6 : 1,
               }}
             >
-              {isLoading ? 'Reactivando…' : 'Reactivar cliente'}
+              {isLoading ? t('reactivating') : t('reactivate_button')}
             </button>
           )}
         </div>
@@ -240,23 +255,25 @@ function StatusManagementSection({ relationshipId, status, completionNotes, onSt
   );
 }
 
-function NutritionSection({ clientId, plans, isLoading }: {
+function NutritionSection({ clientId, plans, isLoading, locale }: {
   clientId: string;
   plans: NutritionPlan[];
   isLoading: boolean;
+  locale: string;
 }) {
+  const t = useTranslations('dashboard.clients');
   return (
     <div className="dash-section">
       <div className="dash-section-head">
-        <div className="dash-section-title">Planes de nutrición</div>
-        <div className="dash-section-sub">Crea y gestiona los planes de alimentación del cliente</div>
+        <div className="dash-section-title">{t('nutrition_plans_title')}</div>
+        <div className="dash-section-sub">{t('nutrition_plans_desc')}</div>
       </div>
       <div className="dash-section-body">
         {isLoading ? (
-          <div style={{ color: 'var(--nc-stone)', fontWeight: 300, fontSize: 13 }}>Cargando…</div>
+          <div style={{ color: 'var(--nc-stone)', fontWeight: 300, fontSize: 13 }}>{t('loading')}</div>
         ) : plans.length === 0 ? (
           <div style={{ fontSize: 13, color: 'var(--nc-stone)', fontWeight: 300, marginBottom: 12 }}>
-            No hay planes de nutrición para este cliente.
+            {t('no_nutrition_plans')}
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 12 }}>
@@ -272,10 +289,10 @@ function NutritionSection({ clientId, plans, isLoading }: {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <PlanStatusBadge status={plan.status} />
                   <Link
-                    href={`/dashboard/clients/${clientId}/plans/nutrition/${plan.id}`}
+                    href={`/${locale}/dashboard/clients/${clientId}/plans/nutrition/${plan.id}`}
                     style={{ fontSize: 12, color: 'var(--nc-terra)', textDecoration: 'none', fontWeight: 500 }}
                   >
-                    Ver/editar →
+                    {t('view_edit')}
                   </Link>
                 </div>
               </div>
@@ -283,7 +300,7 @@ function NutritionSection({ clientId, plans, isLoading }: {
           </div>
         )}
         <Link
-          href={`/dashboard/clients/${clientId}/plans/nutrition/new`}
+          href={`/${locale}/dashboard/clients/${clientId}/plans/nutrition/new`}
           style={{
             display: 'inline-block', fontSize: 13, fontWeight: 500,
             color: 'var(--nc-forest)', border: '1.5px dashed var(--nc-border)',
@@ -291,30 +308,32 @@ function NutritionSection({ clientId, plans, isLoading }: {
             transition: 'border-color 0.2s, color 0.2s',
           }}
         >
-          + Crear nuevo plan de nutrición
+          {t('create_nutrition')}
         </Link>
       </div>
     </div>
   );
 }
 
-function ExerciseSection({ clientId, plans, isLoading }: {
+function ExerciseSection({ clientId, plans, isLoading, locale }: {
   clientId: string;
   plans: ExercisePlan[];
   isLoading: boolean;
+  locale: string;
 }) {
+  const t = useTranslations('dashboard.clients');
   return (
     <div className="dash-section">
       <div className="dash-section-head">
-        <div className="dash-section-title">Planes de ejercicio</div>
-        <div className="dash-section-sub">Crea y gestiona los planes de entrenamiento del cliente</div>
+        <div className="dash-section-title">{t('exercise_plans_title')}</div>
+        <div className="dash-section-sub">{t('exercise_plans_desc')}</div>
       </div>
       <div className="dash-section-body">
         {isLoading ? (
-          <div style={{ color: 'var(--nc-stone)', fontWeight: 300, fontSize: 13 }}>Cargando…</div>
+          <div style={{ color: 'var(--nc-stone)', fontWeight: 300, fontSize: 13 }}>{t('loading')}</div>
         ) : plans.length === 0 ? (
           <div style={{ fontSize: 13, color: 'var(--nc-stone)', fontWeight: 300, marginBottom: 12 }}>
-            No hay planes de ejercicio para este cliente.
+            {t('no_exercise_plans')}
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 12 }}>
@@ -330,10 +349,10 @@ function ExerciseSection({ clientId, plans, isLoading }: {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <PlanStatusBadge status={plan.status} />
                   <Link
-                    href={`/dashboard/clients/${clientId}/plans/exercise/${plan.id}`}
+                    href={`/${locale}/dashboard/clients/${clientId}/plans/exercise/${plan.id}`}
                     style={{ fontSize: 12, color: 'var(--nc-terra)', textDecoration: 'none', fontWeight: 500 }}
                   >
-                    Ver/editar →
+                    {t('view_edit')}
                   </Link>
                 </div>
               </div>
@@ -341,7 +360,7 @@ function ExerciseSection({ clientId, plans, isLoading }: {
           </div>
         )}
         <Link
-          href={`/dashboard/clients/${clientId}/plans/exercise/new`}
+          href={`/${locale}/dashboard/clients/${clientId}/plans/exercise/new`}
           style={{
             display: 'inline-block', fontSize: 13, fontWeight: 500,
             color: 'var(--nc-forest)', border: '1.5px dashed var(--nc-border)',
@@ -349,7 +368,7 @@ function ExerciseSection({ clientId, plans, isLoading }: {
             transition: 'border-color 0.2s, color 0.2s',
           }}
         >
-          + Crear nuevo plan de ejercicio
+          {t('create_exercise')}
         </Link>
       </div>
     </div>
@@ -357,6 +376,8 @@ function ExerciseSection({ clientId, plans, isLoading }: {
 }
 
 export default function ClientDetailPage() {
+  const t = useTranslations('dashboard.clients');
+  const locale = useLocale();
   const params = useParams<{ clientId: string }>();
   const clientId = params.clientId;
 
@@ -390,13 +411,13 @@ export default function ClientDetailPage() {
       <div className="dash-topbar">
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <Link
-            href="/dashboard/clients"
+            href={`/${locale}/dashboard/clients`}
             style={{ fontSize: 13, color: 'var(--nc-stone)', textDecoration: 'none' }}
           >
-            ← Mis clientes
+            {t('back_to_clients')}
           </Link>
           <div className="dash-topbar-title">
-            {profileLoading ? 'Cliente' : (profile?.display_name ?? 'Cliente')}
+            {profileLoading ? t('client') : (profile?.display_name ?? t('client'))}
           </div>
         </div>
       </div>
@@ -489,8 +510,8 @@ export default function ClientDetailPage() {
                 <div className="dash-section-head">
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
-                      <div className="dash-section-title">Respuestas de la encuesta</div>
-                      <div className="dash-section-sub">Vista de las respuestas del cliente</div>
+                      <div className="dash-section-title">{t('survey_responses')}</div>
+                      <div className="dash-section-sub">{t('survey_responses_desc')}</div>
                     </div>
                     <button
                       type="button"
@@ -501,7 +522,7 @@ export default function ClientDetailPage() {
                         borderRadius: 6, padding: '6px 12px', cursor: 'pointer',
                       }}
                     >
-                      Cerrar
+                      {t('close_button')}
                     </button>
                   </div>
                 </div>
@@ -516,8 +537,8 @@ export default function ClientDetailPage() {
           </>
         )}
 
-        <NutritionSection clientId={clientId} plans={nutritionPlans} isLoading={nutritionLoading} />
-        <ExerciseSection clientId={clientId} plans={exercisePlans} isLoading={exerciseLoading} />
+        <NutritionSection clientId={clientId} plans={nutritionPlans} isLoading={nutritionLoading} locale={locale} />
+        <ExerciseSection clientId={clientId} plans={exercisePlans} isLoading={exerciseLoading} locale={locale} />
       </div>
     </>
   );

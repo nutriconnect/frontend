@@ -2,12 +2,14 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import QuickStatsPanel from '@/components/QuickStatsPanel';
 import SearchFilterBar from '@/components/SearchFilterBar';
 import ClientCard from '@/components/ClientCard';
 import { useQuickStats, useEnhancedClients } from '@/lib/enhanced-clients';
 
 export default function MyClientsPage() {
+  const t = useTranslations('dashboard.clients');
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
   const [sort, setSort] = useState('newest');
@@ -24,7 +26,7 @@ export default function MyClientsPage() {
   return (
     <>
       <div className="dash-topbar">
-        <div className="dash-topbar-title">Mis clientes</div>
+        <div className="dash-topbar-title">{t('title')}</div>
       </div>
       <div className="dash-content">
         <QuickStatsPanel stats={stats} isLoading={statsLoading} />
@@ -40,7 +42,7 @@ export default function MyClientsPage() {
 
         {clientsLoading ? (
           <div style={{ color: 'var(--nc-stone)', fontWeight: 300 }}>
-            Cargando clientes…
+            {t('loading')}
           </div>
         ) : error ? (
           <div style={{
@@ -50,7 +52,7 @@ export default function MyClientsPage() {
             padding: 24,
             color: '#cd5c5c',
           }}>
-            Error al cargar clientes. Por favor, intenta de nuevo.
+            {t('error')}
           </div>
         ) : clients.length === 0 ? (
           <div style={{
@@ -65,7 +67,7 @@ export default function MyClientsPage() {
             {hasFilters ? (
               <>
                 <div style={{ marginBottom: 12 }}>
-                  No se encontraron clientes con los filtros aplicados.
+                  {t('no_results')}
                 </div>
                 <button
                   onClick={() => {
@@ -84,11 +86,11 @@ export default function MyClientsPage() {
                     cursor: 'pointer',
                   }}
                 >
-                  Limpiar filtros
+                  {t('clear_filters')}
                 </button>
               </>
             ) : (
-              'No tienes clientes aún. Comparte tu perfil público para empezar.'
+              t('no_clients')
             )}
           </div>
         ) : (
