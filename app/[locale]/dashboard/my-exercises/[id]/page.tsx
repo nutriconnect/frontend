@@ -1,4 +1,6 @@
-'use client';
+'use client'
+
+import { useTranslations } from 'next-intl';;
 // frontend/app/dashboard/my-exercises/[id]/page.tsx
 
 import { use, useState } from 'react';
@@ -7,7 +9,9 @@ import Link from 'next/link';
 import { useExerciseTemplate, deleteExerciseTemplate } from '@/lib/exercise-templates';
 import type { ExerciseCategory } from '@/lib/types';
 
-const CATEGORY_LABELS: Record<ExerciseCategory, string> = {
+const t = useTranslationsForExercises();
+
+  const CATEGORY_LABELS: Record<ExerciseCategory, string> = {
   strength: 'Fuerza',
   cardio: 'Cardio',
   flexibility: 'Flexibilidad',
@@ -27,6 +31,8 @@ const CATEGORY_BADGE_COLORS: Record<ExerciseCategory, { bg: string; text: string
   flexibility: { bg: '#dbeafe', text: '#1e40af' },
   balance: { bg: '#f3e8ff', text: '#6b21a8' },
 };
+
+const useTranslationsForExercises = useTranslations('dashboard.exercises');
 
 export default function ExerciseDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);

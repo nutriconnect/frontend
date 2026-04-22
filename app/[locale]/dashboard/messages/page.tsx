@@ -2,11 +2,13 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { useConversations } from '@/lib/chat';
 import { ConversationsList } from './components/ConversationsList';
 import { ChatThread } from './components/ChatThread';
 
 export default function MessagesPage() {
+  const t = useTranslations('dashboard.messages');
   const [activeRelationshipId, setActiveRelationshipId] = useState<string | null>(null);
   const { conversations } = useConversations();
 
@@ -17,7 +19,7 @@ export default function MessagesPage() {
   return (
     <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
       <div className="dash-topbar">
-        <div className="dash-topbar-title">Mensajes</div>
+        <div className="dash-topbar-title">{t('title')}</div>
       </div>
 
       <div
@@ -63,7 +65,7 @@ export default function MessagesPage() {
                 fontSize: 14,
               }}
             >
-              Selecciona una conversación para empezar
+              {t('select_conversation')}
             </div>
           )}
         </div>

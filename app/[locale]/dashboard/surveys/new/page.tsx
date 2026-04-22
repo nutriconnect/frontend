@@ -1,11 +1,13 @@
 'use client';
 
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import SurveyBuilder from '@/components/survey/SurveyBuilder';
 import { createSurveyTemplate } from '@/lib/survey';
 import type { TemplateQuestion } from '@/lib/types';
 
 export default function NewSurveyTemplatePage() {
+  const t = useTranslations('dashboard.surveys');
   const handleSave = async (data: { title: string; description: string; questions: TemplateQuestion[] }) => {
     await createSurveyTemplate(data);
   };
@@ -18,9 +20,9 @@ export default function NewSurveyTemplatePage() {
             href="/dashboard/surveys"
             style={{ fontSize: 13, color: 'var(--nc-stone)', textDecoration: 'none' }}
           >
-            &larr; Encuestas
+            {t('surveys_link')}
           </Link>
-          <div className="dash-topbar-title">Nueva encuesta</div>
+          <div className="dash-topbar-title">{t('new_survey_page_title')}</div>
         </div>
       </div>
       <div className="dash-content">

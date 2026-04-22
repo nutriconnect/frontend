@@ -2,24 +2,25 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { useSurveyTemplates, archiveSurveyTemplate, unarchiveSurveyTemplate } from '@/lib/survey';
 import { useMyProfile } from '@/lib/profile';
 import { api } from '@/lib/api';
 import type { SurveyTemplateListItem } from '@/lib/types';
 
-function TemplateBadge({ active }: { active: boolean }) {
+function TemplateBadge({ active, t }: { active: boolean; t: any }) {
   return (
     <span style={{
       fontSize: 11, fontWeight: 600, padding: '2px 8px', borderRadius: 4,
       background: active ? 'rgba(74,124,89,0.1)' : 'rgba(0,0,0,0.06)',
       color: active ? '#4a7c59' : 'var(--nc-stone)',
     }}>
-      {active ? 'Activa' : 'Archivada'}
+      {active ? t('active_badge') : t('archived_badge')}
     </span>
   );
 }
 
-function TemplateRow({ template, onToggleArchive }: { template: SurveyTemplateListItem; onToggleArchive: () => void }) {
+function TemplateRow({ template, onToggleArchive, t }: { template: SurveyTemplateListItem; onToggleArchive: () => void; t: any }) {
   const [isToggling, setIsToggling] = useState(false);
 
   const handleToggleArchive = async () => {
@@ -32,7 +33,7 @@ function TemplateRow({ template, onToggleArchive }: { template: SurveyTemplateLi
       }
       onToggleArchive();
     } catch (err) {
-      alert('Error al cambiar el estado. Intenta de nuevo.');
+      alert(t('toggle_error'));
     } finally {
       setIsToggling(false);
     }
@@ -61,7 +62,7 @@ function TemplateRow({ template, onToggleArchive }: { template: SurveyTemplateLi
           </div>
         )}
         <div style={{ fontSize: 11, color: 'var(--nc-stone)', marginTop: 4, fontWeight: 300 }}>
-          {template.question_count} {template.question_count === 1 ? 'pregunta' : 'preguntas'}
+          {template.question_count} {template.question_count === 1 ? t('questions_singular') : t('questions_plural')}
         </div>
       </div>
       <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
@@ -76,13 +77,13 @@ function TemplateRow({ template, onToggleArchive }: { template: SurveyTemplateLi
             opacity: isToggling ? 0.5 : 1,
           }}
         >
-          {isToggling ? '...' : (template.is_active ? 'Archivar' : 'Desarchivar')}
+          {isToggling ? '...' : (template.is_active ? t('archive_button') : t('unarchive_button'))}
         </button>
         <Link
           href={`/dashboard/surveys/${template.id}`}
           style={{ fontSize: 12, color: 'var(--nc-terra)', textDecoration: 'none', fontWeight: 500 }}
         >
-          Editar
+          {t('edit_button')}
         </Link>
       </div>
     </div>
@@ -90,6 +91,7 @@ function TemplateRow({ template, onToggleArchive }: { template: SurveyTemplateLi
 }
 
 export default function SurveyTemplatesPage() {
+  const t = useTranslations('dashboard.surveys');
   const [showArchived, setShowArchived] = useState(false);
   const { templates, isLoading, error, mutate } = useSurveyTemplates(showArchived ? undefined : true);
   const { profile, mutate: mutateProfile } = useMyProfile();
@@ -97,7 +99,7 @@ export default function SurveyTemplatesPage() {
 
   const filteredTemplates = showArchived
     ? templates
-    : templates.filter((t) => t.is_active);
+    : templates.filter((tmpl) => tmpl.is_active);
 
   const handleSetDefaultTemplate = async (templateId: string | null) => {
     if (!profile) return;
@@ -118,7 +120,7 @@ export default function SurveyTemplatesPage() {
       });
       mutateProfile();
     } catch (err) {
-      alert('Error al guardar. Intenta de nuevo.');
+      alert(t('save_default_error'));
     } finally {
       setIsSavingDefault(false);
     }
@@ -127,16 +129,16 @@ export default function SurveyTemplatesPage() {
   return (
     <>
       <div className="dash-topbar">
-        <div className="dash-topbar-title">Encuestas de intake</div>
+        <div className="dash-topbar-title">{t('title')}</div>
       </div>
       <div className="dash-content">
         <div className="dash-section">
           <div className="dash-section-head">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
-                <div className="dash-section-title">Plantillas de encuesta</div>
+                <div className="dash-section-title">{t('templates_section_title')}</div>
                 <div className="dash-section-sub">
-                  Crea plantillas reutilizables para recopilar informacion de tus nuevos clientes
+                  {t('templates_section_desc')}
                 </div>
               </div>
               <Link
@@ -148,7 +150,7 @@ export default function SurveyTemplatesPage() {
                   whiteSpace: 'nowrap',
                 }}
               >
-                + Crear nueva
+                {t('new_template_button')}
               </Link>
             </div>
           </div>
@@ -160,11 +162,10 @@ export default function SurveyTemplatesPage() {
                 borderRadius: 8, padding: 16, marginBottom: 20,
               }}>
                 <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--nc-ink)', marginBottom: 8 }}>
-                  ⚙️ Asignación automática
+                  {t('auto_assignment_title')}
                 </div>
                 <div style={{ fontSize: 12, color: 'var(--nc-stone)', marginBottom: 12, lineHeight: 1.5 }}>
-                  Selecciona una plantilla para asignar automáticamente cuando un nuevo cliente te contrata.
-                  Si no seleccionas ninguna, deberás asignar encuestas manualmente desde la página del cliente.
+                  {t('auto_assignment_desc')}
                 </div>
                 <select
                   value={profile.default_survey_template_id || ''}
@@ -177,9 +178,9 @@ export default function SurveyTemplatesPage() {
                     cursor: isSavingDefault ? 'not-allowed' : 'pointer',
                   }}
                 >
-                  <option value="">Sin asignación automática (manual)</option>
-                  {templates.filter(t => t.is_active).map(t => (
-                    <option key={t.id} value={t.id}>{t.title}</option>
+                  <option value="">{t('no_auto_assignment')}</option>
+                  {templates.filter(tmpl => tmpl.is_active).map(tmpl => (
+                    <option key={tmpl.id} value={tmpl.id}>{tmpl.title}</option>
                   ))}
                 </select>
               </div>
@@ -197,7 +198,7 @@ export default function SurveyTemplatesPage() {
                   cursor: 'pointer',
                 }}
               >
-                Activas
+                {t('active_tab')}
               </button>
               <button
                 onClick={() => setShowArchived(true)}
@@ -209,12 +210,12 @@ export default function SurveyTemplatesPage() {
                   cursor: 'pointer',
                 }}
               >
-                Todas (incl. archivadas)
+                {t('all_tab')}
               </button>
             </div>
 
             {isLoading && (
-              <div style={{ color: 'var(--nc-stone)', fontWeight: 300, fontSize: 13 }}>Cargando...</div>
+              <div style={{ color: 'var(--nc-stone)', fontWeight: 300, fontSize: 13 }}>{t('loading')}</div>
             )}
 
             {error && (
@@ -222,22 +223,22 @@ export default function SurveyTemplatesPage() {
                 background: 'rgba(205,92,92,0.1)', border: '1px solid rgba(205,92,92,0.2)',
                 borderRadius: 6, padding: 12, fontSize: 13, color: '#cd5c5c',
               }}>
-                Error al cargar las plantillas. Intenta de nuevo.
+                {t('error_loading')}
               </div>
             )}
 
             {!isLoading && !error && filteredTemplates.length === 0 && (
               <div style={{ fontSize: 13, color: 'var(--nc-stone)', fontWeight: 300 }}>
                 {showArchived
-                  ? 'No tienes plantillas de encuesta.'
-                  : 'No tienes plantillas activas. Crea una nueva para empezar.'}
+                  ? t('no_templates')
+                  : t('no_active_templates')}
               </div>
             )}
 
             {!isLoading && filteredTemplates.length > 0 && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {filteredTemplates.map((t) => (
-                  <TemplateRow key={t.id} template={t} onToggleArchive={mutate} />
+                {filteredTemplates.map((tmpl) => (
+                  <TemplateRow key={tmpl.id} template={tmpl} onToggleArchive={mutate} t={t} />
                 ))}
               </div>
             )}

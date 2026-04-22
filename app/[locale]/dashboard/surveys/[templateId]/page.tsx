@@ -2,11 +2,13 @@
 
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import SurveyBuilder from '@/components/survey/SurveyBuilder';
 import { useSurveyTemplate, updateSurveyTemplate } from '@/lib/survey';
 import type { TemplateQuestion } from '@/lib/types';
 
 export default function EditSurveyTemplatePage() {
+  const t = useTranslations('dashboard.surveys');
   const params = useParams<{ templateId: string }>();
   const templateId = params.templateId;
   const { template, isLoading, error } = useSurveyTemplate(templateId);
@@ -23,16 +25,16 @@ export default function EditSurveyTemplatePage() {
             href="/dashboard/surveys"
             style={{ fontSize: 13, color: 'var(--nc-stone)', textDecoration: 'none' }}
           >
-            &larr; Encuestas
+            {t('surveys_link')}
           </Link>
           <div className="dash-topbar-title">
-            {isLoading ? '...' : (template?.title ?? 'Editar encuesta')}
+            {isLoading ? '...' : (template?.title ?? t('edit_survey_page_title'))}
           </div>
         </div>
       </div>
       <div className="dash-content">
         {isLoading && (
-          <div style={{ color: 'var(--nc-stone)', fontWeight: 300, fontSize: 13 }}>Cargando...</div>
+          <div style={{ color: 'var(--nc-stone)', fontWeight: 300, fontSize: 13 }}>{t('loading')}</div>
         )}
 
         {error && (
@@ -40,7 +42,7 @@ export default function EditSurveyTemplatePage() {
             background: 'rgba(205,92,92,0.1)', border: '1px solid rgba(205,92,92,0.2)',
             borderRadius: 6, padding: 12, fontSize: 13, color: '#cd5c5c',
           }}>
-            Error al cargar la encuesta.
+            {t('error_survey_not_found')}
           </div>
         )}
 
@@ -56,7 +58,7 @@ export default function EditSurveyTemplatePage() {
 
         {!isLoading && !template && !error && (
           <div style={{ fontSize: 13, color: 'var(--nc-stone)', fontWeight: 300 }}>
-            Encuesta no encontrada.
+            {t('survey_not_found')}
           </div>
         )}
       </div>
