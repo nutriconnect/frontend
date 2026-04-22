@@ -1,7 +1,8 @@
 'use client';
 
-import LandingAnimations from '@/components/LandingAnimations';
+import { useLocale, useTranslations } from 'next-intl';
 import { PublicNav } from '@/components/PublicNav';
+import LandingAnimations from '@/components/LandingAnimations';
 import './v2-palette.css';
 
 export default function V2Landing() {

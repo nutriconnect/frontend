@@ -729,7 +729,19 @@
       "last_30_days": "← Last 30 days",
       "view_full_history": "View full history →",
       "no_weight_data": "This client hasn't logged any weight data yet.",
-      "no_activity_data": "This client hasn't logged any activity data yet."
+      "no_activity_data": "This client hasn't logged any activity data yet.",
+      "survey_title": "Intake Survey",
+      "survey_desc": "Collect relevant client information",
+      "survey_none": "No survey assigned to this client.",
+      "survey_assign": "+ Assign survey",
+      "survey_status_pending": "Pending",
+      "survey_status_completed": "Completed",
+      "survey_status_reviewed": "Reviewed",
+      "survey_questions_answered": "questions answered",
+      "survey_complete": "Complete survey",
+      "survey_edit": "Edit answers",
+      "survey_view": "View answers",
+      "survey_mark_reviewed": "Mark as reviewed"
     }
   },
   "errors": {

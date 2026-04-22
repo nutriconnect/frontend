@@ -1,3 +1,6 @@
+'use client';
+
+import { useLocale } from 'next-intl';
 import { PublicNav } from '@/components/PublicNav';
 
 export default function ForNutritionists() {

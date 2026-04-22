@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import type { SurveyAssignmentDetail } from '@/lib/types';
 
 interface SurveyAssignmentCardProps {
@@ -14,11 +15,11 @@ interface SurveyAssignmentCardProps {
   onViewResponses?: () => void;
 }
 
-function StatusBadge({ status }: { status: string }) {
-  const styles: Record<string, { bg: string; color: string; label: string }> = {
-    pending: { bg: 'rgba(184,134,11,0.1)', color: '#b8860b', label: 'Pendiente' },
-    completed: { bg: 'rgba(74,124,89,0.1)', color: '#4a7c59', label: 'Completada' },
-    reviewed: { bg: 'rgba(59,130,246,0.1)', color: '#3b82f6', label: 'Revisada' },
+function StatusBadge({ status, t }: { status: string; t: (key: string) => string }) {
+  const styles: Record<string, { bg: string; color: string; labelKey: string }> = {
+    pending: { bg: 'rgba(184,134,11,0.1)', color: '#b8860b', labelKey: 'survey_status_pending' },
+    completed: { bg: 'rgba(74,124,89,0.1)', color: '#4a7c59', labelKey: 'survey_status_completed' },
+    reviewed: { bg: 'rgba(59,130,246,0.1)', color: '#3b82f6', labelKey: 'survey_status_reviewed' },
   };
   const s = styles[status] || styles.pending;
   return (
@@ -26,7 +27,7 @@ function StatusBadge({ status }: { status: string }) {
       fontSize: 11, fontWeight: 600, padding: '2px 8px', borderRadius: 4,
       background: s.bg, color: s.color,
     }}>
-      {s.label}
+      {t(s.labelKey)}
     </span>
   );
 }
@@ -40,14 +41,15 @@ export default function SurveyAssignmentCard({
   onReview,
   onViewResponses,
 }: SurveyAssignmentCardProps) {
+  const t = useTranslations('dashboard.client_detail');
   if (isLoading) {
     return (
       <div className="dash-section">
         <div className="dash-section-head">
-          <div className="dash-section-title">Encuesta de intake</div>
+          <div className="dash-section-title">{t('survey_title')}</div>
         </div>
         <div className="dash-section-body">
-          <div style={{ color: 'var(--nc-stone)', fontWeight: 300, fontSize: 13 }}>Cargando...</div>
+          <div style={{ color: 'var(--nc-stone)', fontWeight: 300, fontSize: 13 }}>{t('loading')}</div>
         </div>
       </div>
     );
@@ -58,12 +60,12 @@ export default function SurveyAssignmentCard({
     return (
       <div className="dash-section">
         <div className="dash-section-head">
-          <div className="dash-section-title">Encuesta de intake</div>
-          <div className="dash-section-sub">Recopila informacion relevante del cliente</div>
+          <div className="dash-section-title">{t('survey_title')}</div>
+          <div className="dash-section-sub">{t('survey_desc')}</div>
         </div>
         <div className="dash-section-body">
           <div style={{ fontSize: 13, color: 'var(--nc-stone)', fontWeight: 300, marginBottom: 12 }}>
-            No hay encuesta asignada para este cliente.
+            {t('survey_none')}
           </div>
           {isNutritionist && (
             <button
@@ -76,7 +78,7 @@ export default function SurveyAssignmentCard({
                 cursor: 'pointer',
               }}
             >
-              + Asignar encuesta
+              {t('survey_assign')}
             </button>
           )}
         </div>
@@ -96,17 +98,17 @@ export default function SurveyAssignmentCard({
   return (
     <div className="dash-section">
       <div className="dash-section-head">
-        <div className="dash-section-title">Encuesta de intake</div>
+        <div className="dash-section-title">{t('survey_title')}</div>
         <div className="dash-section-sub">
-          Recopila informacion relevante del cliente
+          {t('survey_desc')}
         </div>
       </div>
       <div className="dash-section-body">
         {/* Status row */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-          <StatusBadge status={assignment.status} />
+          <StatusBadge status={assignment.status} t={t} />
           <span style={{ fontSize: 12, color: 'var(--nc-stone)', fontWeight: 300 }}>
-            {answered}/{total} preguntas respondidas
+            {answered}/{total} {t('survey_questions_answered')}
           </span>
         </div>
 
@@ -134,7 +136,7 @@ export default function SurveyAssignmentCard({
                 padding: '8px 16px', textDecoration: 'none',
               }}
             >
-              {assignment.status === 'pending' ? 'Completar encuesta' : 'Editar respuestas'}
+              {assignment.status === 'pending' ? t('survey_complete') : t('survey_edit')}
             </Link>
           )}
 
@@ -147,7 +149,7 @@ export default function SurveyAssignmentCard({
                 padding: '8px 16px', textDecoration: 'none',
               }}
             >
-              Ver respuestas
+              {t('survey_view')}
             </Link>
           )}
 
@@ -162,7 +164,7 @@ export default function SurveyAssignmentCard({
                 padding: '8px 16px', background: 'white', cursor: 'pointer',
               }}
             >
-              Ver respuestas
+              {t('survey_view')}
             </button>
           )}
 
@@ -176,7 +178,7 @@ export default function SurveyAssignmentCard({
                 padding: '8px 16px', border: 'none', cursor: 'pointer',
               }}
             >
-              Marcar como revisada
+              {t('survey_mark_reviewed')}
             </button>
           )}
         </div>

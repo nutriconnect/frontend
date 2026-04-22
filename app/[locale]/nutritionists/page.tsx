@@ -176,6 +176,7 @@ function NutritionistsList() {
 
 export default function NutritionistsPage() {
   const t = useTranslations('public.nutritionists');
+  const locale = useLocale();
 
   return (
     <div style={{ background: 'var(--nc-cream)', minHeight: '100vh' }}>

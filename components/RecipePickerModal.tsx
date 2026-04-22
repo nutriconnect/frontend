@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useLocale } from 'next-intl';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRecipes } from '@/lib/recipes';
@@ -29,6 +30,7 @@ interface RecipePickerModalProps {
 }
 
 export default function RecipePickerModal({ isOpen, onClose, onSelect }: RecipePickerModalProps) {
+  const locale = useLocale();
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState<RecipeCategory | 'all'>('all');
   const [debouncedSearch, setDebouncedSearch] = useState('');

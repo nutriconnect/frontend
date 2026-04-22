@@ -729,7 +729,19 @@
       "last_30_days": "← Últimos 30 días",
       "view_full_history": "Ver historial completo →",
       "no_weight_data": "Este cliente aún no ha registrado datos de peso.",
-      "no_activity_data": "Este cliente aún no ha registrado datos de actividad."
+      "no_activity_data": "Este cliente aún no ha registrado datos de actividad.",
+      "survey_title": "Encuesta de intake",
+      "survey_desc": "Recopila informacion relevante del cliente",
+      "survey_none": "No hay encuesta asignada para este cliente.",
+      "survey_assign": "+ Asignar encuesta",
+      "survey_status_pending": "Pendiente",
+      "survey_status_completed": "Completada",
+      "survey_status_reviewed": "Revisada",
+      "survey_questions_answered": "preguntas respondidas",
+      "survey_complete": "Completar encuesta",
+      "survey_edit": "Editar respuestas",
+      "survey_view": "Ver respuestas",
+      "survey_mark_reviewed": "Marcar como revisada"
     }
   },
   "errors": {

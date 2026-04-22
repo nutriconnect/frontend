@@ -1,5 +1,8 @@
+'use client';
+
+
+import { useLocale, useTranslations } from 'next-intl';
 import { PublicNav } from '@/components/PublicNav';
-import { useTranslations, useLocale } from 'next-intl';
 
 export default function About() {
   const t = useTranslations('public.static.about');
