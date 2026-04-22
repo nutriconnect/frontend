@@ -22,15 +22,19 @@ export const metadata: Metadata = {
     'Conectamos a personas que quieren cuidar su alimentación con nutricionistas certificados.',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
+  params,
 }: Readonly<{
   children: React.ReactNode;
+  params: Promise<{ locale?: string }>;
 }>) {
   const themeClass = getThemeClassName();
+  const { locale } = await params;
 
   return (
     <html
+      lang={locale || 'en'}
       className={`${cormorant.variable} ${dmSans.variable} ${themeClass} h-full`}
       suppressHydrationWarning
     >

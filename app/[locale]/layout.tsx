@@ -1,7 +1,6 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import Script from 'next/script';
 import { Metadata } from 'next';
 import { locales, type Locale } from '@/lib/i18n';
 
@@ -52,17 +51,8 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <>
-      <Script
-        id="set-locale"
-        strategy="beforeInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `document.documentElement.lang = '${locale}';`,
-        }}
-      />
-      <NextIntlClientProvider messages={messages}>
-        {children}
-      </NextIntlClientProvider>
-    </>
+    <NextIntlClientProvider messages={messages}>
+      {children}
+    </NextIntlClientProvider>
   );
 }
