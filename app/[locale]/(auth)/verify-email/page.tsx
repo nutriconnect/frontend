@@ -1,11 +1,13 @@
-// frontend/app/(auth)/verify-email/page.tsx
+// frontend/app/[locale]/(auth)/verify-email/page.tsx
 'use client';
 
 import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { api, ApiRequestError } from '@/lib/api';
 
 function VerifyEmailContent() {
+  const t = useTranslations('auth.verify_email');
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
@@ -26,15 +28,15 @@ function VerifyEmailContent() {
         setStatus('error');
         if (err instanceof ApiRequestError) {
           if (err.code === 'TOKEN_EXPIRED') {
-            setErrorMsg('El enlace ha expirado. Solicita uno nuevo.');
+            setErrorMsg(t('error_message'));
           } else {
-            setErrorMsg('Enlace inválido o ya utilizado.');
+            setErrorMsg(t('error_message'));
           }
         } else {
-          setErrorMsg('Algo salió mal. Inténtalo de nuevo.');
+          setErrorMsg(t('error_message'));
         }
       });
-  }, [token, router]);
+  }, [token, router, t]);
 
   if (token) {
     return (
@@ -43,26 +45,26 @@ function VerifyEmailContent() {
 
         {(status === 'idle' || status === 'verifying') && (
           <>
-            <h1 className="auth-heading">Verificando…</h1>
-            <p className="auth-sub">Por favor espera un momento.</p>
+            <h1 className="auth-heading">{t('verifying')}</h1>
+            <p className="auth-sub">{t('verifying_message')}</p>
           </>
         )}
 
         {status === 'success' && (
           <>
             <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✅</div>
-            <h1 className="auth-heading">¡Email <em>verificado</em>!</h1>
-            <p className="auth-sub">Redirigiendo al inicio de sesión…</p>
+            <h1 className="auth-heading">{t('success')}</h1>
+            <p className="auth-sub">{t('redirecting')}</p>
           </>
         )}
 
         {status === 'error' && (
           <>
             <div className="auth-alert auth-alert-error">{errorMsg}</div>
-            <h1 className="auth-heading">Enlace <em>inválido</em></h1>
-            <p className="auth-sub">El enlace de verificación no es válido o ya fue usado.</p>
+            <h1 className="auth-heading">{t('error')}</h1>
+            <p className="auth-sub">{t('error_message')}</p>
             <a href="/register" className="btn-auth" style={{ display: 'block', textAlign: 'center', textDecoration: 'none', marginTop: '1rem' }}>
-              Volver al registro
+              {t('back_to_register')}
             </a>
           </>
         )}
@@ -76,18 +78,18 @@ function VerifyEmailContent() {
       <a href="/" className="auth-logo" style={{ textAlign: 'left' }}>nutri<span>connect</span></a>
 
       <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📬</div>
-      <h1 className="auth-heading">Revisa tu <em>correo</em></h1>
+      <h1 className="auth-heading">{t('check_email_title')}</h1>
       <p className="auth-sub">
-        Te enviamos un enlace de verificación. Haz clic en él para activar tu cuenta.
+        {t('check_email_message')}
       </p>
 
       <a href="/register" className="btn-auth" style={{ display: 'block', textAlign: 'center', textDecoration: 'none', width: '100%' }}>
-        Volver al registro
+        {t('back_to_register')}
       </a>
 
       <hr className="auth-divider" />
       <p className="auth-footer">
-        <a href="/login">Volver al inicio de sesión</a>
+        <a href="/login">{t('back_to_login')}</a>
       </p>
     </div>
   );

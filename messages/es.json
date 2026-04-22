@@ -95,6 +95,21 @@
       "error_generic": "Algo salió mal. Inténtalo de nuevo.",
       "request_new_link": "Solicitar nuevo enlace",
       "no_token_message": "Enlace inválido. Solicita un nuevo enlace de restablecimiento."
+    },
+    "verify_email": {
+      "title": "Verificando tu correo",
+      "verifying": "Verificando…",
+      "verifying_message": "Por favor espera un momento.",
+      "success": "¡Correo verificado!",
+      "success_message": "Tu cuenta ha sido verificada correctamente",
+      "redirecting": "Redirigiendo al inicio de sesión…",
+      "error": "Error de verificación",
+      "error_message": "El enlace es inválido o ha expirado",
+      "check_email_title": "Revisa tu correo",
+      "check_email_message": "Te enviamos un enlace de verificación. Haz clic en él para activar tu cuenta.",
+      "continue": "Continuar al dashboard",
+      "back_to_register": "Volver al registro",
+      "back_to_login": "Volver al inicio de sesión"
     }
   }
 }

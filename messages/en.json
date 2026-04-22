@@ -95,6 +95,21 @@
       "error_generic": "Something went wrong. Try again.",
       "request_new_link": "Request new link",
       "no_token_message": "Invalid link. Request a new password reset link."
+    },
+    "verify_email": {
+      "title": "Verifying your email",
+      "verifying": "Verifying…",
+      "verifying_message": "Please wait a moment.",
+      "success": "Email verified!",
+      "success_message": "Your account has been verified successfully",
+      "redirecting": "Redirecting to log in…",
+      "error": "Verification error",
+      "error_message": "The link is invalid or has expired",
+      "check_email_title": "Check your email",
+      "check_email_message": "We sent you a verification link. Click it to activate your account.",
+      "continue": "Continue to dashboard",
+      "back_to_register": "Back to sign up",
+      "back_to_login": "Back to log in"
     }
   }
 }
