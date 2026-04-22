@@ -1,5 +1,6 @@
 // frontend/components/QuickStatsPanel.tsx
 import Link from 'next/link';
+import { useLocale } from 'next-intl';
 import type { QuickStats } from '@/lib/types';
 
 interface QuickStatsPanelProps {
@@ -12,6 +13,7 @@ function formatCurrency(cents: number): string {
 }
 
 export default function QuickStatsPanel({ stats, isLoading }: QuickStatsPanelProps) {
+  const locale = useLocale();
   if (isLoading) {
     return (
       <div style={{
