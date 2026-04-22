@@ -109,7 +109,9 @@
       "saving": "Guardando…",
       "display_name_required_msg": "El nombre para mostrar es obligatorio.",
       "nutritionist_only": "La gestión de perfil solo está disponible para nutricionistas.",
-      "loading": "Cargando…"
+      "loading": "Cargando…",
+      "saved": "Guardado.",
+      "save_failed": "Error al guardar."
     },
     "home": {
       "welcome": "Bienvenido, {name}",

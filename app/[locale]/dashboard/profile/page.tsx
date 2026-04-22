@@ -164,9 +164,9 @@ export default function DashboardProfilePage() {
       }
 
       await mutate();
-      setSaveMsg('Saved.');
+      setSaveMsg(t('saved'));
     } catch (err) {
-      setSaveMsg(err instanceof ApiRequestError ? err.message : 'Save failed.');
+      setSaveMsg(err instanceof ApiRequestError ? err.message : t('save_failed'));
     } finally {
       setSaving(false);
     }

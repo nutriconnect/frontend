@@ -109,7 +109,9 @@
       "saving": "Saving…",
       "display_name_required_msg": "Display name is required.",
       "nutritionist_only": "Profile management is only available for nutritionists.",
-      "loading": "Loading…"
+      "loading": "Loading…",
+      "saved": "Saved.",
+      "save_failed": "Save failed."
     },
     "home": {
       "welcome": "Welcome, {name}",
