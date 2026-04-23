@@ -12,6 +12,9 @@ import { useMyRelationships } from '@/lib/hiring';
 import { useSurveyAssignment, usePendingSurveyReviews } from '@/lib/survey';
 import { BMIBadge } from '@/components/BMIBadge';
 import type { WeightEntry, ActivityEntry } from '@/lib/types';
+import { useNutritionistOverview } from '@/lib/nutritionist';
+import { TodaysScheduleCard } from './components/TodaysScheduleCard';
+import { ClientActivityCard } from './components/ClientActivityCard';
 
 // ─── Client Health Graphs ──────────────────────────────────────────────────────
 
@@ -419,11 +422,19 @@ function ClientOverview() {
 function NutritionistOverview() {
   const t = useTranslations('dashboard.home');
   const locale = useLocale();
-  const { reviews, isLoading } = usePendingSurveyReviews();
+  const { schedule, activity, surveys, isLoading } = useNutritionistOverview();
+  const { reviews } = usePendingSurveyReviews();
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      {!isLoading && reviews.length > 0 && (
+      {/* Today's Schedule Card */}
+      <TodaysScheduleCard schedule={schedule} isLoading={isLoading} />
+
+      {/* Client Activity Card */}
+      <ClientActivityCard activity={activity} isLoading={isLoading} />
+
+      {/* Pending Surveys Alert */}
+      {!isLoading && surveys && surveys.length > 0 && (
         <div style={{
           background: 'rgba(196,98,45,0.08)',
           border: '1px solid rgba(196,98,45,0.2)',
@@ -431,13 +442,13 @@ function NutritionistOverview() {
           padding: '16px 20px',
         }}>
           <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--nc-terra)', marginBottom: 12 }}>
-            📋 {t('completed_surveys', { count: reviews.length })}
+            📋 {t('completed_surveys', { count: surveys.length })}
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {reviews.slice(0, 3).map((review) => (
+            {surveys.slice(0, 3).map((survey) => (
               <Link
-                key={review.assignment_id}
-                href={`/dashboard/clients/${review.client_id}`}
+                key={survey.assignment_id}
+                href={`/${locale}/dashboard/clients/${survey.client_id}`}
                 style={{
                   display: 'flex',
                   justifyContent: 'space-between',
@@ -452,10 +463,10 @@ function NutritionistOverview() {
               >
                 <div>
                   <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--nc-ink)' }}>
-                    {review.client_name}
+                    {survey.client_name}
                   </div>
                   <div style={{ fontSize: 11, color: 'var(--nc-stone)', fontWeight: 300 }}>
-                    {t('completed_on')} {new Date(review.completed_at).toLocaleDateString(locale)}
+                    {t('completed_on')} {new Date(survey.completed_at).toLocaleDateString(locale)}
                   </div>
                 </div>
                 <div style={{ fontSize: 12, color: 'var(--nc-terra)', fontWeight: 500 }}>
@@ -464,14 +475,15 @@ function NutritionistOverview() {
               </Link>
             ))}
           </div>
-          {reviews.length > 3 && (
+          {surveys.length > 3 && (
             <div style={{ fontSize: 12, color: 'var(--nc-stone)', marginTop: 8, textAlign: 'center' }}>
-              {t('and_more', { count: reviews.length - 3 })}
+              {t('and_more', { count: surveys.length - 3 })}
             </div>
           )}
         </div>
       )}
 
+      {/* Quick Actions */}
       <div style={{
         background: 'white',
         border: '1px solid var(--nc-border)',
@@ -484,6 +496,9 @@ function NutritionistOverview() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           <Link href={`/${locale}/dashboard/clients`} style={{ fontSize: 13, color: 'var(--nc-terra)', textDecoration: 'none' }}>
             → {t('view_my_clients')}
+          </Link>
+          <Link href={`/${locale}/dashboard/calendar`} style={{ fontSize: 13, color: 'var(--nc-terra)', textDecoration: 'none' }}>
+            → {t('view_calendar')}
           </Link>
           <Link href={`/${locale}/dashboard/surveys`} style={{ fontSize: 13, color: 'var(--nc-terra)', textDecoration: 'none' }}>
             → {t('manage_surveys')}
