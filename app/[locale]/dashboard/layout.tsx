@@ -83,7 +83,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { href: `/${locale}/dashboard/messages`, labelKey: 'chat', icon: '◈', roles: ['client', 'nutritionist'] },
     { href: `/${locale}/dashboard/my-nutritionist`, labelKey: 'my_nutritionist', icon: '◉', roles: ['client'] },
     { href: `/${locale}/dashboard/my-plans`, labelKey: 'plans', icon: '◈', roles: ['client'] },
-    { href: `/${locale}/dashboard/business`, labelKey: 'business', icon: '◈', roles: ['nutritionist'] },
   ].filter((item) => item.roles.includes(user.role));
 
   const settingsItems = [

@@ -1,5 +1,4 @@
 // frontend/components/QuickStatsPanel.tsx
-import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import type { QuickStats } from '@/lib/types';
 
@@ -13,7 +12,6 @@ function formatCurrency(cents: number): string {
 }
 
 export default function QuickStatsPanel({ stats, isLoading }: QuickStatsPanelProps) {
-  const locale = useLocale();
   const t = useTranslations('dashboard.clients');
 
   if (isLoading) {
@@ -130,19 +128,6 @@ export default function QuickStatsPanel({ stats, isLoading }: QuickStatsPanelPro
           </div>
         </div>
       </div>
-
-      {/* Link to business dashboard (will be built in Plan B) */}
-      <Link
-        href={`/${locale}/dashboard/business`}
-        style={{
-          fontSize: 13,
-          color: 'var(--nc-terra)',
-          textDecoration: 'none',
-          fontWeight: 500,
-        }}
-      >
-        {t('stats_view_business')}
-      </Link>
     </div>
   );
 }
