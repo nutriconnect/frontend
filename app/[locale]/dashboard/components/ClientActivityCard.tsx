@@ -23,7 +23,7 @@ export function ClientActivityCard({
   const locale = useLocale();
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
 
-  if (isLoading) {
+  if (isLoading || !recentlyActive || !dueForCheckin || !recentlyJoined) {
     return (
       <div style={{
         background: 'white',

@@ -14,7 +14,7 @@ export function TodaysScheduleCard({ appointments, isLoading }: TodaysScheduleCa
   const t = useTranslations('dashboard.home');
   const locale = useLocale();
 
-  if (isLoading) {
+  if (isLoading || !appointments) {
     return (
       <div style={{
         background: 'white',
