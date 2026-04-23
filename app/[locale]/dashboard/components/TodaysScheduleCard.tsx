@@ -171,7 +171,7 @@ export function TodaysScheduleCard({ appointments, isLoading }: TodaysScheduleCa
                       : '#b8860b',
                   }}
                 >
-                  {appt.status}
+                  {t(`status_${appt.status}`)}
                 </span>
               </div>
             );
