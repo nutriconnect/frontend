@@ -656,3 +656,42 @@ export interface UploadAttachmentResponse {
   size_bytes: number;
   content_type: string;
 }
+
+// ─── Nutritionist Overview ────────────────────────────────────────────────
+
+export interface AppointmentSummary {
+  id: string;
+  client_id: string;
+  client_name: string;
+  start_time: string;
+  duration_minutes: number;
+  appointment_type_name: string;
+  status: 'confirmed' | 'pending';
+}
+
+export interface ClientActivity {
+  client_id: string;
+  client_name: string;
+  last_activity_at: string;
+  activity_type: 'weight' | 'activity';
+}
+
+export interface ClientCheckin {
+  client_id: string;
+  client_name: string;
+  last_message_at: string | null;
+  days_since_contact: number;
+}
+
+export interface ClientJoined {
+  client_id: string;
+  client_name: string;
+  activated_at: string;
+}
+
+export interface NutritionistOverview {
+  todays_appointments: AppointmentSummary[];
+  recently_active_clients: ClientActivity[];
+  due_for_checkin_clients: ClientCheckin[];
+  recently_joined_clients: ClientJoined[];
+}
