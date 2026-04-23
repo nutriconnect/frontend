@@ -23,7 +23,7 @@ export function ClientActivityCard({
   const locale = useLocale();
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
 
-  if (isLoading || !recentlyActive || !dueForCheckin || !recentlyJoined) {
+  if (isLoading) {
     return (
       <div style={{
         background: 'white',
@@ -40,6 +40,11 @@ export function ClientActivityCard({
       </div>
     );
   }
+
+  // Handle undefined/null data
+  const safeRecentlyActive = recentlyActive || [];
+  const safeDueForCheckin = dueForCheckin || [];
+  const safeRecentlyJoined = recentlyJoined || [];
 
   const toggleSection = (section: string) => {
     setExpandedSection(expandedSection === section ? null : section);
@@ -84,12 +89,12 @@ export function ClientActivityCard({
       }}>
         {/* Recently Active */}
         <div
-          onClick={() => recentlyActive.length > 0 && toggleSection('active')}
+          onClick={() => safeRecentlyActive.length > 0 && toggleSection('active')}
           style={{
             padding: '16px',
             border: '1px solid var(--nc-border)',
             borderRadius: 8,
-            cursor: recentlyActive.length > 0 ? 'pointer' : 'default',
+            cursor: safeRecentlyActive.length > 0 ? 'pointer' : 'default',
             background: expandedSection === 'active' ? 'var(--nc-cream)' : 'white',
           }}
         >
@@ -99,7 +104,7 @@ export function ClientActivityCard({
             color: 'var(--nc-forest)',
             marginBottom: 4,
           }}>
-            {recentlyActive.length}
+            {safeRecentlyActive.length}
           </div>
           <div style={{
             fontSize: 11,
@@ -118,15 +123,15 @@ export function ClientActivityCard({
 
         {/* Due for Check-in */}
         <div
-          onClick={() => dueForCheckin.length > 0 && toggleSection('checkin')}
+          onClick={() => safeDueForCheckin.length > 0 && toggleSection('checkin')}
           style={{
             padding: '16px',
-            border: `1px solid ${dueForCheckin.length > 0 ? 'rgba(196,98,45,0.3)' : 'var(--nc-border)'}`,
+            border: `1px solid ${safeDueForCheckin.length > 0 ? 'rgba(196,98,45,0.3)' : 'var(--nc-border)'}`,
             borderRadius: 8,
-            cursor: dueForCheckin.length > 0 ? 'pointer' : 'default',
+            cursor: safeDueForCheckin.length > 0 ? 'pointer' : 'default',
             background: expandedSection === 'checkin'
               ? 'rgba(196,98,45,0.05)'
-              : dueForCheckin.length > 0
+              : safeDueForCheckin.length > 0
                 ? 'rgba(196,98,45,0.02)'
                 : 'white',
           }}
@@ -134,10 +139,10 @@ export function ClientActivityCard({
           <div style={{
             fontSize: 24,
             fontWeight: 600,
-            color: dueForCheckin.length > 0 ? 'var(--nc-terra)' : 'var(--nc-stone)',
+            color: safeDueForCheckin.length > 0 ? 'var(--nc-terra)' : 'var(--nc-stone)',
             marginBottom: 4,
           }}>
-            {dueForCheckin.length}
+            {safeDueForCheckin.length}
           </div>
           <div style={{
             fontSize: 11,
@@ -156,12 +161,12 @@ export function ClientActivityCard({
 
         {/* Recently Joined */}
         <div
-          onClick={() => recentlyJoined.length > 0 && toggleSection('joined')}
+          onClick={() => safeRecentlyJoined.length > 0 && toggleSection('joined')}
           style={{
             padding: '16px',
             border: '1px solid var(--nc-border)',
             borderRadius: 8,
-            cursor: recentlyJoined.length > 0 ? 'pointer' : 'default',
+            cursor: safeRecentlyJoined.length > 0 ? 'pointer' : 'default',
             background: expandedSection === 'joined' ? 'var(--nc-cream)' : 'white',
           }}
         >
@@ -171,7 +176,7 @@ export function ClientActivityCard({
             color: 'var(--nc-ink)',
             marginBottom: 4,
           }}>
-            {recentlyJoined.length}
+            {safeRecentlyJoined.length}
           </div>
           <div style={{
             fontSize: 11,
@@ -190,14 +195,14 @@ export function ClientActivityCard({
       </div>
 
       {/* Expanded client lists */}
-      {expandedSection === 'active' && recentlyActive.length > 0 && (
+      {expandedSection === 'active' && safeRecentlyActive.length > 0 && (
         <div style={{
           borderTop: '1px solid var(--nc-border)',
           paddingTop: 16,
           marginTop: 8,
         }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {recentlyActive.slice(0, 5).map((client) => (
+            {safeRecentlyActive.slice(0, 5).map((client) => (
               <Link
                 key={client.client_id}
                 href={`/${locale}/dashboard/clients/${client.client_id}`}
@@ -227,14 +232,14 @@ export function ClientActivityCard({
         </div>
       )}
 
-      {expandedSection === 'checkin' && dueForCheckin.length > 0 && (
+      {expandedSection === 'checkin' && safeDueForCheckin.length > 0 && (
         <div style={{
           borderTop: '1px solid var(--nc-border)',
           paddingTop: 16,
           marginTop: 8,
         }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {dueForCheckin.slice(0, 5).map((client) => (
+            {safeDueForCheckin.slice(0, 5).map((client) => (
               <Link
                 key={client.client_id}
                 href={`/${locale}/dashboard/clients/${client.client_id}`}
@@ -262,14 +267,14 @@ export function ClientActivityCard({
         </div>
       )}
 
-      {expandedSection === 'joined' && recentlyJoined.length > 0 && (
+      {expandedSection === 'joined' && safeRecentlyJoined.length > 0 && (
         <div style={{
           borderTop: '1px solid var(--nc-border)',
           paddingTop: 16,
           marginTop: 8,
         }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {recentlyJoined.slice(0, 5).map((client) => (
+            {safeRecentlyJoined.slice(0, 5).map((client) => (
               <Link
                 key={client.client_id}
                 href={`/${locale}/dashboard/clients/${client.client_id}`}

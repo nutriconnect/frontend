@@ -14,7 +14,7 @@ export function TodaysScheduleCard({ appointments, isLoading }: TodaysScheduleCa
   const t = useTranslations('dashboard.home');
   const locale = useLocale();
 
-  if (isLoading || !appointments) {
+  if (isLoading) {
     return (
       <div style={{
         background: 'white',
@@ -31,6 +31,9 @@ export function TodaysScheduleCard({ appointments, isLoading }: TodaysScheduleCa
       </div>
     );
   }
+
+  // Handle undefined/null appointments
+  const safeAppointments = appointments || [];
 
   return (
     <div style={{
@@ -63,7 +66,7 @@ export function TodaysScheduleCard({ appointments, isLoading }: TodaysScheduleCa
       </div>
 
       {/* Appointments list or empty state */}
-      {appointments.length === 0 ? (
+      {safeAppointments.length === 0 ? (
         <div style={{
           textAlign: 'center',
           padding: '40px 20px',
@@ -75,7 +78,7 @@ export function TodaysScheduleCard({ appointments, isLoading }: TodaysScheduleCa
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {appointments.map((appt) => {
+          {safeAppointments.map((appt) => {
             const startTime = new Date(appt.start_time);
             const timeStr = startTime.toLocaleTimeString(locale, {
               hour: '2-digit',
