@@ -26,15 +26,23 @@ function LoginForm() {
     setUnverified(false);
     setLoading(true);
     try {
-      const res = await api.post<{ id: string; email: string; role: string; access_token: string }>('/auth/login', { email, password });
+      const res = await api.post<{ id: string; email: string; role: string; access_token: string; preferred_locale?: string }>('/auth/login', { email, password });
 
       // Store access token for WebSocket authentication
       if (res.access_token) {
         sessionStorage.setItem('access_token', res.access_token);
       }
 
-      const defaultRoute = res.role === 'nutritionist' ? `/${locale}/dashboard/profile` : `/${locale}/dashboard`;
-      router.push(from === '/' ? defaultRoute : from);
+      // Use user's preferred locale if available
+      const userLocale = res.preferred_locale || locale;
+      const defaultRoute = res.role === 'nutritionist' ? `/${userLocale}/dashboard/profile` : `/${userLocale}/dashboard`;
+
+      // If preferred locale differs from current, update cookie
+      if (res.preferred_locale && res.preferred_locale !== locale) {
+        document.cookie = `NEXT_LOCALE=${res.preferred_locale}; path=/; max-age=31536000`;
+      }
+
+      router.push(from === '/' ? defaultRoute : from.replace(`/${locale}/`, `/${userLocale}/`));
       router.refresh();
     } catch (err) {
       if (err instanceof ApiRequestError) {
