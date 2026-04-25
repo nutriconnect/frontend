@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import { useTranslations } from 'next-intl';
 import type { QuestionWithResponse } from '@/lib/types';
 import QuestionRenderer from './QuestionRenderer';
 
@@ -16,6 +17,7 @@ interface SurveyFormProps {
 }
 
 export default function SurveyForm({ responses, status, onSubmit }: SurveyFormProps) {
+  const t = useTranslations('dashboard.surveys');
   const sortedResponses = [...responses].sort((a, b) => a.display_order - b.display_order);
   const total = sortedResponses.length;
 
@@ -93,10 +95,10 @@ export default function SurveyForm({ responses, status, onSubmit }: SurveyFormPr
     setIsSaving(true);
     try {
       await onSubmit(buildPayload());
-      setSuccessMessage('Borrador guardado');
+      setSuccessMessage(t('draft_saved'));
       setTimeout(() => setSuccessMessage(null), 3000);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Error al guardar');
+      setError(err instanceof Error ? err.message : t('save_error'));
     } finally {
       setIsSaving(false);
     }
@@ -107,16 +109,16 @@ export default function SurveyForm({ responses, status, onSubmit }: SurveyFormPr
     setSuccessMessage(null);
 
     if (requiredUnanswered.length > 0) {
-      setError(`Hay ${requiredUnanswered.length} pregunta(s) obligatoria(s) sin responder`);
+      setError(t('required_error', { count: requiredUnanswered.length }));
       return;
     }
 
     setIsSaving(true);
     try {
       await onSubmit(buildPayload());
-      setSuccessMessage('Encuesta enviada correctamente');
+      setSuccessMessage(t('survey_submitted'));
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Error al enviar');
+      setError(err instanceof Error ? err.message : t('submit_error'));
     } finally {
       setIsSaving(false);
     }
@@ -128,7 +130,7 @@ export default function SurveyForm({ responses, status, onSubmit }: SurveyFormPr
       <div style={{ marginBottom: 24 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
           <span style={{ fontSize: 12, fontWeight: 500, color: 'var(--nc-stone)' }}>
-            Progreso: {answeredCount}/{total} preguntas
+            {t('progress_label')}: {answeredCount}/{total} {t('questions_label')}
           </span>
           <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--nc-forest)' }}>
             {progressPercent}%
@@ -153,7 +155,7 @@ export default function SurveyForm({ responses, status, onSubmit }: SurveyFormPr
           borderRadius: 8, padding: '10px 14px', marginBottom: 20,
           fontSize: 13, color: '#3b82f6', fontWeight: 400,
         }}>
-          Esta encuesta ya ha sido revisada por tu nutricionista. No puedes modificar las respuestas.
+          {t('reviewed_notice')}
         </div>
       )}
 
@@ -163,7 +165,7 @@ export default function SurveyForm({ responses, status, onSubmit }: SurveyFormPr
           borderRadius: 8, padding: '10px 14px', marginBottom: 20,
           fontSize: 13, color: '#4a7c59', fontWeight: 400,
         }}>
-          Encuesta completada. Puedes editar tus respuestas hasta que tu nutricionista la revise.
+          {t('completed_notice')}
         </div>
       )}
 
@@ -222,7 +224,7 @@ export default function SurveyForm({ responses, status, onSubmit }: SurveyFormPr
               opacity: isSaving ? 0.6 : 1,
             }}
           >
-            {isSaving ? 'Guardando...' : 'Enviar encuesta'}
+            {isSaving ? t('saving') : t('submit_button')}
           </button>
           <button
             type="button"
@@ -235,7 +237,7 @@ export default function SurveyForm({ responses, status, onSubmit }: SurveyFormPr
               cursor: isSaving ? 'not-allowed' : 'pointer',
             }}
           >
-            Guardar borrador
+            {t('save_draft_button')}
           </button>
         </div>
       )}

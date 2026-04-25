@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useSurveyAssignment, submitSurveyResponses } from '@/lib/survey';
 import SurveyForm from '@/components/survey/SurveyForm';
@@ -11,6 +11,7 @@ import SurveyForm from '@/components/survey/SurveyForm';
 
 export default function ClientSurveyPage() {
   const locale = useLocale();
+  const t = useTranslations('dashboard.surveys');
   const params = useParams<{ assignmentId: string }>();
   const relationshipId = params.assignmentId;
   const { assignment, isLoading, error, mutate } = useSurveyAssignment(relationshipId);
@@ -33,15 +34,15 @@ export default function ClientSurveyPage() {
             href={`/${locale}/dashboard`}
             style={{ fontSize: 13, color: 'var(--nc-stone)', textDecoration: 'none' }}
           >
-            &larr; Dashboard
+            &larr; {t('back_to_dashboard')}
           </Link>
-          <div className="dash-topbar-title">Encuesta de intake</div>
+          <div className="dash-topbar-title">{t('intake_survey_title')}</div>
         </div>
       </div>
       <div className="dash-content">
         {isLoading && (
           <div style={{ color: 'var(--nc-stone)', fontWeight: 300, fontSize: 13 }}>
-            Cargando encuesta...
+            {t('loading_survey')}
           </div>
         )}
 
@@ -50,7 +51,7 @@ export default function ClientSurveyPage() {
             background: 'rgba(205,92,92,0.1)', border: '1px solid rgba(205,92,92,0.2)',
             borderRadius: 6, padding: 12, fontSize: 13, color: '#cd5c5c',
           }}>
-            Error al cargar la encuesta.
+            {t('error_loading_survey')}
           </div>
         )}
 
@@ -60,10 +61,10 @@ export default function ClientSurveyPage() {
             borderRadius: 8, padding: '24px', textAlign: 'center',
           }}>
             <div style={{ fontSize: 14, fontWeight: 500, color: 'var(--nc-ink)', marginBottom: 8 }}>
-              No hay encuesta asignada
+              {t('no_survey_assigned')}
             </div>
             <div style={{ fontSize: 13, color: 'var(--nc-stone)', fontWeight: 300 }}>
-              Tu nutricionista aun no te ha asignado una encuesta de intake.
+              {t('no_survey_assigned_desc')}
             </div>
           </div>
         )}
