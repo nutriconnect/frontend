@@ -61,6 +61,35 @@ export async function activateRelationship(relationshipID: string): Promise<void
   mutate('/hiring/business-dashboard');
 }
 
+export async function acceptPendingIntro(relationshipId: string): Promise<void> {
+  const response = await fetch(`/api/v1/relationships/${relationshipId}/accept`, {
+    method: 'POST',
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ message: 'Failed to accept request' }));
+    throw new Error(error.message || 'Failed to accept request');
+  }
+}
+
+export async function declinePendingIntro(
+  relationshipId: string,
+  reason?: string
+): Promise<void> {
+  const response = await fetch(`/api/v1/relationships/${relationshipId}/decline`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: reason ? { 'Content-Type': 'application/json' } : undefined,
+    body: reason ? JSON.stringify({ reason }) : undefined,
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ message: 'Failed to decline request' }));
+    throw new Error(error.message || 'Failed to decline request');
+  }
+}
+
 // ─── Nutritionist hooks ───────────────────────────────────────────────────────
 
 export function useNutritionistRelationships() {
