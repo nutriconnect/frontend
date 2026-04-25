@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useTranslations, useLocale } from 'next-intl';
 import { Avatar } from './Avatar';
 import type { EnhancedClient } from '@/lib/types';
+import { toastWarning } from '@/lib/toast';
 
 interface ClientCardProps {
   client: EnhancedClient;
