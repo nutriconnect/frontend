@@ -11,6 +11,7 @@ import { useMyProfile } from '@/lib/profile';
 import { useConversations } from '@/lib/chat';
 import { Avatar } from '@/components/Avatar';
 import useSWR from 'swr';
+import { useNutritionistOverview } from '@/lib/nutritionist';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const t = useTranslations('dashboard');
@@ -22,6 +23,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   // Slight waste for clients but avoids conditional hook calls (React rules)
   const { profile } = useMyProfile();
   const { conversations } = useConversations();
+  const { overview } = useNutritionistOverview();
   const { data: version } = useSWR<{ version: string; commit: string; buildTime: string }>(
     '/api/version',
     () => fetch('/api/version').then(r => r.json()),
@@ -164,7 +166,30 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 position: 'relative',
               }}
             >
-              <span>{item.icon}</span> {t(`nav.${item.labelKey}`)}
+              <span>{item.icon}</span>
+              {item.href === `/${locale}/dashboard/clients` ? (
+                <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  {t(`nav.${item.labelKey}`)}
+                  {overview && overview.pending_intros_count > 0 && (
+                    <span
+                      style={{
+                        background: '#cd5c5c',
+                        color: 'white',
+                        fontSize: 10,
+                        fontWeight: 600,
+                        padding: '2px 6px',
+                        borderRadius: 10,
+                        minWidth: 18,
+                        textAlign: 'center',
+                      }}
+                    >
+                      {overview.pending_intros_count}
+                    </span>
+                  )}
+                </span>
+              ) : (
+                <>{t(`nav.${item.labelKey}`)}</>
+              )}
               {item.href === '/dashboard/messages' && totalUnreadCount > 0 && (
                 <span
                   style={{
