@@ -206,6 +206,45 @@ export function useMyActivePlans() {
   };
 }
 
+// ─── Client: fetch all active plans (across relationships) ───────────────────
+
+export async function getActiveNutritionPlansAll(): Promise<{ plans: NutritionPlan[] }> {
+  return api.get<{ plans: NutritionPlan[] }>('/plans/nutrition/active-all');
+}
+
+export async function getActiveExercisePlansAll(): Promise<{ plans: ExercisePlan[] }> {
+  return api.get<{ plans: ExercisePlan[] }>('/plans/exercise/active-all');
+}
+
+export function useMyActiveAllPlans() {
+  const {
+    data: nutritionData,
+    isLoading: nutritionLoading,
+    error: nutritionError,
+  } = useSWR<{ plans: NutritionPlan[] }>(
+    '/plans/nutrition/active-all',
+    () => api.get<{ plans: NutritionPlan[] }>('/plans/nutrition/active-all'),
+    { revalidateOnFocus: false },
+  );
+
+  const {
+    data: exerciseData,
+    isLoading: exerciseLoading,
+    error: exerciseError,
+  } = useSWR<{ plans: ExercisePlan[] }>(
+    '/plans/exercise/active-all',
+    () => api.get<{ plans: ExercisePlan[] }>('/plans/exercise/active-all'),
+    { revalidateOnFocus: false },
+  );
+
+  return {
+    nutritionPlans: nutritionData?.plans ?? [],
+    exercisePlans: exerciseData?.plans ?? [],
+    isLoading: nutritionLoading || exerciseLoading,
+    error: nutritionError || exerciseError,
+  };
+}
+
 // ─── Nutritionist: client profile hook (side utility) ────────────────────────
 
 export function useClientProfile(clientId: string) {
