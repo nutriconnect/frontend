@@ -38,7 +38,7 @@ export default function PublicProfilePage() {
 
   async function handleConnect(packageID: string) {
     if (!isClient) {
-      router.push(`/login?from=/nutritionists/${slug}`);
+      router.push(`/${locale}/login?from=/${locale}/nutritionists/${slug}`);
       return;
     }
     setConnecting(packageID);

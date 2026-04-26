@@ -3,7 +3,11 @@
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
 
-export function SearchFilters() {
+interface SearchFiltersProps {
+  locale: string;
+}
+
+export function SearchFilters({ locale }: SearchFiltersProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -42,7 +46,7 @@ export function SearchFilters() {
       if (minPrice) params.set('min_price', minPrice);
       if (maxPrice) params.set('max_price', maxPrice);
       params.set('page', '1');
-      router.replace(`/nutritionists?${params.toString()}`);
+      router.replace(`/${locale}/nutritionists?${params.toString()}`);
     }, 400);
     return () => clearTimeout(timer);
   }, [q, city, specialty, language, sort, minPrice, maxPrice]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -60,11 +64,11 @@ export function SearchFilters() {
     if (minPrice) params.set('min_price', minPrice);
     if (maxPrice) params.set('max_price', maxPrice);
     params.set('page', '1');
-    router.push(`/nutritionists?${params.toString()}`);
+    router.push(`/${locale}/nutritionists?${params.toString()}`);
   }
 
   function handleClear() {
-    router.push('/nutritionists');
+    router.push(`/${locale}/nutritionists`);
   }
 
   return (

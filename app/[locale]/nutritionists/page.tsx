@@ -108,7 +108,7 @@ function NutritionistsList() {
   function goToPage(newPage: number) {
     const params = new URLSearchParams(searchParams.toString());
     params.set('page', String(newPage));
-    router.push(`/nutritionists?${params.toString()}`);
+    router.push(`/${locale}/nutritionists?${params.toString()}`);
   }
 
   return (
@@ -208,7 +208,7 @@ export default function NutritionistsPage() {
         <h1>Meet the nutritionist<br />who <em>gets you</em></h1>
         <p>{t('hero_subtitle')}</p>
         <Suspense>
-          <SearchFilters />
+          <SearchFilters locale={locale} />
         </Suspense>
       </div>
 
