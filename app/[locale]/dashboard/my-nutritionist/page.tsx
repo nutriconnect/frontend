@@ -82,7 +82,7 @@ export default function MyNutritionistPage() {
             fontSize: 14,
             marginBottom: 24
           }}>
-            Explora nuestro directorio y encuentra al nutricionista perfecto para ti.
+            {t('browse_description')}
           </p>
           <Link
             href={`/${locale}/nutritionists`}
@@ -279,7 +279,7 @@ export default function MyNutritionistPage() {
                 {rel.nutritionist_city} · Finalizado {new Date(rel.updated_at).toLocaleDateString('es-ES')}
               </div>
               <div style={{ marginTop: 8 }}>
-                <a href={`/nutritionists/${rel.nutritionist_slug}`} target="_blank"
+                <a href={`/${locale}/nutritionists/${rel.nutritionist_slug}`} target="_blank"
                    style={{ fontSize: 12, color: 'var(--nc-terra)', textDecoration: 'none' }}>
                   {t('view_profile')} ↗
                 </a>
