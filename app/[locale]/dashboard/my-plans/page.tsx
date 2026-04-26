@@ -1,127 +1,192 @@
-// frontend/app/dashboard/my-plans/page.tsx
+// frontend/app/[locale]/dashboard/my-plans/page.tsx
 'use client';
 
-import { useMemo } from 'react';
+import { useState, useMemo } from 'react';
+import { useTranslations } from 'next-intl';
 import { useMyActiveAllPlans } from '@/lib/plans';
 import { useMyRelationships } from '@/lib/hiring';
+import PlanCard from './components/PlanCard';
 import type { NutritionPlan, ExercisePlan } from '@/lib/types';
-import { NutritionPlanView, ExercisePlanView } from './components/PlanViews';
 
-// ─── Page ──────────────────────────────────────────────────────────────────────
+type TabType = 'active' | 'archived';
 
-interface GroupedPlans {
-  relationshipId: string;
+interface PlanWithType {
+  plan: NutritionPlan | ExercisePlan;
+  type: 'nutrition' | 'exercise';
   nutritionistName: string;
-  nutritionistAvatar: string | null;
-  nutritionPlan: NutritionPlan | null;
-  exercisePlan: ExercisePlan | null;
 }
 
-export default function MyPlansPage() {
-  const { nutritionPlans, exercisePlans, isLoading } = useMyActiveAllPlans();
+export default function MyPlansListPage({ params }: { params: { locale: string } }) {
+  const t = useTranslations('plans');
+  const [activeTab, setActiveTab] = useState<TabType>('active');
+  const { nutritionPlans, exercisePlans, isLoading, error } = useMyActiveAllPlans();
   const { relationships } = useMyRelationships();
 
-  const handlePrint = () => {
-    window.print();
-  };
-
-  // Group plans by relationship_id
-  const groupedPlans = useMemo((): GroupedPlans[] => {
-    const groupMap = new Map<string, GroupedPlans>();
+  // Combine all plans with their types and nutritionist names
+  const allPlans = useMemo((): PlanWithType[] => {
+    const plans: PlanWithType[] = [];
 
     // Add nutrition plans
     for (const plan of nutritionPlans) {
-      if (!groupMap.has(plan.relationship_id)) {
-        const rel = relationships.find(r => r.id === plan.relationship_id);
-        groupMap.set(plan.relationship_id, {
-          relationshipId: plan.relationship_id,
-          nutritionistName: rel?.nutritionist_display_name ?? 'Nutricionista desconocido',
-          nutritionistAvatar: null, // relationships don't have avatar field yet
-          nutritionPlan: plan,
-          exercisePlan: null,
-        });
-      } else {
-        groupMap.get(plan.relationship_id)!.nutritionPlan = plan;
-      }
+      const rel = relationships.find(r => r.id === plan.relationship_id);
+      plans.push({
+        plan,
+        type: 'nutrition',
+        nutritionistName: rel?.nutritionist_display_name ?? 'Nutricionista desconocido',
+      });
     }
 
     // Add exercise plans
     for (const plan of exercisePlans) {
-      if (!groupMap.has(plan.relationship_id)) {
-        const rel = relationships.find(r => r.id === plan.relationship_id);
-        groupMap.set(plan.relationship_id, {
-          relationshipId: plan.relationship_id,
-          nutritionistName: rel?.nutritionist_display_name ?? 'Nutricionista desconocido',
-          nutritionistAvatar: null,
-          nutritionPlan: null,
-          exercisePlan: plan,
-        });
-      } else {
-        groupMap.get(plan.relationship_id)!.exercisePlan = plan;
-      }
+      const rel = relationships.find(r => r.id === plan.relationship_id);
+      plans.push({
+        plan,
+        type: 'exercise',
+        nutritionistName: rel?.nutritionist_display_name ?? 'Nutricionista desconocido',
+      });
     }
 
-    return Array.from(groupMap.values());
+    // Sort by created_at descending (newest first)
+    plans.sort((a, b) => new Date(b.plan.created_at).getTime() - new Date(a.plan.created_at).getTime());
+
+    return plans;
   }, [nutritionPlans, exercisePlans, relationships]);
+
+  // Filter plans by active tab
+  const filteredPlans = useMemo(() => {
+    return allPlans.filter(({ plan }) => {
+      if (activeTab === 'active') {
+        return plan.status === 'active';
+      } else {
+        return plan.status === 'archived';
+      }
+    });
+  }, [allPlans, activeTab]);
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <>
+        <div className="dash-topbar">
+          <div className="dash-topbar-title">{t('my_plans')}</div>
+        </div>
+        <div className="dash-content">
+          <div style={{ color: 'var(--nc-stone)', fontWeight: 300 }}>
+            {t('loading')}
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <>
+        <div className="dash-topbar">
+          <div className="dash-topbar-title">{t('my_plans')}</div>
+        </div>
+        <div className="dash-content">
+          <div style={{
+            background: 'white',
+            border: '1px solid rgba(139,115,85,0.12)',
+            borderRadius: 8,
+            padding: 32,
+            textAlign: 'center',
+            color: 'var(--nc-stone)',
+            fontWeight: 300,
+            fontSize: 14,
+          }}>
+            {t('error')}
+          </div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
       <div className="dash-topbar">
-        <div className="dash-topbar-title">Mis planes</div>
+        <div className="dash-topbar-title">{t('my_plans')}</div>
         <div className="dash-topbar-right">
-          <button
-            onClick={handlePrint}
-            className="print-hide"
-            style={{
-              height: 34, padding: '0 16px',
-              border: '1px solid var(--nc-border)', borderRadius: 6,
-              background: 'transparent', cursor: 'pointer',
-              fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--nc-stone)',
-            }}
-          >
-            Descargar PDF
-          </button>
+          {/* Active/Archived tabs */}
+          <div style={{
+            display: 'flex',
+            gap: 8,
+            background: 'rgba(139,115,85,0.05)',
+            borderRadius: 8,
+            padding: 4,
+          }}>
+            <button
+              onClick={() => setActiveTab('active')}
+              style={{
+                padding: '6px 16px',
+                border: 'none',
+                borderRadius: 6,
+                background: activeTab === 'active' ? 'white' : 'transparent',
+                color: activeTab === 'active' ? 'var(--nc-ink)' : 'var(--nc-stone)',
+                fontFamily: 'var(--font-body)',
+                fontSize: 13,
+                fontWeight: activeTab === 'active' ? 500 : 400,
+                cursor: 'pointer',
+                transition: 'all 0.15s',
+              }}
+            >
+              {t('active')}
+            </button>
+            <button
+              onClick={() => setActiveTab('archived')}
+              style={{
+                padding: '6px 16px',
+                border: 'none',
+                borderRadius: 6,
+                background: activeTab === 'archived' ? 'white' : 'transparent',
+                color: activeTab === 'archived' ? 'var(--nc-ink)' : 'var(--nc-stone)',
+                fontFamily: 'var(--font-body)',
+                fontSize: 13,
+                fontWeight: activeTab === 'archived' ? 500 : 400,
+                cursor: 'pointer',
+                transition: 'all 0.15s',
+              }}
+            >
+              {t('archived')}
+            </button>
+          </div>
         </div>
       </div>
       <div className="dash-content">
-        {isLoading ? (
-          <div style={{ color: 'var(--nc-stone)', fontWeight: 300 }}>Cargando planes…</div>
-        ) : groupedPlans.length === 0 ? (
+        {filteredPlans.length === 0 ? (
           <div style={{
-            background: 'white', border: '1px solid rgba(139,115,85,0.12)',
-            borderRadius: 8, padding: 32, textAlign: 'center',
-            color: 'var(--nc-stone)', fontWeight: 300, fontSize: 14,
+            background: 'white',
+            border: '1px solid rgba(139,115,85,0.12)',
+            borderRadius: 8,
+            padding: 32,
+            textAlign: 'center',
+            color: 'var(--nc-stone)',
+            fontWeight: 300,
+            fontSize: 14,
           }}>
-            <div style={{ marginBottom: 8, fontSize: 16 }}>No tienes planes activos</div>
-            <div>Tus nutricionistas te asignarán planes en breve.</div>
+            <div style={{ marginBottom: 8, fontSize: 16 }}>
+              {activeTab === 'active' ? t('no_active_plans') : t('no_archived_plans')}
+            </div>
+            {activeTab === 'active' && (
+              <div>{t('no_active_plans_description')}</div>
+            )}
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 48 }}>
-            {groupedPlans.map((group) => (
-              <div key={group.relationshipId}>
-                {group.nutritionPlan && (
-                  <div style={{ marginBottom: 32 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
-                      <span style={{ fontSize: 18, fontWeight: 600, color: 'var(--nc-ink)' }}>📋</span>
-                      <span style={{ fontSize: 16, fontWeight: 500, color: 'var(--nc-ink)' }}>
-                        Plan de Nutrición por {group.nutritionistName}
-                      </span>
-                    </div>
-                    <NutritionPlanView plan={group.nutritionPlan} />
-                  </div>
-                )}
-                {group.exercisePlan && (
-                  <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
-                      <span style={{ fontSize: 18, fontWeight: 600, color: 'var(--nc-ink)' }}>🏋️</span>
-                      <span style={{ fontSize: 16, fontWeight: 500, color: 'var(--nc-ink)' }}>
-                        Plan de Ejercicio por {group.nutritionistName}
-                      </span>
-                    </div>
-                    <ExercisePlanView plan={group.exercisePlan} />
-                  </div>
-                )}
-              </div>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+            gap: 16,
+          }}>
+            {filteredPlans.map(({ plan, type, nutritionistName }) => (
+              <PlanCard
+                key={`${type}-${plan.id}`}
+                plan={plan}
+                nutritionistName={nutritionistName}
+                type={type}
+                locale={params.locale}
+              />
             ))}
           </div>
         )}
