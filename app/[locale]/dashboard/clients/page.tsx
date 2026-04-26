@@ -28,19 +28,17 @@ function PendingClientRow({
   locale: string;
 }) {
   const t = useTranslations('dashboard.clients');
+  const [showAcceptModal, setShowAcceptModal] = useState(false);
   const [showDeclineModal, setShowDeclineModal] = useState(false);
   const [reason, setReason] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleAccept = async () => {
-    if (!confirm(t('accept_confirm', { name: client.client_display_name }))) {
-      return;
-    }
-
     setLoading(true);
     try {
       await onAccept(client.relationship_id);
       toastSuccess(t('accept_success'));
+      setShowAcceptModal(false);
     } catch (error) {
       toastError(t('accept_error'));
     } finally {
@@ -94,7 +92,7 @@ function PendingClientRow({
 
         <div style={{ display: 'flex', gap: 8 }}>
           <button
-            onClick={handleAccept}
+            onClick={() => setShowAcceptModal(true)}
             disabled={loading}
             style={{
               padding: '8px 16px',
@@ -129,6 +127,75 @@ function PendingClientRow({
           </button>
         </div>
       </div>
+
+      {/* Accept modal */}
+      {showAcceptModal && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+          }}
+          onClick={() => setShowAcceptModal(false)}
+        >
+          <div
+            style={{
+              background: 'white',
+              borderRadius: 12,
+              padding: 24,
+              maxWidth: 400,
+              width: '90%',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 style={{ fontSize: 18, fontWeight: 600, marginBottom: 8, color: 'var(--nc-ink)' }}>
+              {t('accept_confirm', { name: client.client_display_name })}
+            </h3>
+            <p style={{ fontSize: 14, color: 'var(--nc-stone)', marginBottom: 20, lineHeight: 1.5 }}>
+              {t('accept_confirm_description')}
+            </p>
+            <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+              <button
+                onClick={() => setShowAcceptModal(false)}
+                disabled={loading}
+                style={{
+                  padding: '8px 16px',
+                  background: 'white',
+                  color: 'var(--nc-stone)',
+                  border: '1px solid var(--nc-border)',
+                  borderRadius: 6,
+                  fontSize: 13,
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  opacity: loading ? 0.5 : 1,
+                }}
+              >
+                {t('cancel')}
+              </button>
+              <button
+                onClick={handleAccept}
+                disabled={loading}
+                style={{
+                  padding: '8px 16px',
+                  background: 'var(--nc-forest)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: 6,
+                  fontSize: 13,
+                  fontWeight: 500,
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  opacity: loading ? 0.5 : 1,
+                }}
+              >
+                {loading ? t('activating') : t('accept')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Decline modal */}
       {showDeclineModal && (

@@ -527,6 +527,7 @@
       "decline_confirm": "Confirm Decline",
       "cancel": "Cancel",
       "accept_confirm": "Accept {name}?",
+      "accept_confirm_description": "This client will be added to your active list and you can start working with them.",
       "accept_success": "Client accepted successfully",
       "decline_success": "Request declined",
       "accept_error": "Failed to accept request. Please try again.",
