@@ -59,64 +59,198 @@ export default function MyNutritionistPage() {
       </p>
 
       {active.length === 0 && past.length === 0 && (
-        <div style={{ background: 'white', border: '1px solid rgba(139,115,85,0.15)', borderRadius: 8, padding: '24px', textAlign: 'center' }}>
-          <p style={{ color: 'var(--nc-stone)', fontWeight: 300 }}>{t('no_programmes')}</p>
-          <a href={`/${locale}/nutritionists`} className="nc-btn-contact" style={{ display: 'inline-block', marginTop: 16, textDecoration: 'none', fontSize: 13 }}>
+        <div style={{
+          background: 'white',
+          border: '1px solid var(--nc-border)',
+          borderRadius: 12,
+          padding: '48px 32px',
+          textAlign: 'center'
+        }}>
+          <div style={{
+            fontSize: 48,
+            marginBottom: 16
+          }}>🥗</div>
+          <p style={{
+            color: 'var(--nc-ink)',
+            fontWeight: 500,
+            fontSize: 16,
+            marginBottom: 8
+          }}>{t('no_programmes')}</p>
+          <p style={{
+            color: 'var(--nc-stone)',
+            fontWeight: 300,
+            fontSize: 14,
+            marginBottom: 24
+          }}>
+            Explora nuestro directorio y encuentra al nutricionista perfecto para ti.
+          </p>
+          <Link
+            href={`/${locale}/nutritionists`}
+            className="nc-btn-contact"
+            style={{
+              display: 'inline-block',
+              padding: '12px 24px',
+              background: 'var(--nc-forest)',
+              color: 'white',
+              borderRadius: 8,
+              textDecoration: 'none',
+              fontSize: 14,
+              fontWeight: 500,
+              transition: 'all 0.2s'
+            }}
+          >
             {t('browse_nutritionists')}
-          </a>
+          </Link>
         </div>
       )}
 
       {active.map((rel) => (
-        <div key={rel.id} style={{ border: '1px solid rgba(0,0,0,0.08)', borderRadius: 12, padding: 20, marginBottom: 16, background: 'var(--nc-cream)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
-            <div style={{ fontWeight: 600, fontSize: 15, color: 'var(--nc-ink)' }}>
-              {rel.nutritionist_display_name}
+        <div key={rel.id} style={{
+          background: 'white',
+          border: '1px solid var(--nc-border)',
+          borderRadius: 12,
+          padding: '24px',
+          marginBottom: 16,
+          boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
+        }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start',
+            marginBottom: 12
+          }}>
+            <div>
+              <div style={{
+                fontWeight: 600,
+                fontSize: 18,
+                color: 'var(--nc-ink)',
+                marginBottom: 4
+              }}>
+                {rel.nutritionist_display_name}
+              </div>
+              {rel.status === 'pending_intro' && (
+                <div style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  fontSize: 12,
+                  fontWeight: 500,
+                  color: '#b48c3c',
+                  background: 'rgba(180,140,60,0.1)',
+                  padding: '4px 10px',
+                  borderRadius: 6,
+                  marginTop: 4
+                }}>
+                  <span>⏳</span> {t('pending')}
+                </div>
+              )}
             </div>
-            <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase',
-              padding: '3px 8px', borderRadius: 100,
+            <span style={{
+              fontSize: 10,
+              fontWeight: 600,
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              padding: '4px 10px',
+              borderRadius: 100,
               background: rel.nutritionist_tier === 'free' ? 'rgba(139,115,85,0.12)' : 'rgba(74,124,89,0.12)',
-              color: rel.nutritionist_tier === 'free' ? 'var(--nc-stone)' : 'var(--nc-forest)' }}>
+              color: rel.nutritionist_tier === 'free' ? 'var(--nc-stone)' : 'var(--nc-forest)'
+            }}>
               {rel.nutritionist_tier}
             </span>
           </div>
-          <div style={{ fontSize: 12, color: 'var(--nc-stone)', marginBottom: 8 }}>
-            {rel.nutritionist_city} · {t('connected')} {formatTimeSince(rel.created_at)}
+          <div style={{
+            fontSize: 13,
+            color: 'var(--nc-stone)',
+            marginBottom: 12,
+            fontWeight: 300
+          }}>
+            📍 {rel.nutritionist_city} · {t('connected')} {formatTimeSince(rel.created_at)}
           </div>
           {rel.nutritionist_bio && (
-            <p style={{ fontSize: 13, color: 'var(--nc-stone)', fontWeight: 300, lineHeight: 1.5,
-                        display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
-                        overflow: 'hidden', marginBottom: 10 }}>
+            <p style={{
+              fontSize: 14,
+              color: 'var(--nc-stone)',
+              fontWeight: 300,
+              lineHeight: 1.6,
+              marginBottom: 12,
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden'
+            }}>
               {rel.nutritionist_bio}
             </p>
           )}
-          <div style={{ marginBottom: 10 }}>
-            {rel.nutritionist_specialties?.slice(0, 3).map(s => (
-              <span key={s} style={{ fontSize: 11, padding: '2px 8px', borderRadius: 4,
-                background: 'rgba(74,124,89,0.1)', color: 'var(--nc-forest)', marginRight: 4 }}>{s}</span>
-            ))}
-          </div>
-          <div style={{ fontSize: 12, color: 'var(--nc-stone)', marginBottom: 12 }}>
-            {t('status')} <strong>{rel.status === 'active' ? t('active') : rel.status === 'pending_intro' ? t('pending') : t('cancelled')}</strong>
-          </div>
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          {rel.nutritionist_specialties && rel.nutritionist_specialties.length > 0 && (
+            <div style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: 6,
+              marginBottom: 16
+            }}>
+              {rel.nutritionist_specialties.slice(0, 3).map(s => (
+                <span key={s} style={{
+                  fontSize: 11,
+                  padding: '4px 10px',
+                  borderRadius: 6,
+                  background: 'rgba(74,124,89,0.08)',
+                  color: 'var(--nc-forest)',
+                  fontWeight: 500
+                }}>{s}</span>
+              ))}
+            </div>
+          )}
+          <div style={{
+            display: 'flex',
+            gap: 10,
+            alignItems: 'center',
+            paddingTop: 16,
+            borderTop: '1px solid var(--nc-border)'
+          }}>
             {rel.status === 'active' && (
               <Link
                 href={`/${locale}/dashboard/appointments/book?relationship_id=${rel.id}&nutritionist_id=${rel.nutritionist_id}`}
-                className="dash-btn-publish"
-                style={{ fontSize: 12, textDecoration: 'none', padding: '6px 12px' }}
+                style={{
+                  fontSize: 13,
+                  fontWeight: 500,
+                  textDecoration: 'none',
+                  padding: '8px 16px',
+                  background: 'var(--nc-forest)',
+                  color: 'white',
+                  borderRadius: 6,
+                  transition: 'all 0.2s'
+                }}
               >
                 {t('book_appointment')}
               </Link>
             )}
-            <a href={`/nutritionists/${rel.nutritionist_slug}`} target="_blank"
-               style={{ fontSize: 12, color: 'var(--nc-terra)', textDecoration: 'none' }}>
+            <Link
+              href={`/${locale}/nutritionists/${rel.nutritionist_slug}`}
+              target="_blank"
+              style={{
+                fontSize: 13,
+                color: 'var(--nc-terra)',
+                textDecoration: 'none',
+                fontWeight: 500
+              }}
+            >
               {t('view_profile')} ↗
-            </a>
+            </Link>
             {rel.status !== 'cancelled' && (
-              <button onClick={() => handleCancel(rel.id)}
+              <button
+                onClick={() => handleCancel(rel.id)}
                 disabled={cancelling === rel.id}
-                style={{ fontSize: 12, color: 'var(--nc-stone)', background: 'transparent', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}>
+                style={{
+                  fontSize: 13,
+                  color: '#b94a3a',
+                  background: 'transparent',
+                  border: 'none',
+                  cursor: cancelling === rel.id ? 'not-allowed' : 'pointer',
+                  textDecoration: 'underline',
+                  fontWeight: 400,
+                  marginLeft: 'auto'
+                }}
+              >
                 {cancelling === rel.id ? `${t('cancel')}...` : t('cancel')}
               </button>
             )}
