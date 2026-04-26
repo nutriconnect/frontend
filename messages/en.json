@@ -916,6 +916,7 @@
       "page_prev": "← Previous",
       "page_next": "Next →",
       "page_info": "Page {page} of {totalPages}",
+      "go_to_dashboard": "Go to Dashboard",
       "available": "⚡ Available",
       "not_available": "Not available",
       "waitlist": "Waitlist",

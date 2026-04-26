@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { usePublicProfiles } from '@/lib/profile';
 import { SearchFilters } from './SearchFilters';
 import { Avatar } from '@/components/Avatar';
+import { useAuth } from '@/lib/auth';
 import type { ProfileSummary } from '@/lib/types';
 
 // ─── helpers (unchanged from before) ─────────────────────────────────────────
@@ -177,14 +178,28 @@ function NutritionistsList() {
 export default function NutritionistsPage() {
   const t = useTranslations('public.nutritionists');
   const locale = useLocale();
+  const { user } = useAuth();
 
   return (
     <div style={{ background: 'var(--nc-cream)', minHeight: '100vh' }}>
       <nav className="nc-nav">
         <Link href={`/${locale}/`} className="nc-nav-logo">Nutri<span>Red</span></Link>
         <div className="nc-nav-links">
-          <Link href={`/${locale}/login`}>Sign in</Link>
-          <Link href={`/${locale}/register`} className="nc-nav-cta">Join as nutritionist</Link>
+          {user ? (
+            <>
+              <span style={{ fontSize: 14, color: 'var(--nc-ink)', fontWeight: 400 }}>
+                Hola, {user.email.split('@')[0]}
+              </span>
+              <Link href={`/${locale}/dashboard`} className="nc-nav-cta">
+                {t('go_to_dashboard')}
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link href={`/${locale}/login`}>Sign in</Link>
+              <Link href={`/${locale}/register`} className="nc-nav-cta">Join as nutritionist</Link>
+            </>
+          )}
         </div>
       </nav>
 
