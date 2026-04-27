@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { useMyActiveAllPlans } from '@/lib/plans';
 import { useMyRelationships } from '@/lib/hiring';
 import PlanCard from './components/PlanCard';
@@ -16,8 +16,9 @@ interface PlanWithType {
   nutritionistName: string;
 }
 
-export default function MyPlansListPage({ params }: { params: { locale: string } }) {
+export default function MyPlansListPage() {
   const t = useTranslations('plans');
+  const locale = useLocale();
   const [activeTab, setActiveTab] = useState<TabType>('active');
   const { nutritionPlans, exercisePlans, isLoading, error } = useMyActiveAllPlans();
   const { relationships } = useMyRelationships();
@@ -185,7 +186,7 @@ export default function MyPlansListPage({ params }: { params: { locale: string }
                 plan={plan}
                 nutritionistName={nutritionistName}
                 type={type}
-                locale={params.locale}
+                locale={locale}
               />
             ))}
           </div>
