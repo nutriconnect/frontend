@@ -8,7 +8,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import { useNutritionPlan } from '@/lib/plans';
 import { useMyRelationships } from '@/lib/hiring';
 import { NutritionPlanView } from '../../components/PlanViews';
-import api from '@/lib/api';
+import { apiClient } from '@/lib/api';
 
 export default function NutritionPlanDetailPage() {
   const params = useParams();
@@ -28,7 +28,7 @@ export default function NutritionPlanDetailPage() {
   const handleDownloadPDF = async () => {
     try {
       setDownloading(true);
-      const response = await api.get(`/plans/nutrition/${params.id}/pdf`, {
+      const response = await apiClient.get(`/plans/nutrition/${params.id}/pdf`, {
         responseType: 'blob',
       });
 

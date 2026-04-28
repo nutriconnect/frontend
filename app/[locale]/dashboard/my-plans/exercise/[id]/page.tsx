@@ -8,7 +8,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import { useExercisePlan } from '@/lib/plans';
 import { useMyRelationships } from '@/lib/hiring';
 import { ExercisePlanView } from '../../components/PlanViews';
-import api from '@/lib/api';
+import { apiClient } from '@/lib/api';
 
 export default function ExercisePlanDetailPage() {
   const params = useParams();
@@ -28,7 +28,7 @@ export default function ExercisePlanDetailPage() {
   const handleDownloadPDF = async () => {
     try {
       setDownloading(true);
-      const response = await api.get(`/plans/exercise/${params.id}/pdf`, {
+      const response = await apiClient.get(`/plans/exercise/${params.id}/pdf`, {
         responseType: 'blob',
       });
 
