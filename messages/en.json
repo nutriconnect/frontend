@@ -1201,6 +1201,7 @@
     "rest_days": "{count, plural, one {# rest day} other {# rest days}}",
     "back_to_list": "My Plans",
     "download_pdf": "Download PDF",
+    "generating_pdf": "Generating PDF…",
     "not_found": "Plan not found",
     "not_found_description": "This plan does not exist or was deleted.",
     "loading": "Loading plan…",

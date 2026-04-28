@@ -1201,6 +1201,7 @@
     "rest_days": "{count, plural, one {# descanso} other {# descansos}}",
     "back_to_list": "Mis planes",
     "download_pdf": "Descargar PDF",
+    "generating_pdf": "Generando PDF…",
     "not_found": "Plan no encontrado",
     "not_found_description": "Este plan no existe o fue eliminado.",
     "loading": "Cargando plan…",
