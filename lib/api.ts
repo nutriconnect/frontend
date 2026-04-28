@@ -57,9 +57,12 @@ async function request<T>(
       // Retry original request (no further retry to avoid loops).
       return request<T>(path, options, false, isFormData);
     }
-    // Refresh failed — redirect to login.
+    // Refresh failed — redirect to login (preserve locale from current path).
     if (typeof window !== 'undefined') {
-      window.location.href = `/login?from=${encodeURIComponent(window.location.pathname)}`;
+      const currentPath = window.location.pathname;
+      const localeMatch = currentPath.match(/^\/(en|es)\//);
+      const locale = localeMatch ? localeMatch[1] : 'en';
+      window.location.href = `/${locale}/login?from=${encodeURIComponent(currentPath)}`;
     }
   }
 
