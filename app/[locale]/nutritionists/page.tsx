@@ -25,6 +25,7 @@ function formatPrice(cents: number | null): string {
 }
 
 function NutriCard({ profile, index }: { profile: ProfileSummary; index: number }) {
+  const t = useTranslations('public.nutritionists');
   const bannerClass = BANNER_CLASSES[index % BANNER_CLASSES.length];
   return (
     <div className="nc-card">
@@ -43,7 +44,7 @@ function NutriCard({ profile, index }: { profile: ProfileSummary; index: number 
           {profile.city && profile.years_exp !== null && (
             <span style={{ width: 3, height: 3, borderRadius: '50%', background: 'var(--nc-stone-lt)', display: 'inline-block' }} />
           )}
-          {profile.years_exp !== null && <span>{profile.years_exp} yrs exp.</span>}
+          {profile.years_exp !== null && <span>{profile.years_exp} {t('years_exp')}</span>}
         </div>
         <div className="nc-card-tags">
           {profile.specialties.slice(0, 2).map((s) => (
@@ -56,24 +57,24 @@ function NutriCard({ profile, index }: { profile: ProfileSummary; index: number 
         <div className="nc-card-divider" />
         <div className="nc-card-footer">
           <div className="nc-card-price">
-            From <strong>{formatPrice(profile.lowest_price_cents)}</strong>
-            {profile.lowest_price_cents !== null && <span style={{ fontSize: 11 }}>/session</span>}
+            {t('from_price')} <strong>{formatPrice(profile.lowest_price_cents)}</strong>
+            {profile.lowest_price_cents !== null && <span style={{ fontSize: 11 }}>{t('per_session')}</span>}
           </div>
           <Link href={`/nutritionists/${profile.slug}`} className="nc-btn-view">
-            View profile →
+            {t('view_profile')}
           </Link>
         </div>
         {!profile.accepting_new_clients && (
           <div style={{ padding: '6px 16px 12px' }}>
             <span style={{ fontSize: 11, color: 'var(--nc-stone)', background: 'rgba(139,115,85,0.1)', padding: '3px 8px', borderRadius: 4, fontWeight: 400 }}>
-              No disponible
+              {t('not_available')}
             </span>
           </div>
         )}
         {profile.at_capacity && profile.accepting_new_clients && (
           <div style={{ padding: '6px 16px 12px' }}>
             <span style={{ fontSize: 11, color: '#b48c3c', background: 'rgba(180,140,60,0.1)', padding: '3px 8px', borderRadius: 4, fontWeight: 400 }}>
-              Lista de espera
+              {t('waitlist')}
             </span>
           </div>
         )}
@@ -197,8 +198,8 @@ export default function NutritionistsPage() {
             </>
           ) : (
             <>
-              <Link href={`/${locale}/login`}>Sign in</Link>
-              <Link href={`/${locale}/register`} className="nc-nav-cta">Join as nutritionist</Link>
+              <Link href={`/${locale}/login`}>{t('nav_signin')}</Link>
+              <Link href={`/${locale}/register`} className="nc-nav-cta">{t('nav_join')}</Link>
             </>
           )}
         </div>
@@ -206,7 +207,7 @@ export default function NutritionistsPage() {
 
       <div className="nc-hero">
         <p className="nc-hero-label">{t('hero_label')}</p>
-        <h1>Meet the nutritionist<br />who <em>gets you</em></h1>
+        <h1 dangerouslySetInnerHTML={{ __html: t.raw('hero_title').replace('\n', '<br />').replace(/\*\*(.*?)\*\*/g, '<em>$1</em>') }} />
         <p>{t('hero_subtitle')}</p>
         <Suspense>
           <SearchFilters locale={locale} />
@@ -216,7 +217,7 @@ export default function NutritionistsPage() {
       <Suspense
         fallback={
           <div style={{ padding: '48px', textAlign: 'center', color: 'var(--nc-stone)', fontWeight: 300 }}>
-            Loading nutritionists…
+            {t('loading')}
           </div>
         }
       >
