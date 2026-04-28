@@ -124,6 +124,32 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ reason }),
     }),
+
+  // Download blob (for PDFs, images, etc.)
+  downloadBlob: async (path: string): Promise<Blob> => {
+    const token = localStorage.getItem('authToken');
+    const headers: HeadersInit = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const res = await fetch(`${BASE_URL}${path}`, {
+      method: 'GET',
+      headers,
+      credentials: 'include',
+    });
+
+    if (!res.ok) {
+      const errorData = (await res.json().catch(() => ({}))) as ApiError;
+      throw new ApiRequestError(
+        errorData.error?.code ?? 'UNKNOWN_ERROR',
+        errorData.error?.message ?? 'Request failed',
+        res.status,
+      );
+    }
+
+    return res.blob();
+  },
 };
 
 export const apiClient = api;

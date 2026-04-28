@@ -26,14 +26,14 @@ export default function NutritionPlanDetailPage() {
   const [downloading, setDownloading] = useState(false);
 
   const handleDownloadPDF = async () => {
+    if (!plan) return;
+
     try {
       setDownloading(true);
-      const response = await apiClient.get(`/plans/nutrition/${params.id}/pdf`, {
-        responseType: 'blob',
-      });
+      const blob = await apiClient.downloadBlob(`/plans/nutrition/${params.id}/pdf`);
 
       // Create download link
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', `${plan.title}.pdf`);
