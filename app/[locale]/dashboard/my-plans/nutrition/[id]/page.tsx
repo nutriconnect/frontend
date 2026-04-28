@@ -1,12 +1,14 @@
 // frontend/app/[locale]/dashboard/my-plans/nutrition/[id]/page.tsx
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import { useNutritionPlan } from '@/lib/plans';
 import { useMyRelationships } from '@/lib/hiring';
 import { NutritionPlanView } from '../../components/PlanViews';
+import api from '@/lib/api';
 
 export default function NutritionPlanDetailPage() {
   const params = useParams();
@@ -20,9 +22,31 @@ export default function NutritionPlanDetailPage() {
     (r) => r.id === plan?.relationship_id
   )?.nutritionist_display_name ?? 'Nutricionista desconocido';
 
-  // Print handler
-  const handlePrint = () => {
-    window.print();
+  // Download PDF handler
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownloadPDF = async () => {
+    try {
+      setDownloading(true);
+      const response = await api.get(`/plans/nutrition/${params.id}/pdf`, {
+        responseType: 'blob',
+      });
+
+      // Create download link
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${plan.title}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('PDF download failed:', error);
+      // TODO: Show error toast/notification
+    } finally {
+      setDownloading(false);
+    }
   };
 
   // Loading state
@@ -134,21 +158,11 @@ export default function NutritionPlanDetailPage() {
         </div>
         <div className="dash-topbar-right">
           <button
-            onClick={handlePrint}
-            className="print-hide"
-            style={{
-              height: 34,
-              padding: '0 16px',
-              border: '1px solid var(--nc-border)',
-              borderRadius: 6,
-              background: 'transparent',
-              cursor: 'pointer',
-              fontFamily: 'var(--font-body)',
-              fontSize: 13,
-              color: 'var(--nc-stone)',
-            }}
+            onClick={handleDownloadPDF}
+            disabled={downloading}
+            className="nc-btn-secondary print-hide"
           >
-            {t('download_pdf')}
+            {downloading ? t('generating_pdf') : t('download_pdf')}
           </button>
         </div>
       </div>
