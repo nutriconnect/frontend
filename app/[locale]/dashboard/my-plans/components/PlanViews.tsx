@@ -33,168 +33,228 @@ function MacroPieChart({ data }: { data: MacroData }) {
   const carbsPercent = (carbs / total) * 100;
   const fatPercent = (fat / total) * 100;
 
-  // Calculate SVG pie slices (cumulative angles)
-  const proteinAngle = (proteinPercent / 100) * 360;
-  const carbsAngle = proteinAngle + (carbsPercent / 100) * 360;
-
-  const getCoordinates = (angle: number, radius: number = 90) => {
-    const rad = (angle - 90) * Math.PI / 180;
-    return {
-      x: 100 + radius * Math.cos(rad),
-      y: 100 + radius * Math.sin(rad)
-    };
-  };
-
-  const proteinEnd = getCoordinates(proteinAngle);
-  const carbsEnd = getCoordinates(carbsAngle);
-
-  const proteinPath = `M 100 100 L 100 10 A 90 90 0 ${proteinAngle > 180 ? 1 : 0} 1 ${proteinEnd.x} ${proteinEnd.y} Z`;
-  const carbsPath = `M 100 100 L ${proteinEnd.x} ${proteinEnd.y} A 90 90 0 ${carbsAngle - proteinAngle > 180 ? 1 : 0} 1 ${carbsEnd.x} ${carbsEnd.y} Z`;
-  const fatPath = `M 100 100 L ${carbsEnd.x} ${carbsEnd.y} A 90 90 0 ${360 - carbsAngle > 180 ? 1 : 0} 1 100 10 Z`;
-
   return (
     <div style={{
       position: 'relative',
       animation: 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both'
     }}>
       <div style={{
-        background: 'linear-gradient(135deg, #f8f6f3 0%, #ffffff 100%)',
-        border: '1px solid rgba(90, 138, 64, 0.12)',
-        borderRadius: 16,
-        padding: 32,
-        position: 'relative',
-        overflow: 'hidden'
+        background: 'rgba(248, 246, 243, 0.4)',
+        border: '1px solid rgba(90, 138, 64, 0.08)',
+        borderRadius: 12,
+        padding: 24,
       }}>
-        {/* Decorative background pattern */}
-        <div style={{
-          position: 'absolute',
-          top: -40,
-          right: -40,
-          width: 140,
-          height: 140,
-          background: 'radial-gradient(circle, rgba(90, 138, 64, 0.04) 0%, transparent 70%)',
-          borderRadius: '50%',
-          pointerEvents: 'none'
-        }} />
-
         <h3 style={{
-          fontFamily: 'var(--font-display)',
-          fontSize: 18,
+          fontFamily: 'var(--font-body)',
+          fontSize: 12,
           fontWeight: 600,
-          color: 'var(--nc-forest)',
-          marginBottom: 24,
-          letterSpacing: '-0.01em'
+          color: 'var(--nc-stone)',
+          marginBottom: 20,
+          letterSpacing: '0.05em',
+          textTransform: 'uppercase'
         }}>
-          Distribución de Macronutrientes
+          Macronutrientes
         </h3>
 
         <div style={{
           display: 'grid',
-          gridTemplateColumns: '200px 1fr',
-          gap: 32,
-          alignItems: 'center'
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: 16,
         }}>
-          {/* SVG Pie Chart */}
-          <div style={{ position: 'relative' }}>
-            <svg viewBox="0 0 200 200" style={{ width: '100%', height: 'auto', filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.08))' }}>
-              {/* Protein slice - vibrant salmon */}
-              <path d={proteinPath} fill="#ff6b6b" style={{ transition: 'transform 0.3s ease', transformOrigin: '100px 100px' }} />
-
-              {/* Carbs slice - warm amber */}
-              <path d={carbsPath} fill="#ffd93d" style={{ transition: 'transform 0.3s ease', transformOrigin: '100px 100px' }} />
-
-              {/* Fat slice - sage green */}
-              <path d={fatPath} fill="#6bcf7f" style={{ transition: 'transform 0.3s ease', transformOrigin: '100px 100px' }} />
-
-              {/* Center circle for donut effect */}
-              <circle cx="100" cy="100" r="55" fill="white" />
-
-              {/* Center text */}
-              <text x="100" y="95" textAnchor="middle" style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: 28,
-                fontWeight: 600,
-                fill: 'var(--nc-ink)'
-              }}>
-                {Math.round(total)}g
-              </text>
-              <text x="100" y="115" textAnchor="middle" style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: 11,
-                fill: 'var(--nc-stone)',
-                textTransform: 'uppercase',
-                letterSpacing: '0.8px'
-              }}>
-                TOTAL
-              </text>
-            </svg>
-          </div>
-
-          {/* Legend */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{
-                width: 12,
-                height: 12,
-                borderRadius: 3,
-                background: '#ff6b6b',
-                flexShrink: 0
-              }} />
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 12, color: 'var(--nc-stone)', marginBottom: 2, textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 500 }}>
-                  Proteína
-                </div>
-                <div style={{ fontSize: 20, fontWeight: 600, color: 'var(--nc-ink)', fontFamily: 'var(--font-display)' }}>
-                  {protein.toFixed(1)}g
-                  <span style={{ fontSize: 14, color: 'var(--nc-stone)', marginLeft: 8, fontWeight: 400 }}>
-                    {proteinPercent.toFixed(0)}%
-                  </span>
-                </div>
-              </div>
+          {/* Protein */}
+          <div style={{
+            textAlign: 'center',
+            padding: 20,
+            borderRadius: 12,
+            background: 'rgba(139, 115, 85, 0.03)',
+            border: '1px solid rgba(139, 115, 85, 0.08)',
+            transition: 'all 0.3s ease',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.background = 'rgba(139, 115, 85, 0.06)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.background = 'rgba(139, 115, 85, 0.03)';
+          }}
+          >
+            <div style={{
+              fontSize: 10,
+              textTransform: 'uppercase',
+              letterSpacing: '0.8px',
+              color: 'var(--nc-stone)',
+              fontWeight: 600,
+              marginBottom: 8
+            }}>
+              Proteína
             </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{
-                width: 12,
-                height: 12,
-                borderRadius: 3,
-                background: '#ffd93d',
-                flexShrink: 0
-              }} />
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 12, color: 'var(--nc-stone)', marginBottom: 2, textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 500 }}>
-                  Carbohidratos
-                </div>
-                <div style={{ fontSize: 20, fontWeight: 600, color: 'var(--nc-ink)', fontFamily: 'var(--font-display)' }}>
-                  {carbs.toFixed(1)}g
-                  <span style={{ fontSize: 14, color: 'var(--nc-stone)', marginLeft: 8, fontWeight: 400 }}>
-                    {carbsPercent.toFixed(0)}%
-                  </span>
-                </div>
-              </div>
+            <div style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 36,
+              fontWeight: 600,
+              color: 'var(--nc-ink)',
+              marginBottom: 4,
+              lineHeight: 1
+            }}>
+              {protein.toFixed(0)}g
             </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{
+              fontSize: 13,
+              color: 'var(--nc-stone)',
+              fontWeight: 400,
+              marginBottom: 12
+            }}>
+              {proteinPercent.toFixed(0)}%
+            </div>
+            <div style={{
+              height: 4,
+              background: 'rgba(139, 115, 85, 0.1)',
+              borderRadius: 2,
+              overflow: 'hidden'
+            }}>
               <div style={{
-                width: 12,
-                height: 12,
-                borderRadius: 3,
-                background: '#6bcf7f',
-                flexShrink: 0
+                height: '100%',
+                width: `${proteinPercent}%`,
+                background: '#c97064',
+                borderRadius: 2,
+                transition: 'width 0.6s cubic-bezier(0.16, 1, 0.3, 1)'
               }} />
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 12, color: 'var(--nc-stone)', marginBottom: 2, textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 500 }}>
-                  Grasas
-                </div>
-                <div style={{ fontSize: 20, fontWeight: 600, color: 'var(--nc-ink)', fontFamily: 'var(--font-display)' }}>
-                  {fat.toFixed(1)}g
-                  <span style={{ fontSize: 14, color: 'var(--nc-stone)', marginLeft: 8, fontWeight: 400 }}>
-                    {fatPercent.toFixed(0)}%
-                  </span>
-                </div>
-              </div>
             </div>
           </div>
+
+          {/* Carbs */}
+          <div style={{
+            textAlign: 'center',
+            padding: 20,
+            borderRadius: 12,
+            background: 'rgba(139, 115, 85, 0.03)',
+            border: '1px solid rgba(139, 115, 85, 0.08)',
+            transition: 'all 0.3s ease',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.background = 'rgba(139, 115, 85, 0.06)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.background = 'rgba(139, 115, 85, 0.03)';
+          }}
+          >
+            <div style={{
+              fontSize: 10,
+              textTransform: 'uppercase',
+              letterSpacing: '0.8px',
+              color: 'var(--nc-stone)',
+              fontWeight: 600,
+              marginBottom: 8
+            }}>
+              Carbos
+            </div>
+            <div style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 36,
+              fontWeight: 600,
+              color: 'var(--nc-ink)',
+              marginBottom: 4,
+              lineHeight: 1
+            }}>
+              {carbs.toFixed(0)}g
+            </div>
+            <div style={{
+              fontSize: 13,
+              color: 'var(--nc-stone)',
+              fontWeight: 400,
+              marginBottom: 12
+            }}>
+              {carbsPercent.toFixed(0)}%
+            </div>
+            <div style={{
+              height: 4,
+              background: 'rgba(139, 115, 85, 0.1)',
+              borderRadius: 2,
+              overflow: 'hidden'
+            }}>
+              <div style={{
+                height: '100%',
+                width: `${carbsPercent}%`,
+                background: '#d4a574',
+                borderRadius: 2,
+                transition: 'width 0.6s cubic-bezier(0.16, 1, 0.3, 1)'
+              }} />
+            </div>
+          </div>
+
+          {/* Fat */}
+          <div style={{
+            textAlign: 'center',
+            padding: 20,
+            borderRadius: 12,
+            background: 'rgba(139, 115, 85, 0.03)',
+            border: '1px solid rgba(139, 115, 85, 0.08)',
+            transition: 'all 0.3s ease',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.background = 'rgba(139, 115, 85, 0.06)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.background = 'rgba(139, 115, 85, 0.03)';
+          }}
+          >
+            <div style={{
+              fontSize: 10,
+              textTransform: 'uppercase',
+              letterSpacing: '0.8px',
+              color: 'var(--nc-stone)',
+              fontWeight: 600,
+              marginBottom: 8
+            }}>
+              Grasas
+            </div>
+            <div style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 36,
+              fontWeight: 600,
+              color: 'var(--nc-ink)',
+              marginBottom: 4,
+              lineHeight: 1
+            }}>
+              {fat.toFixed(0)}g
+            </div>
+            <div style={{
+              fontSize: 13,
+              color: 'var(--nc-stone)',
+              fontWeight: 400,
+              marginBottom: 12
+            }}>
+              {fatPercent.toFixed(0)}%
+            </div>
+            <div style={{
+              height: 4,
+              background: 'rgba(139, 115, 85, 0.1)',
+              borderRadius: 2,
+              overflow: 'hidden'
+            }}>
+              <div style={{
+                height: '100%',
+                width: `${fatPercent}%`,
+                background: '#7fa55c',
+                borderRadius: 2,
+                transition: 'width 0.6s cubic-bezier(0.16, 1, 0.3, 1)'
+              }} />
+            </div>
+          </div>
+        </div>
+
+        <div style={{
+          textAlign: 'center',
+          marginTop: 16,
+          fontSize: 13,
+          color: 'var(--nc-stone)'
+        }}>
+          Total: <strong style={{ color: 'var(--nc-ink)', fontWeight: 600 }}>{Math.round(total)}g</strong>
         </div>
       </div>
 
@@ -331,7 +391,7 @@ export function NutritionPlanView({ plan }: { plan: NutritionPlan }) {
         display: 'flex',
         gap: 8,
         marginBottom: 32,
-        borderBottom: '2px solid rgba(90, 138, 64, 0.08)',
+        borderBottom: '1px solid rgba(139, 115, 85, 0.08)',
         animation: 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both'
       }}>
         {(['meals', 'supplements'] as NutritionTab[]).map((tab) => (
@@ -339,22 +399,21 @@ export function NutritionPlanView({ plan }: { plan: NutritionPlan }) {
             key={tab}
             onClick={() => setActiveTab(tab)}
             style={{
-              padding: '12px 24px',
-              background: activeTab === tab ? 'var(--nc-forest)' : 'transparent',
+              padding: '10px 20px',
+              background: activeTab === tab ? 'rgba(90, 138, 64, 0.06)' : 'transparent',
               border: 'none',
-              borderRadius: '8px 8px 0 0',
+              borderRadius: '6px 6px 0 0',
               fontFamily: 'var(--font-body)',
               fontSize: 14,
-              fontWeight: 600,
-              color: activeTab === tab ? 'white' : 'var(--nc-stone)',
+              fontWeight: activeTab === tab ? 600 : 500,
+              color: activeTab === tab ? 'var(--nc-forest)' : 'var(--nc-stone)',
               cursor: 'pointer',
-              marginBottom: -2,
+              marginBottom: -1,
               transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
-              transform: activeTab === tab ? 'translateY(0)' : 'translateY(0)',
             }}
             onMouseEnter={(e) => {
               if (activeTab !== tab) {
-                e.currentTarget.style.background = 'rgba(90, 138, 64, 0.06)';
+                e.currentTarget.style.background = 'rgba(90, 138, 64, 0.03)';
                 e.currentTarget.style.color = 'var(--nc-forest)';
               }
             }}
@@ -388,14 +447,14 @@ export function NutritionPlanView({ plan }: { plan: NutritionPlan }) {
             }}>
               <div style={{
                 padding: '16px 24px',
-                background: 'linear-gradient(135deg, rgba(90, 138, 64, 0.06) 0%, rgba(90, 138, 64, 0.02) 100%)',
-                borderBottom: '1px solid rgba(90, 138, 64, 0.12)',
+                background: 'rgba(90, 138, 64, 0.03)',
+                borderBottom: '1px solid rgba(139, 115, 85, 0.08)',
               }}>
                 <span style={{
                   fontFamily: 'var(--font-display)',
-                  fontSize: 17,
+                  fontSize: 16,
                   fontWeight: 600,
-                  color: 'var(--nc-forest)',
+                  color: 'var(--nc-ink)',
                   letterSpacing: '-0.01em'
                 }}>
                   {MEAL_TYPE_LABELS[slot.meal_type]}
@@ -484,7 +543,7 @@ export function NutritionPlanView({ plan }: { plan: NutritionPlan }) {
                               <span style={{ fontSize: 10, color: 'var(--nc-stone)', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 600 }}>
                                 Proteína
                               </span>
-                              <span style={{ fontSize: 16, fontWeight: 700, color: '#ff6b6b', fontFamily: 'var(--font-display)' }}>
+                              <span style={{ fontSize: 16, fontWeight: 700, color: '#c97064', fontFamily: 'var(--font-display)' }}>
                                 {opt.protein_g}g
                               </span>
                             </div>
@@ -494,7 +553,7 @@ export function NutritionPlanView({ plan }: { plan: NutritionPlan }) {
                               <span style={{ fontSize: 10, color: 'var(--nc-stone)', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 600 }}>
                                 Carbos
                               </span>
-                              <span style={{ fontSize: 16, fontWeight: 700, color: '#ffd93d', fontFamily: 'var(--font-display)' }}>
+                              <span style={{ fontSize: 16, fontWeight: 700, color: '#d4a574', fontFamily: 'var(--font-display)' }}>
                                 {opt.carbs_g}g
                               </span>
                             </div>
@@ -504,7 +563,7 @@ export function NutritionPlanView({ plan }: { plan: NutritionPlan }) {
                               <span style={{ fontSize: 10, color: 'var(--nc-stone)', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 600 }}>
                                 Grasas
                               </span>
-                              <span style={{ fontSize: 16, fontWeight: 700, color: '#6bcf7f', fontFamily: 'var(--font-display)' }}>
+                              <span style={{ fontSize: 16, fontWeight: 700, color: '#7fa55c', fontFamily: 'var(--font-display)' }}>
                                 {opt.fat_g}g
                               </span>
                             </div>
@@ -530,23 +589,23 @@ export function NutritionPlanView({ plan }: { plan: NutritionPlan }) {
             }}>
               <div style={{
                 padding: '16px 24px',
-                background: 'linear-gradient(135deg, rgba(90, 138, 64, 0.06) 0%, rgba(90, 138, 64, 0.02) 100%)',
-                borderBottom: '1px solid rgba(90, 138, 64, 0.12)',
+                background: 'rgba(90, 138, 64, 0.03)',
+                borderBottom: '1px solid rgba(139, 115, 85, 0.08)',
                 display: 'flex',
                 alignItems: 'center',
                 gap: 12
               }}>
                 <div style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: 8,
-                  background: 'var(--nc-forest)',
-                  color: 'white',
+                  width: 32,
+                  height: 32,
+                  borderRadius: 6,
+                  background: 'rgba(90, 138, 64, 0.12)',
+                  color: 'var(--nc-forest)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontWeight: 700,
-                  fontSize: 16,
+                  fontWeight: 600,
+                  fontSize: 15,
                   fontFamily: 'var(--font-display)'
                 }}>
                   {day.day_number}
@@ -554,9 +613,9 @@ export function NutritionPlanView({ plan }: { plan: NutritionPlan }) {
                 <div style={{ flex: 1 }}>
                   <span style={{
                     fontFamily: 'var(--font-display)',
-                    fontSize: 17,
+                    fontSize: 16,
                     fontWeight: 600,
-                    color: 'var(--nc-forest)',
+                    color: 'var(--nc-ink)',
                     letterSpacing: '-0.01em'
                   }}>
                     {DAY_LABELS[day.day_number - 1]}
@@ -700,7 +759,7 @@ export function NutritionPlanView({ plan }: { plan: NutritionPlan }) {
                                       <span style={{ fontSize: 10, color: 'var(--nc-stone)', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 600 }}>
                                         Proteína
                                       </span>
-                                      <span style={{ fontSize: 16, fontWeight: 700, color: '#ff6b6b', fontFamily: 'var(--font-display)' }}>
+                                      <span style={{ fontSize: 16, fontWeight: 700, color: '#c97064', fontFamily: 'var(--font-display)' }}>
                                         {opt.protein_g}g
                                       </span>
                                     </div>
@@ -710,7 +769,7 @@ export function NutritionPlanView({ plan }: { plan: NutritionPlan }) {
                                       <span style={{ fontSize: 10, color: 'var(--nc-stone)', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 600 }}>
                                         Carbos
                                       </span>
-                                      <span style={{ fontSize: 16, fontWeight: 700, color: '#ffd93d', fontFamily: 'var(--font-display)' }}>
+                                      <span style={{ fontSize: 16, fontWeight: 700, color: '#d4a574', fontFamily: 'var(--font-display)' }}>
                                         {opt.carbs_g}g
                                       </span>
                                     </div>
@@ -720,7 +779,7 @@ export function NutritionPlanView({ plan }: { plan: NutritionPlan }) {
                                       <span style={{ fontSize: 10, color: 'var(--nc-stone)', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 600 }}>
                                         Grasas
                                       </span>
-                                      <span style={{ fontSize: 16, fontWeight: 700, color: '#6bcf7f', fontFamily: 'var(--font-display)' }}>
+                                      <span style={{ fontSize: 16, fontWeight: 700, color: '#7fa55c', fontFamily: 'var(--font-display)' }}>
                                         {opt.fat_g}g
                                       </span>
                                     </div>
@@ -803,38 +862,113 @@ export function NutritionPlanView({ plan }: { plan: NutritionPlan }) {
 export function ExercisePlanView({ plan }: { plan: ExercisePlan }) {
   const sorted = [...(plan.days ?? [])].sort((a, b) => a.day_number - b.day_number);
   return (
-    <div>
-      <div style={{ marginBottom: 20 }}>
-        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 20, color: 'var(--nc-forest)', fontWeight: 500, marginBottom: 4 }}>
+    <div style={{
+      animation: 'fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+      maxWidth: 1000,
+      margin: '0 auto'
+    }}>
+      {/* Hero section */}
+      <div style={{
+        marginBottom: 32,
+        animation: 'fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
+      }}>
+        <div style={{
+          display: 'inline-block',
+          padding: '4px 12px',
+          background: 'linear-gradient(135deg, rgba(90, 138, 64, 0.08) 0%, rgba(90, 138, 64, 0.04) 100%)',
+          borderRadius: 20,
+          marginBottom: 12
+        }}>
+          <span style={{
+            fontSize: 11,
+            fontWeight: 600,
+            color: 'var(--nc-forest)',
+            textTransform: 'uppercase',
+            letterSpacing: '0.8px'
+          }}>
+            Plan de Ejercicio
+          </span>
+        </div>
+        <h2 style={{
+          fontFamily: 'var(--font-display)',
+          fontSize: 32,
+          color: 'var(--nc-ink)',
+          fontWeight: 600,
+          marginBottom: 8,
+          letterSpacing: '-0.02em',
+          lineHeight: 1.2
+        }}>
           {plan.title}
         </h2>
         {plan.notes && (
-          <p style={{ fontSize: 13, color: 'var(--nc-stone)', fontWeight: 300, lineHeight: 1.6 }}>
+          <p style={{
+            fontSize: 15,
+            color: 'var(--nc-stone)',
+            fontWeight: 300,
+            lineHeight: 1.7,
+            maxWidth: 680
+          }}>
             {plan.notes}
           </p>
         )}
       </div>
 
-      {sorted.map((day) => (
+      {sorted.map((day, idx) => (
         <div key={day.id} style={{
-          border: '1px solid var(--nc-border)', borderRadius: 10,
-          marginBottom: 16, overflow: 'hidden',
+          border: '1px solid rgba(90, 138, 64, 0.12)',
+          borderRadius: 12,
+          marginBottom: 20,
+          overflow: 'hidden',
+          background: 'white',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
+          animation: `fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) ${idx * 0.05}s both`
         }}>
           {/* Day header */}
           <div style={{
-            padding: '12px 20px', background: 'var(--nc-forest-pale)',
-            borderBottom: '1px solid var(--nc-border)',
-            display: 'flex', alignItems: 'baseline', gap: 12,
+            padding: '16px 24px',
+            background: 'rgba(90, 138, 64, 0.03)',
+            borderBottom: '1px solid rgba(139, 115, 85, 0.08)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 12
           }}>
-            <span style={{ fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 500, color: 'var(--nc-forest)' }}>
-              Día {day.day_number} — {DAY_LABELS[day.day_number - 1]}
-              {day.label ? ` (${day.label})` : ''}
-            </span>
-            {day.notes && (
-              <span style={{ fontSize: 12, color: 'var(--nc-stone)', fontWeight: 300 }}>
-                {day.notes}
+            <div style={{
+              width: 32,
+              height: 32,
+              borderRadius: 6,
+              background: 'rgba(90, 138, 64, 0.12)',
+              color: 'var(--nc-forest)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontWeight: 600,
+              fontSize: 15,
+              fontFamily: 'var(--font-display)'
+            }}>
+              {day.day_number}
+            </div>
+            <div style={{ flex: 1 }}>
+              <span style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 16,
+                fontWeight: 600,
+                color: 'var(--nc-ink)',
+                letterSpacing: '-0.01em'
+              }}>
+                {DAY_LABELS[day.day_number - 1]}
+                {day.label ? ` — ${day.label}` : ''}
               </span>
-            )}
+              {day.notes && (
+                <div style={{
+                  fontSize: 12,
+                  color: 'var(--nc-stone)',
+                  marginTop: 2,
+                  fontWeight: 300
+                }}>
+                  {day.notes}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* ─── Rest day ──────────────────────────────────────── */}
@@ -931,6 +1065,23 @@ export function ExercisePlanView({ plan }: { plan: ExercisePlan }) {
           )}
         </div>
       ))}
+
+      <style jsx>{`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
     </div>
   );
 }
